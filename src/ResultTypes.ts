@@ -98,17 +98,20 @@ export interface DataResult {
   evictions: Array<Eviction>
   unit_counts: UnitCounts
   businesses_with_same_owners: Array<BusinessOwner>
+  market_value_sum: number
 }
 
 export interface DataResultNoBusiness {
-  business_owners: null
-  related_businesses: null
+  business_owners: undefined
+  related_businesses: undefined
   owned_addresses: Array<PropertyAddress>
   locations: Array<PropertyLocation>
-  hierarchy_nodes: null
+  hierarchy_nodes: undefined
   evictions: Array<Eviction>
   unit_counts: UnitCounts
-  businesses_with_same_owners: null
+  businesses_with_same_owners: undefined
+  market_value_sum: undefined
+
 }
 
 export interface PropertyResult {

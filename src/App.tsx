@@ -205,11 +205,11 @@ function App() {
           <div className='options-container'>
             <div>Did you mean any of these?</div>
             {
-              addressOptions.map(address => (
-                <button className='address-options' onClick={() => search_selected(address)}>{address}</button>
+              addressOptions.map((address, i) => (
+                <button key={i} className='address-options' onClick={() => search_selected(address)}>{address}</button>
               ))
             }
-            <div className="close-btn"></div>
+            <button className='address-options' onClick={() => search_selected(address)}>None of These</button>
           </div>
           : <div></div>}
 
