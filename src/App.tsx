@@ -162,7 +162,7 @@ function App() {
               setFocus('address')
             }}
             onKeyDown={handleKeyPress}></input>
-          <div className='or'>or</div>
+          {/* <div className='or'>or</div>
           <input
             className = {focus === 'landlord' ? 'grow': undefined}  
             value={landlord} 
@@ -176,7 +176,7 @@ function App() {
               setSearchType('landlord')
               setFocus('landlord')
             }}
-            placeholder="Enter Landlord Name"></input>
+            placeholder="Enter Landlord Name"></input> */}
         </div>
         {landlord || address ?
           <div className='search-container'>

@@ -3,13 +3,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import './App.scss';
 import { BusinessOwner, HierarchyNodeGroup, PropertyAddress, PropertyLocation, SearchResultPicked } from './ResultTypes';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import L, { TileLayer, featureGroup, latLngBounds } from 'leaflet';
 import { useNavigate } from 'react-router-dom';
 import Survey from './Survey';
 import Info from './Info';
 import { Hierarchy } from './Hierarchy'
 import { HierarchyNode } from 'd3-hierarchy';
-import { NULL } from 'sass';
+import markerSrc from './marker.png'; // Import your image
+
 var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 mapboxgl.accessToken = 'pk.eyJ1IjoibXNnc2x1dCIsImEiOiJja2NvZmFpbjAwMW84MnJvY3F1d2hzcW5nIn0.xMAHVsdszfolXUOk9_XI4g';
 
@@ -95,6 +95,16 @@ function generateHierarchies(result: SearchResultPicked): HierarchyNodeGroup[] |
   return hierarchies
 }
 
+function getHierarchyTopNames(h: HierarchyNodeGroup) {
+  if (!h || !h.nodes_array) {
+    return null
+  }
+  const top = h.nodes_array.find(node => !node.parent_num) as any
+  if (top && top.names) {
+    return (top.names as string[]).join(', ')
+  }
+}
+
 function getOwners(hierarchies: HierarchyNodeGroup[], result: SearchResultPicked) {
   if (hierarchies && hierarchies.length > 0) {
     let owners: string[] = []
@@ -121,31 +131,45 @@ function convertToUSD(value: number) {
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
-  
-    // These options are needed to round to whole numbers if that's what you want.
-    //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
-    //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
   });
 
   return formatter.format(value / 100)
+}
 
-  // const str = (value / 100).toString();
-  // let start_comas = false
-  // let counter = 0;
-  // for (let i = 0; i < str.length; i++) {
-  //   const index = str.length - i - 1
-  //   const char = str[index]
-  //   if (start_comas) {
-  //     counter++
-  //     if (counter == 3) {
-  //       str.
-  //     }
-  //   }
-  //   if (char === '.') {
-  //     start_comas = true
-  //   }
-  // } 
+function getLandlordList(owners: string[], result: SearchResultPicked, hierarchies: HierarchyNodeGroup[] | null) {
+  const list: { name: string, origin: string }[] = []
+  if (hierarchies && hierarchies.length) {
+    list.push(
+      ...owners.map(o => ({
+        name: o,
+        origin: 'business_names'
+      })),
+      {
+        name: result.property.owner,
+        origin: 'property_owners'
+      })
+  } else {
+    list.push({
+      name: result.property.owner,
+      origin: 'property_owners'
+    })
+  }
+  if (hierarchies) {
+    for (const group of hierarchies) {
+      let current = group.nodes_array.find(node => node.current)
 
+      while (current) {
+        current = group.nodes_array.find(node => node.reg_num === current?.parent_num)
+        if (current) {
+          list.push({
+            name: current.business_name,
+            origin: 'businesses'
+          })
+        }
+      }
+    }
+  }
+  return list.filter(name => name.name)
 }
 
 type ResultType = string | 'address' | 'landlord'
@@ -171,16 +195,21 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   const [showingLocations, setShowingLocations] = useState(false)
   const [viewBusinessInfo, setViewBusinessInfo] = useState(false)
   const [unitTotal] = useState(getUnitTotalCount(result))
+  const [addressTotal] = useState(result.data ? 1 + (result.data?.owned_addresses.filter(a => a).length) : undefined)
   const [owners, setOwners]: [string[], any] = useState([])
   const [atBottom, setAtBottom]: [boolean, any] = useState(false)
   const [scrolled, setScrolled]: [boolean, any] = useState(false)
   const [showEvictions, setShowEvictions]: [boolean, any] = useState(false)
+  const [landlordList, setLandlordList]: [{ name: string, origin: string }[], any] = useState([])
+  const [showSurvey, setShowSurvey]: [boolean, any] = useState(true)
+  const [alreadyScrolled, setAlreadyScrolled]: [boolean, any] = useState(false)
+  const [showHierarchy, setShowHierarchy]: [number | null, any] = useState(null)
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: 'mapbox://styles/msgslut/ckcofib0z065x1ime0b5glwdk',
+      style: 'mapbox://styles/msgslut/cltktk1uv013901oi98k5fir8',
       center: [lng, lat],
       zoom: zoom
     });
@@ -198,7 +227,8 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
 
     setHierarchies(hier)
     // generateHierarchy(result))
-    setOwners(getOwners(hier!, result))
+    const o = getOwners(hier!, result)
+    setOwners(o)
 
     const observer = new IntersectionObserver((entries, observer) => {
       const entry = entries[0];
@@ -208,12 +238,18 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
     });
 
     observer.observe(survey.current!)
+
+    showAllLocations()
+    setLandlordList(getLandlordList(o, result, hier))
   });
 
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
     const target = event.target! as any
     console.log('Current Scroll Position:', target.scrollTop)
     setScrolled(target.scrollTop > 200)
+    if (target.scrollTop > 200) {
+      setAlreadyScrolled(true)
+    }
 
   }
 
@@ -278,7 +314,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
         bounds.extend(coord);
       }
 
-      (map.current as any).fitBounds(bounds, { padding: 40 });
+      (map.current as any).fitBounds(bounds, { padding: 60 });
     }
     // (map.current as any).setCenter([lng, lat])
     setMarkersDisplayed(true)
@@ -286,14 +322,6 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
 
   function hideAllMarkerMenus() {
     setSelectedLocation(null)
-    // for (const el of markerElements) {
-    //   const menu = el.getElementsByClassName('menu-container')[0]
-    //       if (menu) {
-    //         if (menu.classList.contains("show")) {
-    //           menu.classList.remove('show')
-    //         }
-    //       }
-    // }
   }
 
   function toggleLocations() {
@@ -305,117 +333,194 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
     }
   }
 
+  function hideSurvey() {
+    setShowSurvey(false)
+  }
+
   return (
     <div className='result'>
-      <div className='full-screen'>
-        <div className='headerContainer small-header'>
-          {/* <img className='post' src="/images/post.png" alt="a post"></img> */}
-          <h1 onClick={() => closeResult()}>
-            <div className="name">
-              <div>Rate</div>
-              <div>Your</div>
-              <div>Landlord</div>
-              <div>PDX</div>
-              <div>.com</div>
-            </div>
-          </h1>
-        </div>
-        <div className='result-container'>
-          <div className='left'>
-            {selectedLocation ? <div className='screen' onClick={() => hideAllMarkerMenus()}></div> : undefined}
-            {selectedLocation ?
-              <div className='address-menu-container'>
-                <div className="menu-container" onClick={(ev) => ev.stopPropagation()}>
-                  {(selectedLocation as any)
-                    .addresses.map(
-                      (a: PropertyAddress) =>
-                      (
-                        <div className="menu-item">
-                          <div className="address">{a.address_full}<a className="menu-link" href={`/address/${a.address_full}`}>&gt;</a></div>
-
-                        </div>
-                      ))}
-                </div>
-              </div>
-              : undefined
-            }
-            <div ref={mapContainer} className="map-container" >
-            </div>
+      {
+        !scrolled && !alreadyScrolled ?
+          <div className='full-screen' />
+          : undefined
+      }
+      <div className='headerContainer small-header'>
+        {/* <img className='post' src="/images/post.png" alt="a post"></img> */}
+        <h1 onClick={() => closeResult()}>
+          <div className="name">
+            <div>Rate</div>
+            <div>Your</div>
+            <div>Landlord</div>
+            <div>PDX</div>
+            <div>.com</div>
           </div>
+        </h1>
+      </div>
+      <div className='result-container'>
+        <div className='left'>
+          {selectedLocation ? <div className='screen' onClick={() => hideAllMarkerMenus()}></div> : undefined}
+          {selectedLocation ?
+            <div className='address-menu-container'>
+              <div className="menu-container" onClick={(ev) => ev.stopPropagation()}>
+                {(selectedLocation as any)
+                  .addresses.map(
+                    (a: PropertyAddress) =>
+                    (
+                      <div className="menu-item">
+                        <div className="address">{a.address_full}<a className="menu-link" href={`/address/${a.address_full}`}>&gt;</a></div>
 
-          <div className={'right' + (scrolled && atBottom ? ' right-up' : '')} onScroll={handleScroll}>
+                      </div>
+                    ))}
+              </div>
+            </div>
+            : undefined
+          }
+          <div ref={mapContainer} className="map-container" >
+          </div>
+        </div>
 
-            <div className='data-container'>
-              <h3><div className='address-title'>{result.property.address_full}</div></h3>
-              {/* {result.property.description !== "undefined" ?
+        <div className={scrolled && atBottom ? 'right right-up' : 'right'} onScroll={handleScroll}>
+
+          <div className='data-container'>
+            <h3>
+              <div className='address-title'>{result.property.address_full}</div>
+              <div className='main-marker-inline' />
+            </h3>
+            {/* {result.property.description !== "undefined" ?
               (<div className='address-description'>{result.property.description}</div>) : undefined
             } */}
-              <div className='owner-container'>
-                <div className='owned_by'>owned by</div>
-                {owners.map((o, i) =>
-                  (<>{i !== 0 ? <div className='ampersand'>&amp;</div> : undefined}<div className='owner-name'>{o}</div></>))
-                }
-                {
-                  result && result.property && result.property.owner && hierarchies && hierarchies.length > 0 ?
-                    (
-                      <div className='via'>via {result.property.owner}</div>
-                    ) : undefined
-                }
-                {/* <div className='also-owns'>{'who also own' + (owners.length > 0 ? '': 's')}</div> */}
-              </div>
+            <div className='owner-container'>
+              <div className='owned_by'>owned by</div>
+              {owners.map((o, i) =>
+                (<>{i !== 0 ? <div className='ampersand'>&amp;</div> : undefined}<div className='owner-name'>{o}</div></>))
+              }
               {
-                result.data && result.data.evictions && result.data.evictions.length ?
-                  <div className='evictions-wrapper'>
-                    <button className='evictions' onClick={() => setShowEvictions(!showEvictions)}>Evicted {result.data.evictions.length} tenants since 2019</button>
-                    {/* <button className='evictions' onClick={() => setShowEvictions(!showEvictions)}>Found {result.data.evictions.length} eviction court-records associated with this landlord</button> */}
-
-                    {
-                      showEvictions ?
-                        <div className='table-wrapper'>
-                          <table>
-                            <tr>
-                              <th>case code</th>
-                              <th>filed date</th>
-                              <th>landlords</th>
-                              <th>property managers</th>
-                              <th>case description</th>
-                            </tr>
-                            {
-                              result.data.evictions.map(ev =>
-                                <tr>
-                                  <td>{ev.case_code}</td>
-                                  <td>{ev.filed_date}</td>
-                                  <td>{ev.evicting_landlords}</td>
-                                  <td>{ev.evicting_property_managers}</td>
-                                  <td>{ev.case_description}</td>
-                                </tr>
-                              )}
-
-                          </table>
-                        </div>
+                result && result.property && result.property.owner && hierarchies && hierarchies.length > 0 ?
+                  (
+                    <div>
+                      <div className='via'><span className='via-text'>via</span> </div>
+                      <div className='via'>{result.property.owner} </div>
+                      {
+                      landlordList ? landlordList
+                        .filter(l => l.origin === 'businesses')
+                        .map(l => 
+                          <div className='via'>{l.name}</div>
+                        )
                         : undefined
-                    }
-                  </div>
+                      }
+                    </div>
+                  ) : undefined
+              }
+
+            </div>
+            {
+              result.data && result.data.evictions && result.data.evictions.length ?
+                <div className='evictions-wrapper'>
+                  <button className='evictions' onClick={() => setShowEvictions(!showEvictions)}>{result.data.evictions.length} evictions on record</button>
+                  {/* <button className='evictions' onClick={() => setShowEvictions(!showEvictions)}>Found {result.data.evictions.length} eviction court-records associated with this landlord</button> */}
+
+                  {
+                    showEvictions ?
+                      <div className='table-wrapper'>
+                        <table>
+                          <tr>
+                            <th>case code</th>
+                            <th>filed date</th>
+                            <th>landlords</th>
+                            <th>property managers</th>
+                            <th>case description</th>
+                          </tr>
+                          {
+                            result.data.evictions.map(ev =>
+                              <tr>
+                                <td>{ev.case_code}</td>
+                                <td>{ev.filed_date}</td>
+                                <td>{ev.evicting_landlords}</td>
+                                <td>{ev.evicting_property_managers}</td>
+                                <td>{ev.case_description}</td>
+                              </tr>
+                            )}
+
+                        </table>
+                      </div>
+                      : undefined
+                  }
+                </div>
+                : undefined
+            }
+            <div className='properties'>
+              {
+                result.data && result.data.market_value_sum ?
+                  <><div className='market-value-str'>total market-value sum of properties:</div><div className='market-value'>{convertToUSD(result.data.market_value_sum)}</div></>
                   : undefined
               }
               {
-                result.data && result.data.market_value_sum ?
-                <div className='properties'>
-                  <div className='market-value-str'>total market-value sum of properties:</div>
-                  <div className='market-value'>{convertToUSD(result.data.market_value_sum)}</div>
-                </div>
-                : undefined
+                result.type !== 'no-landlord' && result.data && result.data.locations && result.data.locations.length > 0 ?
+                  (
+                    <div className='locations-container'>
+                      {
+                        result.data?.owned_addresses && result.data?.owned_addresses.length > 0 && locations && locations.length > 0 ?
+                          (
+
+                            <div className='counts-container'>
+                              {/* <div className='also-owns'>{'who also own' + (owners.length > 0 ? '': 's')}</div> */}
+
+                              {unitTotal == null || unitTotal === addressTotal ? undefined : (
+                                <div className='counts-element'>
+                                  <span className='count-number'>{unitTotal}</span>
+                                  <br />
+                                  units
+                                </div>)
+                              }
+                              <div className='counts-element'>
+                                <span className='count-number'>{addressTotal}</span>
+                                <br></br>
+                                addresses
+                              </div>
+                              <div className='counts-element'>
+                                <div className='marker-inline-wrapper'>
+                                  <span className='count-number'>{locations ? locations.length : 1}</span>
+                                  <div className='marker-inline' />
+                                  <br></br>
+                                  locations
+                                </div>
+                              </div>
+                            </div>
+
+
+                          ) : undefined
+                      }
+                      {/* <div className='owns-button-container'>
+                      <button className='owns-button' onClick={() => toggleLocations()}>{showingLocations ? 'HIDE' : 'SHOW'}</button>
+                    </div> */}
+                      {showingLocations ?
+                        <div className='address-groups'>
+                          {locations ? locations.filter(loc => loc).map(loc => (
+                            <div className='address-group'>
+                              {loc.addresses.map(address =>
+                              (
+                                <><a className='address-link' href={`/address/${address.address_full}`}>{address.address_full}</a><br /></>
+                              ))}
+                            </div>
+                          )) : undefined
+                          }
+                        </div> : undefined
+                      }
+                    </div>
+                  ) : undefined
               }
-              {/* {
+            </div>
+
+            {/* {
               hierarchy && hierarchy.length > 0 && hierarchy[hierarchy.length - 1].names.length === 1 ?
                 (<label className='bold important'>{hierarchy[hierarchy.length - 1].names[0].name}</label>): undefined
             } */}
-              {/* {result.data && (result.data.names) ?
+            {/* {result.data && (result.data.names) ?
               (
                 <button className='owns-button' onClick={() => setViewBusinessInfo(!viewBusinessInfo)}>{viewBusinessInfo ? 'Hide Data' : 'View Business Data'}</button>
               ): undefined
             } */}
-              {/* {viewBusinessInfo ? (
+            {/* {viewBusinessInfo ? (
             <div className='business-data'>
               {result.data && result.data.names ? result.data.names
                 .filter(name => name.name || name.first_name)
@@ -453,72 +558,91 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
               </div>
             </div>) : undefined
             } */}
-              {/* {result.type !== 'no-landlord' && result.data && result.data.locations && result.data.locations.length > 0 && !markersDisplayed ?
+            {/* {result.type !== 'no-landlord' && result.data && result.data.locations && result.data.locations.length > 0 && !markersDisplayed ?
               <button className='show-others' onClick={() => showAllLocations()}>Show Other Properties Owned By This Landlord</button> :
               undefined
             } */}
-              <br></br>
-              {result.type !== 'no-landlord' && result.data && result.data.locations && result.data.locations.length > 0 ?
-                (
-                  <div className='locations-container'>
-                    {
-                      result.data?.owned_addresses && result.data?.owned_addresses.length > 0 && locations && locations.length > 0 ?
-                        (
-
-                          <div className='counts-container'>
-                            {unitTotal == null ? undefined : (
-                              <div className='counts-element'>
-                                <span className='count-number'>{unitTotal}</span>
-                                <br />
-                                units
-                              </div>)
-                            }
-                            <div className='counts-element'>
-                              <span className='count-number'>{1 + (result.data?.owned_addresses.filter(a => a).length)}</span>
-                              <br></br>
-                              addresses
-                            </div>
-                            <div className='counts-element'>
-                              <span className='count-number'>{locations ? locations.length : 1}</span>
-                              <br></br>
-                              locations
-                            </div>
-                          </div>
 
 
-                        ) : undefined
-                    }
-                    <div className='owns-button-container'>
-                      <button className='owns-button' onClick={() => toggleLocations()}>{showingLocations ? 'HIDE' : 'SHOW'}</button>
-                    </div>
-                    {showingLocations ?
-                      <div className='address-groups'>
-                        {locations ? locations.filter(loc => loc).map(loc => (
-                          <div className='address-group'>
-                            {loc.addresses.map(address =>
-                            (
-                              <><a className='address-link' href={`/address/${address.address_full}`}>{address.address_full}</a><br /></>
-                            ))}
-                          </div>
-                        )) : undefined
-                        }
-                      </div> : undefined
-                    }
-                  </div>
-                ) : undefined
-              }
-              
-                {/* {hierarchies ? hierarchies
+            {/* {hierarchies ? hierarchies
                   .filter(h => h.nodes_array.length)
                   .map(h =>
                   (
                     <Hierarchy hierarchyNodes={h.nodes_array} />
                   )) : undefined
                 } */}
-                <div ref={survey}>
-                <Survey ></Survey>
-              </div>
+            <div className='business-info'>
+              <button className='owns-button' onClick={() => setViewBusinessInfo(!viewBusinessInfo)}>{viewBusinessInfo ? 'Hide Data' : 'View Business Data'}</button>
+              {viewBusinessInfo ? (
+                <div className='business-data'>
+                  <div className='tree-list'>
+                  {
+                    hierarchies ?
+                    hierarchies
+                    .filter(h => h.nodes_array.length)
+                    .map((h, index) =>
+                      <div className='hiearchy-name'>
+                      {getHierarchyTopNames(h)}
+                        <svg onClick={() => setShowHierarchy(index)} width="80" height="80" className='hierarchy-icon'>
+                          <g transform="scale(.24 .24) translate(-50 0)">
+                            <circle cx="200" cy="50" r="20" fill="white" />
+                            <circle cx="150" cy="150" r="20" fill="white" />
+                            <circle cx="250" cy="150" r="20" fill="white" />
+                            <circle cx="100" cy="250" r="20" fill="white" />
+                            <circle cx="200" cy="250" r="20" fill="white" />
+                            <circle cx="300" cy="250" r="20" fill="white" />
+                            <line x1="200" y1="50" x2="150" y2="150" stroke="white" className='hierarchy-line' />
+                            <line x1="200" y1="50" x2="250" y2="150" stroke="white" className='hierarchy-line' />
+                            <line x1="150" y1="150" x2="100" y2="250" stroke="white" className='hierarchy-line' />
+                            <line x1="150" y1="150" x2="200" y2="250" stroke="white" className='hierarchy-line' />
+                            <line x1="250" y1="150" x2="300" y2="250" stroke="white" className='hierarchy-line' />
+                          </g>
+                        </svg>
+                        {
+                          showHierarchy === index ?
+                          <div className="hierarchy-wrapper">
+                            <div className='button-close-wrapper'>
+                              <button className="button-close" onClick={() => setShowHierarchy(null)}></button>
+                            </div>
+                            <Hierarchy hierarchyNodes={h.nodes_array} />
+                          </div>
+                          : undefined
+                        }
+                      </div>
+                      ) : undefined
+                  }
+                  </div>
+
+                  {related_businesses && related_businesses.length > 0 ?
+                    <div className='related-businesses-list'>
+                      <div className='related-businesses-title'>Related Businesses</div>
+                      <div className='data-rows'>
+                        {related_businesses ?
+                          related_businesses.map((name: any) => (<div className='data-row'>{name.business_name}</div>)) : undefined}
+                      </div>
+                    </div>
+                    : undefined
+                  }
+
+                </div>) : undefined
+              }
+
+
             </div>
+
+            <div ref={survey} className='survey-container'>
+              {
+                showSurvey ?
+                  <Survey landlordList={landlordList} hideSurvey={hideSurvey} address={result.property.address_full}></Survey>
+                  :
+                  <div className='thanks'>Thanks for your feedback</div>
+              }
+            </div>
+            {/* <div className='action-items'>
+              <button className='action'>REPORT ISSUES WITH LANDLORD</button>
+              <button className='action'>CONNECT WITH YOUR NEIGHBORS</button>
+              <button className='action'>LEARN YOUR RIGHTS</button>
+            </div> */}
           </div>
         </div>
       </div>

@@ -65,8 +65,8 @@ function Tree(data: HierarchyNode[], { // data is either tabular (array of objec
   
     const svg = d3.create("svg")
         .attr("viewBox", [-dy - 300, y0 - dx, width, height])
-        .attr("width", width)
-        .attr("height", height)
+        .attr("width", '100%')
+        .attr("height", '100%')
         .attr("style", "max-width: 100%; height: auto; height: intrinsic;")
         .attr("font-family", "sans-serif")
         .attr("font-size", 10)
@@ -139,6 +139,6 @@ export function Hierarchy({hierarchyNodes}: {hierarchyNodes: Array<HierarchyNode
     }, []);
     console.log(hierarchyNodes)
     return (
-        <div ref={svg}/>
+        <div ref={svg} className="hierarchy"/>
     );
 }
