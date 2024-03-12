@@ -114,6 +114,12 @@ export interface DataResultNoBusiness {
 
 }
 
+export interface SubmittedReview {
+  id: number,
+  review_text: string,
+  selected_answers: number[]
+}
+
 export interface PropertyResult {
   objectid: string
   property_id: string
@@ -137,6 +143,7 @@ export interface PropertyResult {
   landlord_id: null
   latitude: string
   longitude: string
+  reviews: SubmittedReview[]
 }
 
 export interface FoundBusiness {

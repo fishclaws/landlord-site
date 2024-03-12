@@ -61,7 +61,18 @@ const qs = [
 
 type Landlord = { name: string; origin: string; }
 
-function Survey({landlordList, hideSurvey, address}: {landlordList: Landlord[], hideSurvey: () => void, address: string}) {
+function Survey(
+    {
+        landlordList, 
+        hideSurvey, 
+        address, 
+        propertyId
+    }: {
+        landlordList: Landlord[], 
+        hideSurvey: () => void, 
+        address: string, 
+        propertyId: string
+    }) {
 
     const [questions]: [Question[], any] = useState(qs);
     const [answersSelected, setAnswersSelected] = useState(questions.map(q => null) as (number | null)[]);
@@ -76,7 +87,8 @@ function Survey({landlordList, hideSurvey, address}: {landlordList: Landlord[], 
             answersSelected,
             landlordList,
             reviewText,
-            address
+            address,
+            propertyId
         })
     }
 

@@ -27,7 +27,7 @@ function removeDuplicateBusinesses(arr: Array<BusinessOwner> | undefined) {
 }
 
 function getUnitTotalCount(result: SearchResultPicked) {
-  if (!result || !result.data || !result.data.unit_counts) {
+  if (!result || !result.data || !result.data.unit_counts || !result.data.owned_addresses) {
     return null
   }
 
@@ -195,7 +195,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   const [showingLocations, setShowingLocations] = useState(false)
   const [viewBusinessInfo, setViewBusinessInfo] = useState(false)
   const [unitTotal] = useState(getUnitTotalCount(result))
-  const [addressTotal] = useState(result.data ? 1 + (result.data?.owned_addresses.filter(a => a).length) : undefined)
+  const [addressTotal] = useState(result.data && result.data?.owned_addresses ? 1 + (result.data?.owned_addresses.filter(a => a).length) : undefined)
   const [owners, setOwners]: [string[], any] = useState([])
   const [atBottom, setAtBottom]: [boolean, any] = useState(false)
   const [scrolled, setScrolled]: [boolean, any] = useState(false)
@@ -254,7 +254,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   }
 
   function linkLocations(): Array<GroupedLocation> {
-    if (!result.data || !result.data.locations) {
+    if (!result.data || !result.data.locations || !result.data.owned_addresses) {
       return []
     }
     const res = []
@@ -382,8 +382,19 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
         <div className={scrolled && atBottom ? 'right right-up' : 'right'} onScroll={handleScroll}>
 
           <div className='data-container'>
-            <h3>
-              <div className='address-title'>{result.property.address_full}</div>
+            <h3 className='address-title-container'>
+              <div className='address-title'>{result.property.address_full}
+                {
+                  result.property.reviews && result.property.reviews.length > 0 ? 
+                  // 
+                  <div className='ratings-warning'><div className='ratings-circle'>{result.property.reviews.length}</div></div>
+                  : undefined
+                }
+              </div>
+              <div className='ratings-circle-wrapper'>
+
+
+              </div>
               <div className='main-marker-inline' />
             </h3>
             {/* {result.property.description !== "undefined" ?
@@ -397,17 +408,19 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
               {
                 result && result.property && result.property.owner && hierarchies && hierarchies.length > 0 ?
                   (
-                    <div>
+                    <div className='via-wrapper'>
                       <div className='via'><span className='via-text'>via</span> </div>
-                      <div className='via'>{result.property.owner} </div>
-                      {
-                      landlordList ? landlordList
-                        .filter(l => l.origin === 'businesses')
-                        .map(l => 
-                          <div className='via'>{l.name}</div>
-                        )
-                        : undefined
-                      }
+                      <div>
+                        <div className='via'>{result.property.owner} </div>
+                        {
+                          landlordList ? landlordList
+                            .filter(l => l.origin === 'businesses')
+                            .map(l =>
+                              <div className='via'>{l.name}</div>
+                            )
+                            : undefined
+                        }
+                      </div>
                     </div>
                   ) : undefined
               }
@@ -571,78 +584,85 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                     <Hierarchy hierarchyNodes={h.nodes_array} />
                   )) : undefined
                 } */}
-            <div className='business-info'>
-              <button className='owns-button' onClick={() => setViewBusinessInfo(!viewBusinessInfo)}>{viewBusinessInfo ? 'Hide Data' : 'View Business Data'}</button>
-              {viewBusinessInfo ? (
-                <div className='business-data'>
-                  <div className='tree-list'>
-                  {
-                    hierarchies ?
-                    hierarchies
-                    .filter(h => h.nodes_array.length)
-                    .map((h, index) =>
-                      <div className='hiearchy-name'>
-                      {getHierarchyTopNames(h)}
-                        <svg onClick={() => setShowHierarchy(index)} width="80" height="80" className='hierarchy-icon'>
-                          <g transform="scale(.24 .24) translate(-50 0)">
-                            <circle cx="200" cy="50" r="20" fill="white" />
-                            <circle cx="150" cy="150" r="20" fill="white" />
-                            <circle cx="250" cy="150" r="20" fill="white" />
-                            <circle cx="100" cy="250" r="20" fill="white" />
-                            <circle cx="200" cy="250" r="20" fill="white" />
-                            <circle cx="300" cy="250" r="20" fill="white" />
-                            <line x1="200" y1="50" x2="150" y2="150" stroke="white" className='hierarchy-line' />
-                            <line x1="200" y1="50" x2="250" y2="150" stroke="white" className='hierarchy-line' />
-                            <line x1="150" y1="150" x2="100" y2="250" stroke="white" className='hierarchy-line' />
-                            <line x1="150" y1="150" x2="200" y2="250" stroke="white" className='hierarchy-line' />
-                            <line x1="250" y1="150" x2="300" y2="250" stroke="white" className='hierarchy-line' />
-                          </g>
-                        </svg>
+            {
+              hierarchies || (related_businesses && related_businesses.length) ?
+                <div className='business-info'>
+                  <button className='owns-button' onClick={() => setViewBusinessInfo(!viewBusinessInfo)}>{viewBusinessInfo ? 'Hide Data' : 'View Business Data'}</button>
+                  {viewBusinessInfo ? (
+                    <div className='business-data'>
+                      <div className='tree-list'>
                         {
-                          showHierarchy === index ?
-                          <div className="hierarchy-wrapper">
-                            <div className='button-close-wrapper'>
-                              <button className="button-close" onClick={() => setShowHierarchy(null)}></button>
-                            </div>
-                            <Hierarchy hierarchyNodes={h.nodes_array} />
-                          </div>
-                          : undefined
+                          hierarchies ?
+                            hierarchies
+                              .filter(h => h.nodes_array.length)
+                              .map((h, index) =>
+                                <div className='hiearchy-name'>
+                                  {getHierarchyTopNames(h)}
+                                  <svg onClick={() => setShowHierarchy(index)} width="80" height="80" className='hierarchy-icon'>
+                                    <g transform="scale(.24 .24) translate(-50 0)">
+                                      <circle cx="200" cy="50" r="20" fill="white" />
+                                      <circle cx="150" cy="150" r="20" fill="white" />
+                                      <circle cx="250" cy="150" r="20" fill="white" />
+                                      <circle cx="100" cy="250" r="20" fill="white" />
+                                      <circle cx="200" cy="250" r="20" fill="white" />
+                                      <circle cx="300" cy="250" r="20" fill="white" />
+                                      <line x1="200" y1="50" x2="150" y2="150" stroke="white" className='hierarchy-line' />
+                                      <line x1="200" y1="50" x2="250" y2="150" stroke="white" className='hierarchy-line' />
+                                      <line x1="150" y1="150" x2="100" y2="250" stroke="white" className='hierarchy-line' />
+                                      <line x1="150" y1="150" x2="200" y2="250" stroke="white" className='hierarchy-line' />
+                                      <line x1="250" y1="150" x2="300" y2="250" stroke="white" className='hierarchy-line' />
+                                    </g>
+                                  </svg>
+                                  {
+                                    showHierarchy === index ?
+                                      <div className="hierarchy-wrapper">
+                                        <div className='button-close-wrapper'>
+                                          <button className="button-close" onClick={() => setShowHierarchy(null)}></button>
+                                        </div>
+                                        <Hierarchy hierarchyNodes={h.nodes_array} />
+                                      </div>
+                                      : undefined
+                                  }
+                                </div>
+                              ) : undefined
                         }
                       </div>
-                      ) : undefined
+
+                      {related_businesses && related_businesses.length > 0 ?
+                        <div className='related-businesses-list'>
+                          <div className='related-businesses-title'>Related Businesses</div>
+                          <div className='data-rows'>
+                            {related_businesses ?
+                              related_businesses.map((name: any) => (<div className='data-row'>{name.business_name}</div>)) : undefined}
+                          </div>
+                        </div>
+                        : undefined
+                      }
+
+                    </div>) : undefined
                   }
-                  </div>
-
-                  {related_businesses && related_businesses.length > 0 ?
-                    <div className='related-businesses-list'>
-                      <div className='related-businesses-title'>Related Businesses</div>
-                      <div className='data-rows'>
-                        {related_businesses ?
-                          related_businesses.map((name: any) => (<div className='data-row'>{name.business_name}</div>)) : undefined}
-                      </div>
-                    </div>
-                    : undefined
-                  }
-
-                </div>) : undefined
-              }
-
-
-            </div>
-
+                </div>
+                : undefined
+            }
+    
             <div ref={survey} className='survey-container'>
               {
                 showSurvey ?
-                  <Survey landlordList={landlordList} hideSurvey={hideSurvey} address={result.property.address_full}></Survey>
+                  <Survey
+                    landlordList={landlordList}
+                    hideSurvey={hideSurvey}
+                    address={result.property.address_full}
+                    propertyId={result.property.property_id}></Survey>
                   :
                   <div className='thanks'>Thanks for your feedback</div>
               }
             </div>
-            {/* <div className='action-items'>
-              <button className='action'>REPORT ISSUES WITH LANDLORD</button>
-              <button className='action'>CONNECT WITH YOUR NEIGHBORS</button>
-              <button className='action'>LEARN YOUR RIGHTS</button>
-            </div> */}
+            <div className='disclaimer'>*The information shown here is not verfied to be 100% correct. Data is collected from PortlandMaps.com, the Oregon Secretary of State and Multonomah County Court Records</div>
+            <div className='action-items'>
+              <button className='action orange'>report your landlord</button>
+              <button className='action green'>connect with your neighbors</button>
+              <button className='action blue'>learn your rights</button>
+            </div>
           </div>
         </div>
       </div>
