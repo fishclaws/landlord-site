@@ -10,6 +10,7 @@ import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import Result from './Result';
 import Info from './Info';
+import Header from './Header';
 // requestAnim shim layer by Paul Irish
 (window as any).requestAnimFrame = (function () {
   return window.requestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).oRequestAnimationFrame || (window as any).msRequestAnimationFrame || function ( /* function */ callback: any, /* DOMElement */ element: any) {
@@ -115,7 +116,8 @@ function App() {
   return (
 
     <div>
-      <Info message="This data is collected from PortlandMaps.com and sos.oregon.gov. If something is incorrect please hover-over it and click the &quot;!&quot; button" />
+      <Header></Header>
+      {/* <Info message="This data is collected from PortlandMaps.com and sos.oregon.gov. If something is incorrect please hover-over it and click the &quot;!&quot; button" /> */}
 
       {isLoading ?
         (<div className='fade'>
@@ -156,7 +158,7 @@ function App() {
                 event.target.value
               );
             }}
-            placeholder="Enter Address"
+            placeholder="Street Address"
             onFocus={event => {
               setSearchType('address')
               setFocus('address')

@@ -2,64 +2,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './App.scss';
 import { submitResponse } from './services'
+import { Landlord, Question, qs } from './SurveyQuestions';
 
-interface Question {
-    text: string,
-    answers?: Array<string>
-}
-
-const qs = [
-    {
-        text: 'How much has your rent gone up in the past year?',
-        answers: [
-            'None',
-            'Less than a $100',
-            'Between $100 and $300',
-            'More than a $300'
-        ]
-    },
-    {
-        text: 'Does your Landlord respond to maintenance requests?',
-        answers: [
-            'Never',
-            'Sometimes',
-            'Always',
-        ]
-    },
-    {
-        text: 'Is your landlord unprofessional or creepy?',
-        answers: [
-            'Never',
-            'Sometimes',
-            'Always',
-        ]
-    },
-    {
-        text: 'Does your building have untreated mold or other biohazards?',
-        answers: [
-            'Yes',
-            'No',
-            'Unsure'
-        ]
-    },
-    {
-        text: 'Has your landlord attempted to evict you?',
-        answers: [
-            'Yes',
-            'No'
-        ]
-    },
-    {
-        text: 'Is your building unlivable?',
-        answers: [
-            'Yes',
-            'Sometimes',
-            'No'
-        ]
-    }
-]
-
-type Landlord = { name: string; origin: string; }
 
 function Survey(
     {
@@ -95,47 +39,11 @@ function Survey(
     return (
 
         <div>
-            <h3 className='survey-title'>Rate Your Landlord</h3>
-            {/* { landlordList.length === 1 ? undefined :
-            <div className='landlord-options'>
-                <div className='question checkbox-wrapper'>Which person/business do you want to rate?
-                    <label className='checkbox-line  all-of-them' htmlFor='all'>ALL OF THEM
-                        <input className='checkbox' type="checkbox" id='all' name='all' 
-                        onChange={(e) => {
-                            if (e.target.checked) {
-                                const newList = [...landlordList]
-                                setSelectedLandlords(newList)
-                            }
-                        }}/>
-                        <span className="checkmark"></span>
-                    </label>
-                {
-                    landlordList.map((landlord, index) =>
-                        <label className='checkbox-line' htmlFor={landlord.name}>{landlord.name}
-                            <input className='checkbox' type="checkbox" 
-                                id={landlord.name} 
-                                name={landlord.name}
-                                onChange={(e) => {
-                                    let newList = [...selectedLandlords]
-                                    if (e.target.checked) {
-                                        newList.push(landlord)
-                                    } else {
-                                        newList = newList.filter(l => l.name !== landlord.name)
-                                    }
-                                    setSelectedLandlords(newList)
-                                }}
-                                checked={selectedLandlords.find(l => l.name === landlord.name) !== undefined} />
-                            <span className="checkmark"></span>
-                        </label>
-                    )
-                }
-                </div>
-            </div>
-            } */}
+            <h3 className='survey-title'>rate this landlord</h3>
             {
                 questions.map((q, questionIndex) => (
                     <div className='question'>
-                        {q.text}
+                        <p>{q.text}</p>
                         <br/>
                         {q.answers ? 
                             (<div className={'answers'}>

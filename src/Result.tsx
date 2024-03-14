@@ -1,14 +1,16 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
 import './App.scss';
-import { BusinessOwner, HierarchyNodeGroup, PropertyAddress, PropertyLocation, SearchResultPicked } from './ResultTypes';
+import { BusinessOwner, HierarchyNode, HierarchyNodeGroup, PropertyAddress, PropertyLocation, SearchResultPicked } from './ResultTypes';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { useNavigate } from 'react-router-dom';
 import Survey from './Survey';
 import Info from './Info';
 import { Hierarchy } from './Hierarchy'
-import { HierarchyNode } from 'd3-hierarchy';
 import markerSrc from './marker.png'; // Import your image
+import Disclaimer from './Disclaimer';
+import Collapsible from './Collapsible';
+import Reviews from './Reviews';
 
 var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 mapboxgl.accessToken = 'pk.eyJ1IjoibXNnc2x1dCIsImEiOiJja2NvZmFpbjAwMW84MnJvY3F1d2hzcW5nIn0.xMAHVsdszfolXUOk9_XI4g';
@@ -61,10 +63,16 @@ function generateHierarchies(result: SearchResultPicked): HierarchyNodeGroup[] |
       .map(mem => `${mem.first_name}${mem.middle_name ? ' ' + mem.middle_name : ''} ${mem.last_name}`)
 
     top_names = top_names!.filter((name, index) => top_names!.indexOf(name) === index)
-    const new_top: any = {}
-    new_top.names = top_names
-    new_top.reg_num = "0"
-    new_top.parent_num = null
+    const new_top: HierarchyNode = {
+      names: top_names,
+      ids: ([] as any).concat(...top_names.map(tn => top?.business_members.map(bm => bm.id))),
+      reg_num: "0",
+      parent_num: null,
+      business_name: '',
+      child_reg_nums: [],
+      business_members: []
+    }
+
 
     top!.parent_num = "0"
     nodes.push(new_top)
@@ -136,18 +144,23 @@ function convertToUSD(value: number) {
   return formatter.format(value / 100)
 }
 
-function getLandlordList(owners: string[], result: SearchResultPicked, hierarchies: HierarchyNodeGroup[] | null) {
+function getLandlordList(result: SearchResultPicked, hierarchies: HierarchyNodeGroup[] | null) {
   const list: { name: string, origin: string }[] = []
   if (hierarchies && hierarchies.length) {
+    const top_name_ids =
+      hierarchies
+        .map(h => h.nodes_array
+          .find(node => node.ids))
+        .filter(h => h)
+        .map(h => h!.ids) as unknown as string[]
     list.push(
-      ...owners.map(o => ({
-        name: o,
-        origin: 'business_names'
-      })),
-      {
-        name: result.property.owner,
-        origin: 'property_owners'
-      })
+      ...top_name_ids.flat().map((id: string) => (
+        {
+          name: id,
+          origin: 'business_names'
+        }))
+    )
+
   } else {
     list.push({
       name: result.property.owner,
@@ -240,14 +253,14 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
     observer.observe(survey.current!)
 
     showAllLocations()
-    setLandlordList(getLandlordList(o, result, hier))
+    setLandlordList(getLandlordList(result, hier))
   });
 
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
     const target = event.target! as any
     console.log('Current Scroll Position:', target.scrollTop)
-    setScrolled(target.scrollTop > 200)
-    if (target.scrollTop > 200) {
+    setScrolled(target.scrollTop > 300)
+    if (target.scrollTop > 20) {
       setAlreadyScrolled(true)
     }
 
@@ -339,14 +352,15 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
 
   return (
     <div className='result'>
+      <Disclaimer />
       {
-        !scrolled && !alreadyScrolled ?
-          <div className='full-screen' />
-          : undefined
+        (!scrolled && !alreadyScrolled) &&
+        <div className='full-screen'>
+        </div>
       }
       <div className='headerContainer small-header'>
         {/* <img className='post' src="/images/post.png" alt="a post"></img> */}
-        <h1 onClick={() => closeResult()}>
+        {/* <h1 onClick={() => closeResult()}>
           <div className="name">
             <div>Rate</div>
             <div>Your</div>
@@ -354,7 +368,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             <div>PDX</div>
             <div>.com</div>
           </div>
-        </h1>
+        </h1> */}
       </div>
       <div className='result-container'>
         <div className='left'>
@@ -379,20 +393,26 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
           </div>
         </div>
 
-        <div className={scrolled && atBottom ? 'right right-up' : 'right'} onScroll={handleScroll}>
+        <div className={scrolled && atBottom ? 'right right-up' : 'right right-down'} onScroll={handleScroll}>
 
           <div className='data-container'>
             <h3 className='address-title-container'>
               <div className='address-title'>{result.property.address_full}
-                {
-                  result.property.reviews && result.property.reviews.length > 0 ? 
-                  // 
-                  <div className='ratings-warning'><div className='ratings-circle'>{result.property.reviews.length}</div></div>
-                  : undefined
-                }
-              </div>
-              <div className='ratings-circle-wrapper'>
 
+                {
+                  result.property.reviews && result.property.reviews.length > 0 &&
+                  // 
+                  <div>
+                    <div className='ratings-button-wrapper'>
+                      <button className='ratings-button' />
+                    </div>
+                    <div className='ratings-circle'><div className='ratings-warning'></div>{result.property.reviews.length} reviews</div>
+
+                    <Collapsible title="reviews">
+                      <Reviews property_reviews={result.property.reviews} other_reviews={result.data && result.data.reviews} />
+                    </Collapsible>
+                  </div>
+                }
 
               </div>
               <div className='main-marker-inline' />
@@ -427,45 +447,42 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
 
             </div>
             {
-              result.data && result.data.evictions && result.data.evictions.length ?
-                <div className='evictions-wrapper'>
-                  <button className='evictions' onClick={() => setShowEvictions(!showEvictions)}>{result.data.evictions.length} evictions on record</button>
-                  {/* <button className='evictions' onClick={() => setShowEvictions(!showEvictions)}>Found {result.data.evictions.length} eviction court-records associated with this landlord</button> */}
+              result.data && result.data.evictions && result.data.evictions.length &&
+              <div className='evictions-wrapper'>
+                <button className='evictions' onClick={() => setShowEvictions(!showEvictions)}>{result.data.evictions.length} evictions on record</button>
+                {/* <button className='evictions' onClick={() => setShowEvictions(!showEvictions)}>Found {result.data.evictions.length} eviction court-records associated with this landlord</button> */}
 
-                  {
-                    showEvictions ?
-                      <div className='table-wrapper'>
-                        <table>
+                {
+                  showEvictions &&
+                  <div className='table-wrapper'>
+                    <table>
+                      <tr>
+                        <th>case code</th>
+                        <th>filed date</th>
+                        <th>landlords</th>
+                        <th>property managers</th>
+                        <th>case description</th>
+                      </tr>
+                      {
+                        result.data.evictions.map(ev =>
                           <tr>
-                            <th>case code</th>
-                            <th>filed date</th>
-                            <th>landlords</th>
-                            <th>property managers</th>
-                            <th>case description</th>
+                            <td>{ev.case_code}</td>
+                            <td>{ev.filed_date}</td>
+                            <td>{ev.evicting_landlords}</td>
+                            <td>{ev.evicting_property_managers}</td>
+                            <td>{ev.case_description}</td>
                           </tr>
-                          {
-                            result.data.evictions.map(ev =>
-                              <tr>
-                                <td>{ev.case_code}</td>
-                                <td>{ev.filed_date}</td>
-                                <td>{ev.evicting_landlords}</td>
-                                <td>{ev.evicting_property_managers}</td>
-                                <td>{ev.case_description}</td>
-                              </tr>
-                            )}
+                        )}
 
-                        </table>
-                      </div>
-                      : undefined
-                  }
-                </div>
-                : undefined
+                    </table>
+                  </div>
+                }
+              </div>
             }
             <div className='properties'>
               {
-                result.data && result.data.market_value_sum ?
-                  <><div className='market-value-str'>total market-value sum of properties:</div><div className='market-value'>{convertToUSD(result.data.market_value_sum)}</div></>
-                  : undefined
+                result.data && result.data.market_value_sum &&
+                <><div className='market-value-str'>total market-value of properties:</div><div className='market-value'>{convertToUSD(result.data.market_value_sum)}</div></>
               }
               {
                 result.type !== 'no-landlord' && result.data && result.data.locations && result.data.locations.length > 0 ?
@@ -587,7 +604,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             {
               hierarchies || (related_businesses && related_businesses.length) ?
                 <div className='business-info'>
-                  <button className='owns-button' onClick={() => setViewBusinessInfo(!viewBusinessInfo)}>{viewBusinessInfo ? 'Hide Data' : 'View Business Data'}</button>
+                  <button className='view-business-data-button' onClick={() => setViewBusinessInfo(!viewBusinessInfo)}>{viewBusinessInfo ? 'Hide Data' : 'View Business Data'}</button>
                   {viewBusinessInfo ? (
                     <div className='business-data'>
                       <div className='tree-list'>
@@ -644,7 +661,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                 </div>
                 : undefined
             }
-    
+
             <div ref={survey} className='survey-container'>
               {
                 showSurvey ?
@@ -657,16 +674,15 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                   <div className='thanks'>Thanks for your feedback</div>
               }
             </div>
-            <div className='disclaimer'>*The information shown here is not verfied to be 100% correct. Data is collected from PortlandMaps.com, the Oregon Secretary of State and Multonomah County Court Records</div>
             <div className='action-items'>
-              <button className='action orange'>report your landlord</button>
+              <button className='action orange'><div className='report'></div>report your landlord</button>
               <button className='action green'>connect with your neighbors</button>
               <button className='action blue'>learn your rights</button>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }
 

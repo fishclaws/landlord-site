@@ -47,6 +47,7 @@ export interface BusinessOwner {
 }
 
 export interface BusinessMember {
+  id: string;
   name: string | null;
   addr_1: string;
   addr_2: string | null;
@@ -61,10 +62,12 @@ export interface BusinessMember {
 export interface HierarchyNode {
   current?: boolean
   reg_num: string;
-  parent_num: string;
+  parent_num: string | null;
   business_name: string;
   child_reg_nums: string[];
   business_members: BusinessMember[];
+  ids?: string[]
+  names?: string[]
 }
 
 export interface HierarchyNodeGroup {
@@ -89,6 +92,12 @@ export interface UnitCounts {
   [property_id: string]: number;
 }
 
+export interface Review {
+  id: number,
+  review_text: string,
+  selected_answers: number[]
+}
+
 export interface DataResult {
   business_owners: Array<BusinessOwner>
   related_businesses: Array<BusinessOwner>
@@ -99,6 +108,7 @@ export interface DataResult {
   unit_counts: UnitCounts
   businesses_with_same_owners: Array<BusinessOwner>
   market_value_sum: number
+  reviews: Review[]
 }
 
 export interface DataResultNoBusiness {
@@ -111,6 +121,7 @@ export interface DataResultNoBusiness {
   unit_counts: UnitCounts
   businesses_with_same_owners: undefined
   market_value_sum: undefined
+  reviews: Review[]
 
 }
 
