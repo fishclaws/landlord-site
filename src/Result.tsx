@@ -402,10 +402,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                 {
                   result.property.reviews && result.property.reviews.length > 0 &&
                   // 
-                  <div>
-                    <div className='ratings-button-wrapper'>
-                      <button className='ratings-button' />
-                    </div>
+                  <div className='ratings-wrapper'>
                     <div className='ratings-circle'><div className='ratings-warning'></div>{result.property.reviews.length} reviews</div>
 
                     <Collapsible title="reviews">

@@ -1760,6 +1760,8 @@ button[disabled]{
   height: 100%;
   width: 100%;
 
+
+
 }
 
 .ratings-circle {
@@ -1776,6 +1778,11 @@ button[disabled]{
   color: $orange;
   font-size: 20px;
   display: flex;
+
+  :hover {
+    background-color: $orange;
+    color: black;
+  }
 }
 
 
@@ -1788,6 +1795,7 @@ button[disabled]{
   position: relative;
   padding: 0;
   z-index: 2;
+
 }
 
 .reviews-wrapper {
@@ -1796,9 +1804,16 @@ button[disabled]{
   border-style: solid;
   border-color: $orange;
   border-width: 1px;
+  padding: 10px;
 }
 
 .review-statement{
   font-size: .55em;
   padding: 4px;
+}
+
+.reviews-title {
+  font-size: .6em;
+  padding: 5px;
+  color: $orange;
 }

@@ -18,7 +18,6 @@ function Collapsible({ title, children }: { title: string, children: ReactElemen
     }, [open])
     return (
         <div className="collapsible">
-            <button onClick={() => setOpen(!open)}>{title}</button>
             <div className="collapsible-wrapper" ref={wrapper}>
                 {children}
             </div>
