@@ -403,10 +403,17 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                   result.property.reviews && result.property.reviews.length > 0 &&
                   // 
                   <div className='ratings-wrapper'>
-                    <div className='ratings-circle'><div className='ratings-warning'></div>{result.property.reviews.length} reviews</div>
-
-                    <Collapsible title="reviews">
-                      <Reviews property_reviews={result.property.reviews} other_reviews={result.data && result.data.reviews} />
+                    {/* <div className='ratings-circle'> */}
+                      {/* <div className='ratings-warning'>
+                      </div> */}
+                      
+                    {/* </div> */}
+                    <Collapsible 
+                      title={`${result.property.reviews.length} reviews`}
+                      title_class='ratings-circle'>
+                      <Reviews 
+                        property_reviews={result.property.reviews} 
+                        other_reviews={result.data && result.data.reviews}/>
                     </Collapsible>
                   </div>
                 }
@@ -538,66 +545,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
               }
             </div>
 
-            {/* {
-              hierarchy && hierarchy.length > 0 && hierarchy[hierarchy.length - 1].names.length === 1 ?
-                (<label className='bold important'>{hierarchy[hierarchy.length - 1].names[0].name}</label>): undefined
-            } */}
-            {/* {result.data && (result.data.names) ?
-              (
-                <button className='owns-button' onClick={() => setViewBusinessInfo(!viewBusinessInfo)}>{viewBusinessInfo ? 'Hide Data' : 'View Business Data'}</button>
-              ): undefined
-            } */}
-            {/* {viewBusinessInfo ? (
-            <div className='business-data'>
-              {result.data && result.data.names ? result.data.names
-                .filter(name => name.name || name.first_name)
-                .map((name: any) =>
-                  (<div className='data-row'>{name.name_type ? `${name.name_type}: ` : ''}{name.first_name || name.last_name ? toName(name) : name.name}</div>)) : undefined}
-              <br></br>
-              {
-                hierarchy && hierarchy.length > 0 ?
-                  <>
-                    <div className='bold'>Parent Companies</div>
-                    <table>
-                      {hierarchy.map((h: any) => (
-                        <tr>
-                          <>
-                            <td className={!h.to_name ? 'bold' : undefined}>{h.to_name ? 'Company' : ''}</td>
-                            <td className={!h.to_name ? 'bold' : undefined}>{h.to_name || (
-                              (h as any).names.map((name: any) =>
-                              (<div className='data-row'>
-                                {name.name_type ? `${name.name_type}: ` : ''} {name.name}
-                              </div>))
-                            )}</td>
-                            <td>↑</td></>
-                        </tr>
-                      ))}
-                    </table><br /></>
-                  : undefined
 
-              }
-              {related_businesses && related_businesses.length > 0 ?
-                <label>Related Businesses</label> : undefined
-              }
-              <div className='data-rows'>
-                {related_businesses ?
-                  related_businesses.map((name: any) => (<div className='data-row'>{name.business_name}</div>)) : undefined}
-              </div>
-            </div>) : undefined
-            } */}
-            {/* {result.type !== 'no-landlord' && result.data && result.data.locations && result.data.locations.length > 0 && !markersDisplayed ?
-              <button className='show-others' onClick={() => showAllLocations()}>Show Other Properties Owned By This Landlord</button> :
-              undefined
-            } */}
-
-
-            {/* {hierarchies ? hierarchies
-                  .filter(h => h.nodes_array.length)
-                  .map(h =>
-                  (
-                    <Hierarchy hierarchyNodes={h.nodes_array} />
-                  )) : undefined
-                } */}
             {
               hierarchies || (related_businesses && related_businesses.length) ?
                 <div className='business-info'>

@@ -1,7 +1,7 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 import './Collapsible.scss';
 
-function Collapsible({ title, children }: { title: string, children: ReactElement }) {
+function Collapsible({ title, title_class, children }: { title: string, title_class: string, children: ReactElement }) {
     const [open, setOpen] = useState(false)
     const wrapper = useRef(null)
     useEffect(() => {
@@ -17,11 +17,11 @@ function Collapsible({ title, children }: { title: string, children: ReactElemen
         }
     }, [open])
     return (
-        <div className="collapsible">
+        <><button className={title_class} onClick={() => setOpen(!open)}>{title}</button><div className="collapsible">
             <div className="collapsible-wrapper" ref={wrapper}>
                 {children}
             </div>
-        </div>
+        </div></>
     );
 }
 

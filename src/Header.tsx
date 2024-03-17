@@ -10,7 +10,7 @@ function Header() {
 
     return (
         <div className="header">
-           RateYourLandlordPDX.com
+           Rate Your Landlord PDX
         </div>
     )
 }

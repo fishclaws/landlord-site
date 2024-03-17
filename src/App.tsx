@@ -211,7 +211,7 @@ function App() {
                 <button key={i} className='address-options' onClick={() => search_selected(address)}>{address}</button>
               ))
             }
-            <button className='address-options' onClick={() => search_selected(address)}>None of These</button>
+            <button className='address-options' onClick={() => setAddressOptions([])}>None of These</button>
           </div>
           : <div></div>}
 

@@ -354,6 +354,11 @@ button:focus {
   flex-direction: row;
   justify-content: center;
 
+  position: absolute;
+  top: 50%;
+  margin: auto;
+  width: 100%;
+
   div {
     font-size: 300%;
     margin: 10px;
@@ -1769,9 +1774,11 @@ button[disabled]{
   border-width: 1.5px;
   border-style: solid;
   border-color: $orange;
-
+  background-color: transparent;
   padding: 5px;
   margin: auto;
+  margin-top: 10px;
+
   // border-style: solid;
   // border-color: $orange;
 
@@ -1779,10 +1786,12 @@ button[disabled]{
   font-size: 20px;
   display: flex;
 
-  :hover {
-    background-color: $orange;
-    color: black;
-  }
+
+}
+
+.ratings-circle:hover {
+  background-color: $orange;
+  color: black;
 }
 
 
@@ -1816,4 +1825,11 @@ button[disabled]{
   font-size: .6em;
   padding: 5px;
   color: $orange;
+}
+
+.header {
+  padding: 5px;
+  font-size: 1.6 em;
+  background-color: rgb(221, 225, 117);
+  font-weight: bold;
 }
