@@ -1,14 +1,36 @@
-import { getState } from "react"
+import { useEffect, useState } from "react"
 import { Review } from "./ResultTypes"
 import { qs } from "./SurveyQuestions"
 import './App.scss';
 import Twemoji from 'react-twemoji';
 
-function Reviews({ property_reviews, other_reviews }: { property_reviews: Review[], other_reviews: Review[] | null }) {
+interface Aggregate {
+    question: string;
+    emoji: string,
+    answers: {
+        text: string,
+        count: number
+    }[]
+}
 
-    const [propertyAgg, setPropertyAgg] = getState([])
-    const [otherAgg, setOtherAgg] = getState([])
-    const other_reviews_filtered = other_reviews && other_reviews.filter(rev => !property_reviews.find(r => r.id === rev.id))
+function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: { property_reviews: Review[], other_reviews: Review[] | null, onOpen: any, scrollToReviews: any }) {
+
+    const [propertyAgg, setPropertyAgg]: [Aggregate[], any] = useState([])
+    const [otherAgg, setOtherAgg]: [Aggregate[], any] = useState([])
+    const [propertyComments, setPropertyComments]: [string[], any] = useState([])
+    const [otherComments, setOtherComments]: [string[], any] = useState([])
+    const [selected, setSelected] = useState('this')
+
+    useEffect(() => {
+        if (property_reviews) {
+            setPropertyAgg(getStatements(property_reviews))
+            setPropertyComments(property_reviews.map(rev => rev.review_text.trim()).filter(rev => rev.length))
+        }
+        if (other_reviews) {
+            setOtherAgg(getStatements(other_reviews))
+            setOtherComments(other_reviews.map(rev => rev.review_text.trim()).filter(rev => rev.length))
+        }
+    }, [])
 
     function getCount(index: number, arr: Review[], answerOfNote: number) {
         return arr.reduce((total, rev) => {
@@ -19,36 +41,88 @@ function Reviews({ property_reviews, other_reviews }: { property_reviews: Review
         }, 0)
     }
 
-    function getStatements(index: number, arr: Review[]) {
-        return qs[index].answersOfNote
-            .map(answerOfNote => {
-                let count = getCount(index, arr, answerOfNote)
-                return { answerOfNote, count }
-            })
-            .filter(result => result.count !== 0)
-            .reduce((agg,  => {
-                const {answerOfNote, count} = result
-
-                return {
-                    question: 
-                }
+    function getStatements(arr: Review[]): Aggregate[] {
+        return qs.map((q, index) => (
+            {
+                question: q.text,
+                emoji: q.emoji,
+                answers: q.answersOfNote
+                    .map(answerOfNote => {
+                        let count = getCount(index, arr, answerOfNote)
+                        return {
+                            text: q.answers[answerOfNote],
+                            count
+                        }
+                    })
+                    .filter(result => result.count !== 0 && result.text)
+            }
+        )).filter(agg => agg.answers.length > 0)
 
     }
     return (
         <div>
-            <div className="reviews-title">Reviews for this Property</div>
-            <div className="reviews-wrapper">
+            <div className="reviews-title">
                 {
-                    qs.map((question, i) => (
-                        <div className='review-statement'>{getStatements(i, property_reviews)}</div>
-                    ))
+                <button
+                    className={'review-type-bttn ' + (selected === 'this' ? 'selected' : '')}
+                    onClick={() => { setSelected('this'); onOpen.func() }}>this address ({propertyAgg.length})</button>
+                }
+                {
+
+                <button
+                    className={'review-type-bttn ' + (selected === 'other' ? 'selected' : '')}
+                    onClick={() => { setSelected('other'); onOpen.func() }}>all addresses ({otherAgg.length})</button>
                 }
             </div>
+            <div className={'reviews-wrapper'}>
+                {
+                    (selected === 'this' ? propertyAgg : otherAgg).length > 0 ?
+                        (selected === 'this' ? propertyAgg : otherAgg).map((question, i) => (
+                            <div className="review-section">
+                                {/* <Twemoji options={{ className: 'twemoji' }}>
+                                    <span className="emoji">{question.emoji}</span>
+                                </Twemoji> */}
+                                <div className='review-question'>{question.question}</div>
+                                {
+                                    question.answers.map((a) => (
+                                        <div className='review-answer'><span className="count">{a.count} {a.count === 1 ? 'person' : 'people'} said: </span><span className="statment">{a.text}</span></div>
+                                    ))
+                                }
+                            </div>
+                        ))
+                    :
+                    <div>
+                        <span className='review-question'>no reviews for this address</span>
+                        <div className='leave-a-review-wrapper'>
+                            <button className='leave-a-review' onClick={() => scrollToReviews()}>leave a review</button>
+                        </div>
+                    </div>
+                }
+                {
+                    (selected === 'this' ? propertyComments : otherComments).length !== 0 &&
+                    <div>
+                        <div className="comment-title">comments:</div>
+                        {
+                            (selected === 'this' ? propertyComments : otherComments)
+                                .map((comment, index) => (
+
+                                    <>
+                                        <p className="comment">{comment}</p>
+                                    </>
+
+                                ))
+                        }
+                    </div>
+                }
+            </div>
+
+
+
 
             {/* <Twemoji options={{ className: 'twemoji' }}>
             <span>☣ 💲</span>
             </Twemoji> */}
-            {
+            {/* {
                 other_reviews_filtered && other_reviews_filtered.length > 0 &&
                 <><div className="reviews-title">Reviews for other properties from this landlord</div>
                     <div className="reviews-wrapper">
@@ -56,7 +130,7 @@ function Reviews({ property_reviews, other_reviews }: { property_reviews: Review
                             <div className='review-statement'>{getStatements(i, other_reviews_filtered)}</div>
                         ))}
                     </div></>
-            }
+            } */}
         </div>
     )
 }

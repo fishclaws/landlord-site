@@ -65,10 +65,10 @@ function Survey(
                 ))
             }
             <div className='question'>
-                What else do you want people to know about this landlord?
+                <p>What else do you want people to know about this landlord?</p>
                 <textarea name="Text1" cols={40} rows={5} maxLength={250} 
                             onChange={(event) => {
-                                setReviewText(event.target.textContent!)
+                                setReviewText(event.target.value)
                             }}></textarea>
             </div>
             <div className='submit-button-wrapper'>

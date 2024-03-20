@@ -1,9 +1,18 @@
-import { SearchResult } from "./ResultTypes"
+import { NameSearchResult, SearchResult } from "./ResultTypes"
 
 export function getAddresses(address: string) {
   return fetch(`http://localhost:3001/search?address=${address}`)
     .then(data => {
       return data.json().then((json: SearchResult) => {
+        return json
+      })
+    })
+}
+
+export function findByName(name: string) {
+  return fetch(`http://localhost:3001/find?name=${name}`)
+    .then(data => {
+      return data.json().then((json: NameSearchResult) => {
         return json
       })
     })

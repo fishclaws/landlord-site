@@ -21,6 +21,10 @@ const router = createBrowserRouter([
     path: "/address/:addressSearch",
     element: <App/>,
   },
+  {
+    path: "/search/:query",
+    element: <App/>,
+  },
   
 ]);
 

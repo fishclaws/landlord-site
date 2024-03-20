@@ -190,3 +190,14 @@ export interface OneLandlordFound {
 
 export type LandlordResult = null | OneLandlordFound
 
+export interface LandlordNameFound {
+  type: 'landlord-name-found'
+  data: DataResult
+ }
+
+export interface NoLandlordNameFound {
+  type: 'no-landlord-name-found'
+ }
+
+
+ export type NameSearchResult =  LandlordNameFound | NoLandlordNameFound

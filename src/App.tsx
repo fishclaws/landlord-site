@@ -4,8 +4,8 @@ import logo from './logo.svg';
 import './App.scss';
 import 'leaflet/dist/leaflet.css'
 import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
-import { getAddresses } from './services'
-import { SearchResult } from './ResultTypes';
+import { findByName, getAddresses } from './services'
+import { LandlordNameFound, NameSearchResult, SearchResult } from './ResultTypes';
 import { useParams } from 'react-router';
 import { useNavigate } from 'react-router-dom';
 import Result from './Result';
@@ -14,14 +14,14 @@ import Header from './Header';
 // requestAnim shim layer by Paul Irish
 (window as any).requestAnimFrame = (function () {
   return window.requestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).oRequestAnimationFrame || (window as any).msRequestAnimationFrame || function ( /* function */ callback: any, /* DOMElement */ element: any) {
-      window.setTimeout(callback, 1000 / 60);
+    window.setTimeout(callback, 1000 / 60);
   };
 })();
 
 function draw(canvas: any) {
 
   if (!canvas.getContext) {
-      return;
+    return;
   }
   const ctx = canvas.getContext('2d');
 
@@ -39,12 +39,12 @@ function draw(canvas: any) {
 
 
 function App() {
-  const { addressSearch } = useParams();
+  const { addressSearch, query } = useParams();
   const navigate = useNavigate();
-  
+
   const canvas = useRef(null);
   window.addEventListener('resize', resizeCanvas, false);
-        
+
   function resizeCanvas() {
     if (!canvas || !canvas.current) {
       return
@@ -56,7 +56,7 @@ function App() {
     c.height = c.parentNode.offsetHeight;
     draw(canvas.current)
   }
-  
+
 
   const [address, setAddress] = React.useState('');
   const [landlord, setLandlord] = React.useState('');
@@ -65,53 +65,73 @@ function App() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [focus, setFocus] = React.useState('')
   const [searchType, setSearchType] = React.useState('address')
-  
+  const [nameNotFound, setNameNotFound] = React.useState(false)
+
   useEffect(() => {
     if (addressSearch) {
-      search(addressSearch)
+      setSearchType('address')
+      search('address', addressSearch)
+    }
+    if (query) {
+      setSearchType('landlord')
+      search('landlord', query)
     }
   }, []); // <-- empty array means 'run once'
 
-  function search(addy: string | undefined) {
+  function search(searchType: string, query: string | undefined) {
     if (isLoading) return;
     setIsLoading(true)
-    getAddresses(addy || address)
-      .then((result: SearchResult) => {
-        setIsLoading(false)
+    if (searchType === 'address') {
+      getAddresses(query || address)
+        .then((result: SearchResult) => {
+          setIsLoading(false)
 
-        if (result.type !== 'multiple-addresses') {
-          setResult(result as any)
-          setAddress('')
-          setLandlord('')
-          navigate(`/address/${result.property.address_full}`, {replace: true})
- 
-        } else {
-          setAddressOptions(Object.keys(result.addresses).map((key) => result.addresses[key][0].address_full) as any)
-        }
-        
-      })
+          if (result.type !== 'multiple-addresses') {
+            setResult(result as any)
+            setAddress('')
+            setLandlord('')
+            navigate(`/address/${result.property.address_full}`, { replace: true })
+
+          } else {
+            setAddressOptions(Object.keys(result.addresses).map((key) => result.addresses[key][0].address_full) as any)
+          }
+
+        })
+    } else if (searchType === 'landlord'){
+      findByName(query || landlord)
+        .then((result: NameSearchResult) => {
+          setIsLoading(false)
+          if (result.type === 'landlord-name-found') {
+            setNameNotFound(false)
+            setResult(result as any)
+            setAddress('')
+            setLandlord('')
+            navigate(`/search/${query || landlord}`, { replace: true })
+
+          } else if (result.type === 'no-landlord-name-found') {
+            setNameNotFound(true)
+          }
+        })
+    }
   }
 
   function closeResult() {
-    navigate(`/`, {replace: true})
+    navigate(`/`, { replace: true })
     setResult(null)
   }
 
   function search_selected(addy: any) {
     setAddress(addy)
-    search(addy)
+    search(searchType, addy)
   }
 
-  function handleKeyPress (event: any) {
+  function handleKeyPress(event: any) {
     // This is perfectly safe in react, it correctly detect the keys
-    if(event.key === 'Enter'){
-       search(undefined)
-     }
-   }
-
-  function lineToAddress() {
-
+    if (event.key === 'Enter') {
+      search(searchType, undefined)
+    }
   }
+
 
   return (
 
@@ -134,7 +154,7 @@ function App() {
 
       {/* <div className="banner">Vote TJ for County Commissioner</div> */}
 
-      
+
       {/* <img className="snail" src = "images/snail.svg" alt="snail"/> */}
       <div className='main-container'>
         {/* <div className='canvas-container'>
@@ -144,14 +164,14 @@ function App() {
           {/* <img className='post' src="/images/post.png" alt="a post"></img> */}
           <h1>
             <div className="name">
-              Rate<br/>Your<br/>Landlord<br/>PDX<br/>.com
+              Rate<br />Your<br />Landlord<br />PDX<br />.com
             </div>
           </h1>
         </div>
         <div className='inputs'>
           <input
-            className = {focus === 'address' ? 'grow': undefined} 
-            value={address} 
+            className={focus === 'address' ? 'grow' : undefined}
+            value={address}
             type='text'
             onChange={event => {
               setAddress(
@@ -164,10 +184,10 @@ function App() {
               setFocus('address')
             }}
             onKeyDown={handleKeyPress}></input>
-          {/* <div className='or'>or</div>
+          <div className='or'>or</div>
           <input
-            className = {focus === 'landlord' ? 'grow': undefined}  
-            value={landlord} 
+            className={focus === 'landlord' ? 'grow' : undefined}
+            value={landlord}
             type='text'
             onChange={event => {
               setLandlord(
@@ -178,11 +198,12 @@ function App() {
               setSearchType('landlord')
               setFocus('landlord')
             }}
-            placeholder="Enter Landlord Name"></input> */}
+            placeholder="Landlord Name"
+            onKeyDown={handleKeyPress}></input>
         </div>
         {landlord || address ?
           <div className='search-container'>
-            <button className='search' onClick={() => search(address)}>search</button>
+            <button className='search' onClick={() => search(searchType, searchType === 'address' ? address: landlord)}>search</button>
           </div>
           :
           null
@@ -203,7 +224,7 @@ function App() {
         </svg>
 
         ))} */}
-        {addressOptions.length > 0  && !result ?
+        {addressOptions.length > 0 && !result ?
           <div className='options-container'>
             <div>Did you mean any of these?</div>
             {

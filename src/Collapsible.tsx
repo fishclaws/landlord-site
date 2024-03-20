@@ -1,7 +1,7 @@
 import { ReactElement, useEffect, useRef, useState } from "react";
 import './Collapsible.scss';
 
-function Collapsible({ title, title_class, children }: { title: string, title_class: string, children: ReactElement }) {
+function Collapsible({ title, title_class, children, onOpen }: { title: string, title_class: string, children: ReactElement, onOpen: any }) {
     const [open, setOpen] = useState(false)
     const wrapper = useRef(null)
     useEffect(() => {
@@ -15,7 +15,13 @@ function Collapsible({ title, title_class, children }: { title: string, title_cl
                 console.log('open')
             }
         }
+
+
     }, [open])
+    onOpen.callback = () => {
+        setOpen(false)
+        setTimeout(() => setOpen(true), 10)
+    }
     return (
         <><button className={title_class} onClick={() => setOpen(!open)}>{title}</button><div className="collapsible">
             <div className="collapsible-wrapper" ref={wrapper}>

@@ -125,12 +125,16 @@ function getOwners(hierarchies: HierarchyNodeGroup[], result: SearchResultPicked
     })
     return owners.reverse()
   } else {
-    return result.property.owner.split('&')
-      .map(owner => owner.trim())
-      .map(owner => owner.includes(',') ? (() => {
-        const [last, first] = owner.split(',')
-        return `${first.trim()} ${last.trim()}`
-      })() : owner)
+    if (result.property) {
+      return result.property.owner.split('&')
+        .map(owner => owner.trim())
+        .map(owner => owner.includes(',') ? (() => {
+          const [last, first] = owner.split(',')
+          return `${first.trim()} ${last.trim()}`
+        })() : owner)
+    } else if (result.data?.business_owners) {
+      return result.data?.business_owners?.map(bo => bo.business_name)
+    }
   }
 }
 
@@ -161,7 +165,7 @@ function getLandlordList(result: SearchResultPicked, hierarchies: HierarchyNodeG
         }))
     )
 
-  } else {
+  } else if (result.property) {
     list.push({
       name: result.property.owner,
       origin: 'property_owners'
@@ -185,7 +189,13 @@ function getLandlordList(result: SearchResultPicked, hierarchies: HierarchyNodeG
   return list.filter(name => name.name)
 }
 
+
 type ResultType = string | 'address' | 'landlord'
+
+class OnOpen {
+  callback: any = null
+  func = () => this.callback && this.callback()
+}
 
 function Result({ result, closeResult, resultType }: { result: SearchResultPicked, closeResult: () => void, resultType: ResultType }) {
   console.log(result)
@@ -195,8 +205,10 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   const mapContainer = useRef(null);
   const map = useRef(null);
   const survey = useRef(null);
-  const [lng, setLng] = useState(parseFloat(property.longitude));
-  const [lat, setLat] = useState(parseFloat(property.latitude));
+  const collapsible = useRef(null);
+
+  const [lng, setLng] = useState(property && parseFloat(property.longitude));
+  const [lat, setLat] = useState(property && parseFloat(property.latitude));
   const [zoom, setZoom] = useState(12);
   const [related_businesses, setRelatedBusinesses] = useState(result.data && removeDuplicateBusinesses(result.data.related_businesses))
   const [markersDisplayed, setMarkersDisplayed] = useState(false)
@@ -218,23 +230,36 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   const [alreadyScrolled, setAlreadyScrolled]: [boolean, any] = useState(false)
   const [showHierarchy, setShowHierarchy]: [number | null, any] = useState(null)
 
+  const [openHandler] = useState(new OnOpen())
+
   useEffect(() => {
     if (map.current) return; // initialize map only once
-    map.current = new mapboxgl.Map({
+    const mapOptions: any = {
       container: mapContainer.current,
       style: 'mapbox://styles/msgslut/cltktk1uv013901oi98k5fir8',
-      center: [lng, lat],
       zoom: zoom
-    });
+    }
 
-    const el = document.createElement('div');
-    el.className = 'main-marker';
-    new mapboxgl.Marker(el)
-      .setLngLat([lng, lat])
-      .addTo(map.current);
+    if (result.property) {
+      mapOptions['center'] = [lng, lat]
+    } else {
+      mapOptions['center'] = [-122.676483, 45.523064]
+    }
+
+    map.current = new mapboxgl.Map(mapOptions);
+
+    if (result.property) {
+
+      const el = document.createElement('div');
+      el.className = 'main-marker';
+      new mapboxgl.Marker(el)
+        .setLngLat([lng, lat])
+        .addTo(map.current);
 
 
-    (map.current as any).setCenter([lng, lat])
+      (map.current as any).setCenter([lng, lat])
+
+    }
 
     const hier = generateHierarchies(result)
 
@@ -284,10 +309,13 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
 
 
 
+
   function showAllLocations() {
     if (markersDisplayed) return;
     const coords: Array<[number, number]> = []
-    coords.push([lng, lat])
+    if (result.property) {
+      coords.push([lng, lat])
+    }
 
     if (result.data && result.data.locations) {
       const markerEls = []
@@ -316,6 +344,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
         new mapboxgl.Marker(el)
           .setLngLat(latlng)
           .addTo(map.current);
+
         coords.push(latlng as any)
       }
       setMarkerElements(markerEls)
@@ -348,6 +377,12 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
 
   function hideSurvey() {
     setShowSurvey(false)
+  }
+
+  function scrollToReviews() {
+    if (survey && survey.current) {
+      (survey.current as any).scrollIntoView({ behavior: 'smooth'})
+    }
   }
 
   return (
@@ -397,35 +432,23 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
 
           <div className='data-container'>
             <h3 className='address-title-container'>
-              <div className='address-title'>{result.property.address_full}
-
-                {
-                  result.property.reviews && result.property.reviews.length > 0 &&
-                  // 
-                  <div className='ratings-wrapper'>
-                    {/* <div className='ratings-circle'> */}
-                      {/* <div className='ratings-warning'>
-                      </div> */}
-                      
-                    {/* </div> */}
-                    <Collapsible 
-                      title={`${result.property.reviews.length} reviews`}
-                      title_class='ratings-circle'>
-                      <Reviews 
-                        property_reviews={result.property.reviews} 
-                        other_reviews={result.data && result.data.reviews}/>
-                    </Collapsible>
-                  </div>
-                }
-
-              </div>
+            {
+              result.property &&
+              <div className='address-title'>{result.property.address_full}</div>
+            }
+            {
+              resultType === 'landlord' &&
+              <div className='address-title'>{result.data?.business_owners![0].business_name}</div>
+            }
               <div className='main-marker-inline' />
             </h3>
             {/* {result.property.description !== "undefined" ?
               (<div className='address-description'>{result.property.description}</div>) : undefined
             } */}
             <div className='owner-container'>
-              <div className='owned_by'>owned by</div>
+              {
+                <div className='owned_by'>owned by</div>
+              }
               {owners.map((o, i) =>
                 (<>{i !== 0 ? <div className='ampersand'>&amp;</div> : undefined}<div className='owner-name'>{o}</div></>))
               }
@@ -450,10 +473,32 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
               }
 
             </div>
+            
+            {
+                  result.data && result.data.reviews && result.data.reviews.length > 0 &&
+                  // 
+                  <div className='ratings-wrapper'>
+                    {/* <div className='ratings-circle'> */}
+                      {/* <div className='ratings-warning'>
+                      </div> */}
+                      
+                    {/* </div> */}
+                    <Collapsible
+                      title={`${result.data.reviews.length} reviews`}
+                      title_class='ratings-circle'
+                      onOpen={openHandler}>
+                      <Reviews 
+                        property_reviews={result.property && result.property.reviews} 
+                        other_reviews={result.data && result.data.reviews}
+                        onOpen={openHandler}
+                        scrollToReviews={scrollToReviews}/>
+                    </Collapsible>
+                  </div>
+                }
             {
               result.data && result.data.evictions && result.data.evictions.length &&
               <div className='evictions-wrapper'>
-                <button className='evictions' onClick={() => setShowEvictions(!showEvictions)}>{result.data.evictions.length} evictions on record</button>
+                <button className='evictions' onClick={() => false && setShowEvictions(!showEvictions)}>{result.data.evictions.length} evictions on record</button>
                 {/* <button className='evictions' onClick={() => setShowEvictions(!showEvictions)}>Found {result.data.evictions.length} eviction court-records associated with this landlord</button> */}
 
                 {
@@ -613,8 +658,8 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                   <Survey
                     landlordList={landlordList}
                     hideSurvey={hideSurvey}
-                    address={result.property.address_full}
-                    propertyId={result.property.property_id}></Survey>
+                    address={result.property && result.property.address_full}
+                    propertyId={result.property && result.property.property_id}></Survey>
                   :
                   <div className='thanks'>Thanks for your feedback</div>
               }

@@ -10,7 +10,9 @@ function Header() {
 
     return (
         <div className="header">
-           Rate Your Landlord PDX
+           <button>Rate Your Landlord PDX</button>
+           <button>Search</button>
+           <button>Connect with your neighbors</button>
         </div>
     )
 }
