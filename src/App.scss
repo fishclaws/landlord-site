@@ -701,8 +701,8 @@ label {
   padding: 4px;
   padding-left: 8px;
   padding-right: 8px;
-  color:  rgb(101, 149, 30);
-  border-color: rgb(101, 149, 30);
+  color:  $lime;
+  border-color: $lime;
   background-color: #00000000;
   font-size: 1.3em;
 
@@ -1033,8 +1033,11 @@ px
 .data-row {
   padding-left: 20px;
   padding-right: 20px;
-  background-color: rgb(134, 134, 134);
+  background-color: $lime;
   margin-bottom: 2px;
+  margin-top: 7px;
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 
 
@@ -1219,7 +1222,7 @@ svg {
 
 .via {
   padding: 2px;
-  color: $light-blue_2;
+  color: #c9c9c9;
   // margin: auto;
   margin-left: 20px;
 }
@@ -1238,15 +1241,18 @@ svg {
 }
 
 .evictions {
-  padding: 5px;
+  padding: 10px;
   border-style: none;
   font-size: 1.3em;
   font-style: italic;
-  box-shadow: 6px 6px 0px rgb(255, 145, 0);
-  background-color: $orange;
+  font-weight: bold;
+  // box-shadow: 6px 6px 0px rgb(255, 145, 0);
+  // background-color: $orange;
+  box-shadow: 6px 6px 0px $lime;
+  background-color: rgb(221, 21, 91);
   width: fit-content;
   margin: auto;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .table-wrapper {
@@ -1353,7 +1359,7 @@ svg {
 }
 
 .action {
-  width: 100%;
+  width: 80%;
   margin: auto;
   margin-top: 20px;
   display: block;
@@ -1777,7 +1783,7 @@ button[disabled]{
 .ratings-circle {
   width: fit-content;
   border-style: solid;
-  border-color: $teal;
+  border-color: $lime;
   background-color: transparent;
   padding: 5px;
   margin: auto;
@@ -1786,7 +1792,7 @@ button[disabled]{
   // border-style: solid;
   // border-color: $orange;
 
-  color: $teal;
+  color: $lime;
   font-size: 20px;
   display: flex;
 
@@ -1794,7 +1800,7 @@ button[disabled]{
 }
 
 .ratings-circle:hover {
-  background-color: $orange;
+  background-color: $lime;
   color: black;
 }
 
@@ -1815,9 +1821,11 @@ button[disabled]{
   display: block;
   text-align: left;
   border-style: solid;
-  border-color: $teal;
+  border-color: $lime;
   border-top-style: none;
   padding: 10px;
+  // max-width: 500px;
+  
 }
 
 .review-statement{
@@ -1832,7 +1840,7 @@ button[disabled]{
 
   margin-top: 15px;
   font-size: .6em;
-  color: $teal;
+  color: $lime;
 
   border-style: solid;
   border-top-left-radius: 10px;
@@ -1847,13 +1855,14 @@ button[disabled]{
   z-index: 100;
   position: fixed;
   width: 100%;
+  text-align: right;
 }
 
 .review-question {
   font-size: .9em;
   font-weight: bold;
   padding: 10px;
-  color:$light-blue_2;
+  color:$lime;
 
 }
 
@@ -1862,18 +1871,21 @@ button[disabled]{
   font-size: .8em;
   padding-left: 10%;
   span.count {
-    color:#1fc1ed
+    color:$lime;
   }
   span.statment {
     font-weight: bold;
 
-    color:#edb61f
+    color:#e5e5e5
   }
 }
 
 .review-section {
   padding-bottom: 10px;
-
+  border-style: solid;
+  border-color: $lime;
+  border-width: 1px;
+  margin-bottom: 10px;
 }
 
 .emoji {
@@ -1881,7 +1893,7 @@ button[disabled]{
 }
 
 .review-type-bttn {
-  color: $teal;
+  color: $lime;
   background-color: transparent;
   border-style: none;
   padding: 5px;
@@ -1889,12 +1901,12 @@ button[disabled]{
   font-size: 1.4em;
 
   :hover {
-    background-color: $teal;
+    background-color: $lime;
   }
 }
 
 .review-type-bttn.selected {
-  background-color: $teal;
+  background-color: $lime;
   color: black;
   font-weight: bold;
 
@@ -1909,11 +1921,11 @@ button[disabled]{
   border-style: solid;
   padding: 5px;
   font-size: .7em;
-  color: $light-blue_2;
+  color: rgb(220, 220, 220);
 }
 
 .comment-title {
-  color: $light-blue_2;
+  color: $lime;
   font-size: 1em;
   text-align: center;
 }
@@ -1927,12 +1939,19 @@ button[disabled]{
 }
 
 .leave-a-review {
-  background-color: $teal;
+  background-color: $lime;
   border-style: none;
   text-align: center;
   width: fit-content;
   margin: auto;
   font-weight: bold;
-  font-size: .6em;
+  font-size: .6emz;
   padding: 5px;
 }
+
+.header button {
+  border-style: none;
+  display: inline-block;
+
+}
+
