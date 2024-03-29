@@ -7,10 +7,14 @@ import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
 import { findByName, getAddresses } from './services'
 import { LandlordNameFound, NameSearchResult, SearchResult } from './ResultTypes';
 import { useParams } from 'react-router';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Result from './Result';
-import Info from './Info';
+import ReactGA from "react-ga4";
 import Header from './Header';
+import Banner from './Banner';
+
+const MEASUREMENT_ID = "G-2B5P18PPBF"; // YOUR_OWN_TRACKING_ID
+
 // requestAnim shim layer by Paul Irish
 (window as any).requestAnimFrame = (function () {
   return window.requestAnimationFrame || (window as any).webkitRequestAnimationFrame || (window as any).mozRequestAnimationFrame || (window as any).oRequestAnimationFrame || (window as any).msRequestAnimationFrame || function ( /* function */ callback: any, /* DOMElement */ element: any) {
@@ -41,6 +45,45 @@ function draw(canvas: any) {
 function App() {
   const { addressSearch, query } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [address, setAddress] = React.useState('');
+  const [landlord, setLandlord] = React.useState('');
+  const [addressOptions, setAddressOptions] = React.useState([]);
+  const [result, setResult] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [focus, setFocus] = React.useState('')
+  const [searchType, setSearchType] = React.useState('address')
+  const [nameNotFound, setNameNotFound] = React.useState(false)
+  const [stopSearch, setStopSearch] = React.useState(false)
+
+
+  useEffect(() => {
+    ReactGA.initialize(MEASUREMENT_ID);
+  })
+
+  useEffect(() => {
+    if (stopSearch) {
+      setStopSearch(false)
+      return
+    }
+    let title = location.pathname.split('/')[1]?.replace('/', '')
+    if (title==='') {
+      title = 'landing'
+    }
+    console.log('title: ' + title)
+    ReactGA.send({ hitType: "pageview", page: location.pathname, title });
+
+    if (addressSearch) {
+      setSearchType('address')
+      search('address', addressSearch)
+    } else if (query) {
+      setSearchType('landlord')
+      search('landlord', query)
+    } else {
+      setResult(null)
+    }
+  }, [location, addressSearch, query]);
+
 
   const canvas = useRef(null);
   window.addEventListener('resize', resizeCanvas, false);
@@ -58,25 +101,8 @@ function App() {
   }
 
 
-  const [address, setAddress] = React.useState('');
-  const [landlord, setLandlord] = React.useState('');
-  const [addressOptions, setAddressOptions] = React.useState([]);
-  const [result, setResult] = React.useState(null);
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [focus, setFocus] = React.useState('')
-  const [searchType, setSearchType] = React.useState('address')
-  const [nameNotFound, setNameNotFound] = React.useState(false)
 
-  useEffect(() => {
-    if (addressSearch) {
-      setSearchType('address')
-      search('address', addressSearch)
-    }
-    if (query) {
-      setSearchType('landlord')
-      search('landlord', query)
-    }
-  }, []); // <-- empty array means 'run once'
+
 
   function search(searchType: string, query: string | undefined) {
     if (isLoading) return;
@@ -90,7 +116,12 @@ function App() {
             setResult(result as any)
             setAddress('')
             setLandlord('')
-            navigate(`/address/${result.property.address_full}`, { replace: true })
+            const newPath = `/address/${result.property.address_full}`;
+            if (location.pathname !== newPath && !stopSearch) {
+              console.log('navigate called')
+              navigate(newPath)
+            }
+            setStopSearch(true)
 
           } else {
             setAddressOptions(Object.keys(result.addresses).map((key) => result.addresses[key][0].address_full) as any)
@@ -106,7 +137,11 @@ function App() {
             setResult(result as any)
             setAddress('')
             setLandlord('')
-            navigate(`/search/${query || landlord}`, { replace: true })
+            const newPath = `/search/${query || landlord}`;
+            if (location.pathname !== newPath && !stopSearch) {
+              navigate(newPath)
+            }
+            setStopSearch(true)
 
           } else if (result.type === 'no-landlord-name-found') {
             setNameNotFound(true)
@@ -121,6 +156,7 @@ function App() {
   }
 
   function search_selected(addy: any) {
+    setAddressOptions([])
     setAddress(addy)
     search(searchType, addy)
   }
@@ -136,7 +172,11 @@ function App() {
   return (
 
     <div>
+      {
+      location.pathname === '/' ? <Banner></Banner> : undefined
+      }
       <Header></Header>
+      <div className='body'>
       {/* <Info message="This data is collected from PortlandMaps.com and sos.oregon.gov. If something is incorrect please hover-over it and click the &quot;!&quot; button" /> */}
 
       {isLoading ?
@@ -238,10 +278,12 @@ function App() {
 
       </div>
 
-      {result ?
+
+
+
+    </div>
+          {result ?
         <Result result={result} closeResult={closeResult} resultType={searchType}></Result> : null}
-
-
     </div>
   );
 }

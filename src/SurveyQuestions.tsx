@@ -7,62 +7,73 @@ export interface Question {
     emoji: string
 }
 
+export const QUESTION_SET = '23326db2f378920858c29ea3c228351b'
+
 export const qs: Question[] = [
     {
-        text: 'How much has your rent gone up in the past 2 years?',
+        text: 'How much has your rent gone up in the past year?',
         answers: [
             'None',
-            'Less than $100',
-            'Between $100 and $300',
-            'More than $300'
+            'Less than $60',
+            'Between $60 and $150',
+            'More than $150'
         ],
         answersOfNote: [1,2,3],
         statement: 'their rent went up <answer>',
-        emoji: '📈🏠'
+        emoji: '📈'
     },
     {
-        text: 'Does this Landlord respond to maintenance problems?',
-        answers: [
-            'Never',
-            'Sometimes',
-            'Always',
-        ],
-        answersOfNote: [0, 1],
-        statement: 'this landlord <answer> responds to maintenance problems',
-        emoji: '🛠️🤔'
-    },
-    {
-        text: 'Is your landlord unprofessional or creepy?',
-        answers: [
-            'Never',
-            'Sometimes',
-            'Always',
-        ],
-        answersOfNote: [1, 2],
-        statement: 'this landlord is <answer> unprofessional or creepy',
-        emoji: '👀🕵️‍♂️'
-
-    },
-    {
-        text: 'Does this building have untreated mold or other biohazards?',
+        text: 'Does this landlord respond to maintenance problems?',
         answers: [
             'Yes',
             'No',
-            'Unsure'
+            'Slow to respond',
+        ],
+        answersOfNote: [1, 2],
+        statement: 'this landlord <answer> responds to maintenance problems',
+        emoji: '🛠️'
+    },
+    {
+        text: 'Is this landlord unprofessional or creepy? (unwanted comments, rude, aggressive, privacy violations, retaliation)',
+        answers: [
+            'Yes',
+            'No'
+        ],
+        answersOfNote: [0],
+        statement: 'this landlord is <answer> unprofessional or creepy',
+        emoji: '🚫'
+
+    },
+    {
+        text: 'Is this building unlivable or unsafe? (mold, pests, leaks, maintenance needs, insufficient heat)',
+        answers: [
+            'Yes',
+            'No'
         ],
         answersOfNote: [0],
         statement: 'this building has untreated mold or other biohazards',
         emoji: '☣️'
     },
     {
-        text: 'Has this landlord attempted to evict you?',
+        text: 'Has this landlord attempted to evict you for any reason?',
         answers: [
             'Yes',
             'No'
         ],
         answersOfNote: [0],
         statement: 'this landlord attempted to evict them',
-        emoji: '⚖️🚪'
+        emoji: '⚖️'
+    },
+    {
+        text: 'Would you start or join a tenant union?',
+        answers: [
+            'Yes',
+            'No',
+            'Interested in learning more'
+        ],
+        answersOfNote: [0, 2],
+        statement: 'this landlord attempted to evict them',
+        emoji: '🏢👥'
     }
     // {
     //     text: 'Is your building unlivable?',

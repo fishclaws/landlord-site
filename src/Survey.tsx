@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './App.scss';
 import { submitResponse } from './services'
-import { Landlord, Question, qs } from './SurveyQuestions';
+import { Landlord, QUESTION_SET, Question, qs } from './SurveyQuestions';
 
 
 function Survey(
@@ -19,7 +19,7 @@ function Survey(
     }) {
 
     const [questions]: [Question[], any] = useState(qs);
-    const [answersSelected, setAnswersSelected] = useState(questions.map(q => null) as (number | null)[]);
+    const [answersSelected, setAnswersSelected] = useState({} as { [key: number]: number});
     // const [selectedLandlords, setSelectedLandlords] = useState(landlordList.length === 1 ? landlordList : [])
     const [reviewText, setReviewText] = useState('')
     const [isLoading, setIsLoading] = useState(false)
@@ -28,6 +28,7 @@ function Survey(
     function submit() {
         setIsLoading(true)
         submitResponse({
+            QUESTION_SET,
             answersSelected,
             landlordList,
             reviewText,
@@ -51,9 +52,13 @@ function Survey(
                                     q.answers?.map((a, answerIndex) => (
                                         <button 
                                         className={'answer' + (answersSelected[questionIndex] === answerIndex ? ' active' : '')} 
-                                        onFocus={() => {
-                                            const ans = [...answersSelected]
-                                            ans[questionIndex] = answerIndex
+                                        onClick={() => {
+                                            const ans = { ...answersSelected}
+                                            if (ans[questionIndex] === answerIndex) {
+                                                delete ans[questionIndex];
+                                            } else {
+                                                ans[questionIndex] = answerIndex
+                                            }
                                             console.log(ans)
                                             setAnswersSelected(ans)
                                         }}>{a}</button>
@@ -73,7 +78,7 @@ function Survey(
             </div>
             <div className='submit-button-wrapper'>
                 <button className={'submit-button' + isLoading ? ' button--loading' : ''} 
-                    disabled={answersSelected.includes(null) || isLoading}
+                    disabled={(Object.keys(answersSelected).length === 0 && reviewText === '') || isLoading}
                     onClick={() => {
                         submit()
                     }}><span className="button__text">SUBMIT</span></button>

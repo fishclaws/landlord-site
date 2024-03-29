@@ -3,7 +3,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import './App.scss';
 import { BusinessOwner, HierarchyNode, HierarchyNodeGroup, PropertyAddress, PropertyLocation, SearchResultPicked } from './ResultTypes';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { useNavigate } from 'react-router-dom';
 import Survey from './Survey';
 import Info from './Info';
 import { Hierarchy } from './Hierarchy'
@@ -11,6 +10,7 @@ import markerSrc from './marker.png'; // Import your image
 import Disclaimer from './Disclaimer';
 import Collapsible from './Collapsible';
 import Reviews from './Reviews';
+import ReactGA from "react-ga4";
 
 var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 mapboxgl.accessToken = 'pk.eyJ1IjoibXNnc2x1dCIsImEiOiJja2NvZmFpbjAwMW84MnJvY3F1d2hzcW5nIn0.xMAHVsdszfolXUOk9_XI4g';
@@ -189,6 +189,18 @@ function getLandlordList(result: SearchResultPicked, hierarchies: HierarchyNodeG
   return list.filter(name => name.name)
 }
 
+function dedup(names: string[] | undefined) {
+  if (!names) {
+    return names
+  }
+
+  const obj = names.reduce((agg, n) => {
+    agg[n] = true
+    return agg;
+  },{} as {[key: string]: boolean})
+  return Object.keys(obj)
+}
+
 
 type ResultType = string | 'address' | 'landlord'
 
@@ -199,7 +211,6 @@ class OnOpen {
 
 function Result({ result, closeResult, resultType }: { result: SearchResultPicked, closeResult: () => void, resultType: ResultType }) {
   console.log(result)
-  const navigate = useNavigate();
 
   const property = result.property
   const mapContainer = useRef(null);
@@ -229,8 +240,29 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   const [showSurvey, setShowSurvey]: [boolean, any] = useState(true)
   const [alreadyScrolled, setAlreadyScrolled]: [boolean, any] = useState(false)
   const [showHierarchy, setShowHierarchy]: [number | null, any] = useState(null)
+  const [propertyManagers]: [string[] | undefined, any] = useState(dedup(result.data?.evictions?.reduce((agg, e, i) => e.evicting_property_managers ? agg.concat(e.evicting_property_managers) : agg, [] as string[])))
 
   const [openHandler] = useState(new OnOpen())
+
+  useEffect(() => {
+    if (viewBusinessInfo) {
+      ReactGA.event({
+        category: "result_page",
+        action: "button_click",
+        label: "view business data", // optional
+      });
+    }
+  }, [viewBusinessInfo])
+
+  useEffect(() => {
+    if (showHierarchy) {
+      ReactGA.event({
+        category: "result_page",
+        action: "button_click",
+        label: "show hierarchy", // optional
+      });
+    }
+  }, [showHierarchy])
 
   useEffect(() => {
     if (map.current) return; // initialize map only once
@@ -333,7 +365,6 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
         el.onclick = (ev) => {
           const menu = el.getElementsByClassName('menu-container')[0]
           if (loc.addresses.length === 1) {
-            //navigate(`/address/${loc.addresses[0].address_full}`)
             //search(loc.addresses[0].address_full)
             window.location.href = `/address/${loc.addresses[0].address_full}`;
           } else {
@@ -471,6 +502,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                     </div>
                   ) : undefined
               }
+
 
             </div>
             
@@ -666,8 +698,8 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             </div>
             <div className='action-items'>
               <button className='action orange'><div className='report'></div>report your landlord</button>
-              <button className='action green'>connect with your neighbors</button>
-              <button className='action blue'>learn your rights</button>
+              {/* <button className='action green'>connect with your neighbors</button>
+              <button className='action blue'>learn your rights</button> */}
             </div>
           </div>
         </div>
