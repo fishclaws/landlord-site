@@ -56,6 +56,7 @@ function App({organize}: {organize?: boolean}) {
   const [searchType, setSearchType] = React.useState('address')
   const [nameNotFound, setNameNotFound] = React.useState(false)
   const [stopSearch, setStopSearch] = React.useState(false)
+  const [showLandlordSearchError, setShowLandlordSearchError] = React.useState(false)
 
 
   useEffect(() => {
@@ -113,6 +114,7 @@ function App({organize}: {organize?: boolean}) {
 
 
   function search(searchType: string, query: string | undefined) {
+    setShowLandlordSearchError(false)
     if (isLoading) return;
     setIsLoading(true)
     if (searchType === 'address') {
@@ -140,6 +142,9 @@ function App({organize}: {organize?: boolean}) {
       findByName(query || landlord)
         .then((result: NameSearchResult) => {
           setIsLoading(false)
+          if (result.type === 'no-landlord-name-found') {
+            setShowLandlordSearchError(true)
+          }
           if (result.type === 'landlord-name-found') {
             setNameNotFound(false)
             setResult(result as any)
@@ -283,6 +288,17 @@ function App({organize}: {organize?: boolean}) {
             <button className='address-options' onClick={() => setAddressOptions([])}>None of These</button>
           </div>
           : <div></div>}
+
+          {
+            showLandlordSearchError &&
+            <div className='landlord-search-error-wrapper'>
+              <div className='landlord-search-error'>
+                <div>Couldn't find any landlords by that name.</div>
+                <br/>
+                <div>It's possible you're searching the property management company, which we do not track</div>
+              </div>
+            </div>
+          }
 
       </div>
 

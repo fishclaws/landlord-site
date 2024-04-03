@@ -10,24 +10,30 @@ import {
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import ErrorBoundary from './ErrorBoundary';
 
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App/>,
+    errorElement: <ErrorBoundary/>
   },
   {
     path: "/address/:addressSearch",
     element: <App/>,
+    errorElement: <ErrorBoundary/>
   },
   {
     path: "/search/:query",
     element: <App/>,
+    errorElement: <ErrorBoundary/>
   },
   {
     path: "/organize",
     element: <App organize={true}/>,
+    errorElement: <ErrorBoundary/>
+
   },
 ]);
 

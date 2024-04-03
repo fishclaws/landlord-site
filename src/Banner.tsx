@@ -26,7 +26,7 @@ function Banner() {
                         action: "button_click",
                         label: "tj for housing", // optional
                       });
-                      setClicked(true)
+                    //   setClicked(true)
                     window.open('https://tj4housing.com/');
                 }}>
             <div className='lets'>Stand against Landlord Greed</div>
