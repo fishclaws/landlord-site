@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import './App.scss';
 import logo from './logo.png';
+import image_logo from './image_logo.png';
 import { useLocation, useNavigate } from "react-router-dom";
 import { Donate } from 'react-kofi-overlay'
 import ReactGA from "react-ga4";
@@ -12,10 +13,13 @@ function Header() {
     console.log(location)
     return (
         <div className="header">
-           <button onClick={() => navigate('/')} className="logo"><img src={logo}></img></button>
+           <button onClick={() => navigate('/')} className="logo">
+            {/* <img className="image_logo" src={image_logo}/> */}
+            <img src={logo}/>
+            </button>
             <div className="right-buttons">
                 {location.pathname !== '/' ? <button onClick={() => navigate('/')}>search</button> : undefined}
-                <button>connect with your neighbors</button>
+                <button onClick={() => navigate('/organize')} >connect with your neighbors</button>
                 <button onClick={() => {
                     ReactGA.event({
                         category: "navbar",

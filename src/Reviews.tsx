@@ -65,13 +65,13 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
                 {
                 <button
                     className={'review-type-bttn ' + (selected === 'this' ? 'selected' : '')}
-                    onClick={() => { setSelected('this'); onOpen.func() }}>this address ({propertyAgg.length})</button>
+                    onClick={() => { setSelected('this'); onOpen.func() }}>this address</button>
                 }
                 {
 
                 <button
                     className={'review-type-bttn ' + (selected === 'other' ? 'selected' : '')}
-                    onClick={() => { setSelected('other'); onOpen.func() }}>all addresses ({otherAgg.length})</button>
+                    onClick={() => { setSelected('other'); onOpen.func() }}>other addresses</button>
                 }
             </div>
             <div className={'reviews-wrapper'}>
@@ -92,7 +92,7 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
                         ))
                     :
                     <div>
-                        <span className='review-question'>no reviews for this address</span>
+                        <span className='review-question'>{selected === 'this' ? 'no reviews for this address' : 'no other reviews'}</span>
                         <div className='leave-a-review-wrapper'>
                             <button className='leave-a-review' onClick={() => scrollToReviews()}>leave a review</button>
                         </div>

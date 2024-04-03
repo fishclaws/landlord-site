@@ -190,7 +190,16 @@ h1 {
   border-width: 10px;
 }
 
+@media (max-width: 800px) {
+  h1 {
+    font-size: 200%;
+  }
+}
+
+
+
 .headerContainer {
+  margin-top: 10px;
   display: flex;
   justify-content: center;
 
@@ -278,7 +287,6 @@ h1 {
 /* Responsive layout - makes a one column layout instead of a two-column layout */
 @media (max-width: 800px) {
   .inputs {
-    margin: 10%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -300,6 +308,8 @@ input {
 
 @media (max-width: 800px) {
   input {
+    font-size: 20px;
+
     padding: 10px;
   }
 }
@@ -326,6 +336,8 @@ button:focus {
   animation-duration: .3s;
   animation-name: grow;
   animation-fill-mode: forwards;
+  background-color: #dcf633;
+  color: black;
 }
 
 @keyframes grow {
@@ -1129,6 +1141,7 @@ px
   border-radius: 25px;
   border-width: 2px;
   border-color: $lime;
+  margin-bottom: 100px;
 }
 
 .survey-title {
@@ -1531,6 +1544,7 @@ textarea {
 }
 
 .thanks {
+  text-align: center;
   width: fit-content;
   margin: auto;
 }
@@ -1681,13 +1695,10 @@ button[disabled]{
 .button--loading::after {
   content: "";
   position: absolute;
+  left: 49%;
+  transform: translate(-50%, -50%);
   width: 16px;
   height: 16px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto;
   border: 4px solid transparent;
   border-top-color: #ffffff;
   border-radius: 50%;
@@ -1797,7 +1808,7 @@ button[disabled]{
   background-color: transparent;
   padding: 5px;
   margin: auto;
-  margin-top: 10px;
+  margin-top: 20px;
 
   // border-style: solid;
   // border-color: $orange;
@@ -1838,6 +1849,11 @@ button[disabled]{
   
 }
 
+.ratings-wrapper {
+  margin: auto;
+  width: fit-content;
+}
+
 .review-statement{
   font-size: .55em;
   padding: 4px;
@@ -1849,7 +1865,7 @@ button[disabled]{
   align-items: stretch;
 
   margin-top: 15px;
-  font-size: .6em;
+  font-size: 1.0em;
   color: $lime;
 
   border-style: solid;
@@ -1859,7 +1875,7 @@ button[disabled]{
 
 
 .review-question {
-  font-size: .9em;
+  font-size: 1.1em;
   font-weight: bold;
   padding: 10px;
   color:$lime;
@@ -1868,7 +1884,7 @@ button[disabled]{
 
 .review-answer {
 
-  font-size: .8em;
+  font-size: 1.1em;
   padding-left: 10%;
   span.count {
     color:$lime;
@@ -1886,6 +1902,7 @@ button[disabled]{
   border-color: $lime;
   border-width: 1px;
   margin-bottom: 10px;
+  background-color: #18819ea7;
 }
 
 .emoji {
@@ -1899,6 +1916,8 @@ button[disabled]{
   padding: 5px;
   flex-grow: 4;
   font-size: 1.4em;
+  padding-left: 20px;
+  padding-right: 20px;
 
   :hover {
     background-color: $lime;
@@ -1978,21 +1997,26 @@ button[disabled]{
   margin-left: auto;
   margin: auto;
   padding-bottom: 10px;
+  button {
+    border-style: none;
+    display: inline-block;
+    margin-top: 5px;
+    margin-right: 10px;
+    padding: 5px;
+    background-color: #3c4233;
+    color: white;
+    font-size: 1.2em;
+    border-radius: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+
+  }
+  :hover {
+    background-color: #18819e;
+  }
 }
 
-.right-buttons button {
-  border-style: none;
-  display: inline-block;
-  margin-top: 5px;
-  margin-right: 10px;
-  padding: 5px;
-  background-color: #3c4233;
-  color: white;
-  font-size: 1.2em;
-  border-radius: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
-}
+
 
 @media (max-width: 800px) {
   .right-buttons button  {
@@ -2013,14 +2037,17 @@ button[disabled]{
   width: 100%;
   border-style: none;
     background-color: #3c7eff;
+    
+
     font-family: 'Inter';
     color: #fbe100;
     font-weight: 900;
     letter-spacing: 0.35rem;
     text-transform: uppercase;
-    font-size: .8em;
+    font-size: 1.1em;
     .lets {
       // color: rgb(0, 0, 0);
+      margin-bottom: 5px;
     }
 
     .vote {
@@ -2029,8 +2056,13 @@ button[disabled]{
       color: black;
     }
 
+    .vote-date {
+      color: white;
+      font-size: .7em;
+    }
+
     button {
-      
+
       font-family: 'Inter';
       font-size: 1.2em;
       padding: 10px;
@@ -2040,13 +2072,16 @@ button[disabled]{
       width: fit-content;
       border-radius: 10px;
       letter-spacing: 0.1rem;
+
     }
 
 }
 
 .banner-wrapper {
   position: relative;
-
+  :hover {
+    background-color: #6a9cff;
+  }
 }
 
 .circle-button {
@@ -2088,4 +2123,54 @@ small {
   font-size: .8em;
   font-weight: normal;
   letter-spacing: 0.08rem;
+}
+
+.image_logo {
+  height: 60px;
+  margin: 5px;
+}
+
+.organize-wrapper {
+  position: absolute;
+  width: 100%;
+  background-color: white;
+  height: 100%;
+  overflow: scroll;
+}
+
+.org-section {
+  margin: 20px;
+  padding: 20px;
+  background-color: #38a8c7;
+}
+
+.org-title {
+  margin: auto;
+  font-size: 1.9em;
+  color: black;
+}
+
+.org-question {
+  font-size: 1.3em;
+  color: white;
+  padding: 5px;
+}
+
+.org-answers {
+  margin: auto;
+  display: flex;
+
+  button {
+    background-color: #eaff00;
+    border-style: none;
+    font-size: 1.5em;
+    padding: 10px;
+    margin: 5px;
+    flex-grow: 4;
+    width: fit-content;
+
+    .active {
+      background-color: #a2af13;
+    }
+  }
 }

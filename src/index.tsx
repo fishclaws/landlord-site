@@ -25,7 +25,10 @@ const router = createBrowserRouter([
     path: "/search/:query",
     element: <App/>,
   },
-  
+  {
+    path: "/organize",
+    element: <App organize={true}/>,
+  },
 ]);
 
 

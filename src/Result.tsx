@@ -11,6 +11,7 @@ import Disclaimer from './Disclaimer';
 import Collapsible from './Collapsible';
 import Reviews from './Reviews';
 import ReactGA from "react-ga4";
+import { useNavigate } from 'react-router-dom';
 
 var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 mapboxgl.accessToken = 'pk.eyJ1IjoibXNnc2x1dCIsImEiOiJja2NvZmFpbjAwMW84MnJvY3F1d2hzcW5nIn0.xMAHVsdszfolXUOk9_XI4g';
@@ -211,6 +212,7 @@ class OnOpen {
 
 function Result({ result, closeResult, resultType }: { result: SearchResultPicked, closeResult: () => void, resultType: ResultType }) {
   console.log(result)
+  const navigate = useNavigate();
 
   const property = result.property
   const mapContainer = useRef(null);
@@ -507,7 +509,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             </div>
             
             {
-                  result.data && result.data.reviews && result.data.reviews.length > 0 &&
+                  result.data && result.data.reviews && result.data.reviews.length > 0 ?
                   // 
                   <div className='ratings-wrapper'>
                     {/* <div className='ratings-circle'> */}
@@ -525,8 +527,30 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                         onOpen={openHandler}
                         scrollToReviews={scrollToReviews}/>
                     </Collapsible>
-                  </div>
-                }
+                  </div> : (
+                    result.property && result.property.reviews && result.property.reviews.length > 0 ?
+                      <div className='ratings-wrapper'>
+                      {/* <div className='ratings-circle'> */}
+                        {/* <div className='ratings-warning'>
+                        </div> */}
+                        
+                      {/* </div> */}
+                      <Collapsible
+                        title={`${result.property.reviews.length} reviews`}
+                        title_class='ratings-circle'
+                        onOpen={openHandler}>
+                        <Reviews 
+                          property_reviews={result.property && result.property.reviews} 
+                          other_reviews={null}
+                          onOpen={openHandler}
+                          scrollToReviews={scrollToReviews}/>
+                      </Collapsible>
+                    </div> : undefined
+
+                  )
+              }
+
+              
             {
               result.data && result.data.evictions && result.data.evictions.length &&
               <div className='evictions-wrapper'>
@@ -560,13 +584,14 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                 }
               </div>
             }
+            { result.data &&
             <div className='properties'>
               {
-                result.data && result.data.market_value_sum &&
+                result.data.market_value_sum &&
                 <><div className='market-value-str'>total market-value of properties:</div><div className='market-value'>{convertToUSD(result.data.market_value_sum)}</div></>
               }
               {
-                result.type !== 'no-landlord' && result.data && result.data.locations && result.data.locations.length > 0 ?
+                result.data.locations && result.data.locations.length > 0 ?
                   (
                     <div className='locations-container'>
                       {
@@ -621,7 +646,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                   ) : undefined
               }
             </div>
-
+            }
 
             {
               hierarchies || (related_businesses && related_businesses.length) ?
@@ -693,14 +718,15 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                     address={result.property && result.property.address_full}
                     propertyId={result.property && result.property.property_id}></Survey>
                   :
-                  <div className='thanks'>Thanks for your feedback</div>
+                  <div className='thanks'>Thanks for your feedback
+                    <div className='action-items'>
+                      {/* <button className='action orange'><div className='report'></div>report your landlord</button> */}
+                      <button onClick={() => navigate('/organize')} className='action green'>connect with your neighbors</button>
+                    </div>
+                  </div>
               }
             </div>
-            <div className='action-items'>
-              <button className='action orange'><div className='report'></div>report your landlord</button>
-              {/* <button className='action green'>connect with your neighbors</button>
-              <button className='action blue'>learn your rights</button> */}
-            </div>
+            
           </div>
         </div>
       </div >

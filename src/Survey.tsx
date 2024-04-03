@@ -29,11 +29,19 @@ function Survey(
         setIsLoading(true)
         submitResponse({
             QUESTION_SET,
-            answersSelected,
+            answersSelected: Object.keys(answersSelected).reduce((agg, curr) => {
+                const questionId = Number(curr)
+                agg[questionId] = answersSelected[questionId]
+                return agg;
+            }, [] as number[]),
             landlordList,
             reviewText,
             address,
             propertyId
+        }).then((result) => {
+            console.log(result)
+            setIsLoading(false)
+            hideSurvey()
         })
     }
 
@@ -77,7 +85,7 @@ function Survey(
                             }}></textarea>
             </div>
             <div className='submit-button-wrapper'>
-                <button className={'submit-button' + isLoading ? ' button--loading' : ''} 
+                <button className={'submit-button' + (isLoading ? ' button--loading' : '')} 
                     disabled={(Object.keys(answersSelected).length === 0 && reviewText === '') || isLoading}
                     onClick={() => {
                         submit()

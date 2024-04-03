@@ -12,6 +12,7 @@ import Result from './Result';
 import ReactGA from "react-ga4";
 import Header from './Header';
 import Banner from './Banner';
+import Organize from './Organize';
 
 const MEASUREMENT_ID = "G-2B5P18PPBF"; // YOUR_OWN_TRACKING_ID
 
@@ -42,7 +43,7 @@ function draw(canvas: any) {
 }
 
 
-function App() {
+function App({organize}: {organize?: boolean}) {
   const { addressSearch, query } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -83,6 +84,13 @@ function App() {
       setResult(null)
     }
   }, [location, addressSearch, query]);
+
+  useEffect(() => {
+    if (organize) {
+      setResult(null)
+    }
+    window.scrollTo(0,0); 
+  }, [organize])
 
 
   const canvas = useRef(null);
@@ -282,8 +290,13 @@ function App() {
 
 
     </div>
-          {result ?
-        <Result result={result} closeResult={closeResult} resultType={searchType}></Result> : null}
+          {result &&
+        <Result result={result} closeResult={closeResult} resultType={searchType}></Result>}
+
+        {
+          organize &&
+          <Organize></Organize>
+        }
     </div>
   );
 }

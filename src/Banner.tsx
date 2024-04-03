@@ -29,8 +29,9 @@ function Banner() {
                       setClicked(true)
                     window.open('https://tj4housing.com/');
                 }}>
-            <span className='lets'>Stand against Landlord Greed</span>
+            <div className='lets'>Stand against Landlord Greed</div>
             <span className='vote'> Vote TJ</span>
+            <span className='vote-date'> on May 21st</span>
             {/* <br/>
                 <span className='for'> for Multonomah County Commissioner District 3</span> */}
 
