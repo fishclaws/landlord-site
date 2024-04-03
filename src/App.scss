@@ -838,6 +838,7 @@ table tr td:last-child {
   overflow-y: scroll;
   background-color: $gray;
   border-width: 10px;
+  margin-top: 20px;
 
 }
 
@@ -2139,9 +2140,11 @@ small {
 }
 
 .org-section {
-  margin: 20px;
+  margin: auto;
   padding: 20px;
   background-color: #38a8c7;
+  max-width: 500px;
+  margin-top: 50px;
 }
 
 .org-title {
