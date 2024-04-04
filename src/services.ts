@@ -1,7 +1,9 @@
 import { NameSearchResult, SearchResult } from "./ResultTypes"
 
+const api_path = window.location.hostname === 'localhost' ? 'http://localhost:3001' : '/api'
+
 export function getAddresses(address: string) {
-  return fetch(`http://localhost:3001/search?address=${address}`)
+  return fetch(`${api_path}/search?address=${address}`)
     .then(data => {
       return data.json().then((json: SearchResult) => {
         return json
@@ -10,7 +12,7 @@ export function getAddresses(address: string) {
 }
 
 export function findByName(name: string) {
-  return fetch(`http://localhost:3001/find?name=${name}`)
+  return fetch(`${api_path}/find?name=${name}`)
     .then(data => {
       return data.json().then((json: NameSearchResult) => {
         return json
@@ -19,7 +21,7 @@ export function findByName(name: string) {
 }
 
 export function submitResponse(submission: any) {
-  return fetch(`http://localhost:3001/submit-review`,
+  return fetch(`${api_path}/submit-review`,
     {
       method: 'POST',
       mode: 'cors',
