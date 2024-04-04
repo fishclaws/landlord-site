@@ -64,6 +64,8 @@ function App({organize}: {organize?: boolean}) {
   })
 
   useEffect(() => {
+    window.scrollTo(0,0); 
+
     if (stopSearch) {
       setStopSearch(false)
       return
@@ -90,7 +92,6 @@ function App({organize}: {organize?: boolean}) {
     if (organize) {
       setResult(null)
     }
-    window.scrollTo(0,0); 
   }, [organize])
 
 
