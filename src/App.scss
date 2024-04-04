@@ -93,14 +93,15 @@ $light-blue_2: #7ba1aca3;
   font-style: normal;
 }
 
-
+html {
+  overflow-x: hidden;
+}
 
 body {
   box-sizing: border-box;
   background: radial-gradient(hsl(200, 40%, 20%), hsl(200, 30%, 6%));
   font-family: "Inconsolata", monospace;
   background: $lime;
-  overflow: hidden;
 }
 
 .poster {
