@@ -77,16 +77,22 @@ function App({organize}: {organize?: boolean}) {
     console.log('title: ' + title)
     ReactGA.send({ hitType: "pageview", page: location.pathname, title });
 
+  }, [location]);
+
+  useEffect(() => {
+    
     if (addressSearch) {
       setSearchType('address')
       search('address', addressSearch)
-    } else if (query) {
+    }
+  }, [addressSearch])
+
+  useEffect(() => {
+    if (query) {
       setSearchType('landlord')
       search('landlord', query)
-    } else {
-      setResult(null)
     }
-  }, [location, addressSearch, query]);
+  }, [query])
 
   useEffect(() => {
     if (organize) {
