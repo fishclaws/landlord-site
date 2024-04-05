@@ -27,8 +27,9 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
             setPropertyComments(property_reviews.map(rev => rev.review_text.trim()).filter(rev => rev.length))
         }
         if (other_reviews) {
-            setOtherAgg(getStatements(other_reviews.filter(rev => !property_reviews.find(pr => pr.id === rev.id))))
-            setOtherComments(other_reviews.map(rev => rev.review_text.trim()).filter(rev => rev.length))
+            const or = other_reviews.filter(rev => !property_reviews.find(pr => pr.id === rev.id))
+            setOtherAgg(getStatements(or))
+            setOtherComments(or.map(rev => rev.review_text.trim()).filter(rev => rev.length))
         }
     }, [])
 
@@ -92,7 +93,7 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
                         ))
                     :
                     <div className="review-section">
-                        <span className='review-question'>{selected === 'this' ? 'no reviews for this address' : 'no other reviews'}</span>
+                        <div className='review-question'>{selected === 'this' ? 'no reviews for this address' : 'no other reviews'}</div>
                         <div className='leave-a-review-wrapper'>
                             <button className='leave-a-review' onClick={() => scrollToReviews()}>leave a review</button>
                         </div>
