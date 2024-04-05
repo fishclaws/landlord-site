@@ -73,26 +73,27 @@ function App({organize}: {organize?: boolean}) {
     let title = location.pathname.split('/')[1]?.replace('/', '')
     if (title==='') {
       title = 'landing'
+      setResult(null)
     }
     console.log('title: ' + title)
     ReactGA.send({ hitType: "pageview", page: location.pathname, title });
 
-  }, [location]);
-
-  useEffect(() => {
-    
     if (addressSearch) {
       setSearchType('address')
       search('address', addressSearch)
-    }
-  }, [addressSearch])
-
-  useEffect(() => {
-    if (query) {
+    } else if (query) {
       setSearchType('landlord')
       search('landlord', query)
+    } else {
+      setResult(null)
     }
-  }, [query])
+  }, [location, addressSearch, query]);
+
+  useEffect(() => {
+    if (organize) {
+      setResult(null)
+    }
+  }, [organize])
 
   useEffect(() => {
     if (organize) {
