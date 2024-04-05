@@ -129,6 +129,11 @@ function getOwners(hierarchies: HierarchyNodeGroup[], result: SearchResultPicked
     if (result.property) {
       return result.property.owner.split('&')
         .map(owner => owner.trim())
+        .map(owner => {
+          const input = owner;
+          const regex = /(?: \b\d{4})? REV(?: LIV)? TR\b/;
+          return input.replace(regex, '').trim();
+        })
         .map(owner => owner.includes(',') ? (() => {
           const [last, first] = owner.split(',')
           return `${first.trim()} ${last.trim()}`

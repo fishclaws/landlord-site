@@ -230,6 +230,7 @@ function App({organize}: {organize?: boolean}) {
           </h1>
         </div>
         <div className='inputs'>
+        <div className="input-container">
           <input
             className={focus === 'address' ? 'grow' : undefined}
             value={address}
@@ -244,9 +245,11 @@ function App({organize}: {organize?: boolean}) {
               setSearchType('address')
               setFocus('address')
             }}
-            onKeyDown={handleKeyPress}></input>
+            onKeyDown={handleKeyPress}></input>{address && focus === 'address' && <div className='mobile-search'><button onClick={() => search(searchType, address)}>→</button></div>}
+          </div>
           <div className='or'>or</div>
-          <input
+          <div className="input-container">
+            <input
             className={focus === 'landlord' ? 'grow' : undefined}
             value={landlord}
             type='text'
@@ -260,7 +263,8 @@ function App({organize}: {organize?: boolean}) {
               setFocus('landlord')
             }}
             placeholder="Landlord Name"
-            onKeyDown={handleKeyPress}></input>
+            onKeyDown={handleKeyPress}></input>{landlord && focus === 'landlord' && <div className='mobile-search'><button onClick={() => search(searchType, landlord)}>→</button></div>}
+            </div>
         </div>
         {landlord || address ?
           <div className='search-container'>
