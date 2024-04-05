@@ -16,9 +16,10 @@ function Header() {
            <button onClick={() => navigate('/')} className="logo">
             {/* <img className="image_logo" src={image_logo}/> */}
             <img src={logo}/>
+            {location.pathname !== '/' ? <button className="search-button-nav" onClick={() => navigate('/')}>search</button> : undefined}
+
             </button>
             <div className="right-buttons">
-                {location.pathname !== '/' ? <button onClick={() => navigate('/')}>search</button> : undefined}
                 <button onClick={() => navigate('/organize')} >👫 connect with your neighbors</button>
                 <button onClick={() => {
                     ReactGA.event({
