@@ -19,7 +19,7 @@ function Header() {
             </button>
             <div className="right-buttons">
                 {location.pathname !== '/' ? <button onClick={() => navigate('/')}>search</button> : undefined}
-                <button onClick={() => navigate('/organize')} >connect with your neighbors</button>
+                <button onClick={() => navigate('/organize')} >👫 connect with your neighbors</button>
                 <button onClick={() => {
                     ReactGA.event({
                         category: "navbar",
@@ -27,7 +27,7 @@ function Header() {
                         label: "learn your rights", // optional
                       });
                     window.open('https://www.oregonrentersrights.org/');
-                }}>learn your rights</button>
+                }}>📜 learn your rights</button>
                 <Donate
                 username="rateyourlandlordpdx"
                 classNames={{

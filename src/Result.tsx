@@ -517,16 +517,16 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                       </div> */}
                       
                     {/* </div> */}
-                    <Collapsible
+                    {/* <Collapsible
                       title={`${result.data.reviews.length} reviews`}
                       title_class='ratings-circle'
-                      onOpen={openHandler}>
+                      onOpen={openHandler}> */}
                       <Reviews 
                         property_reviews={result.property && result.property.reviews} 
                         other_reviews={result.data && result.data.reviews}
                         onOpen={openHandler}
                         scrollToReviews={scrollToReviews}/>
-                    </Collapsible>
+                    {/* </Collapsible> */}
                   </div> : (
                     result.property && result.property.reviews && result.property.reviews.length > 0 ?
                       <div className='ratings-wrapper'>
@@ -588,7 +588,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             <div className='properties'>
               {
                 result.data.market_value_sum &&
-                <><div className='market-value-str'>total market-value of properties:</div><div className='market-value'>{convertToUSD(result.data.market_value_sum)}<Info message="calculated using tax information for the 2023 year collected from PorlandMaps.com"/></div></>
+                <><div className='market-value-str'>total market-value of properties:</div><div className='market-value'>{convertToUSD(result.data.market_value_sum)}<Info message="calculated using 2023 tax information collected from PorlandMaps.com"/></div></>
               }
               {
                 result.data.locations && result.data.locations.length > 0 ?

@@ -52,7 +52,7 @@ function Survey(
             {
                 questions.map((q, questionIndex) => (
                     <div className='question'>
-                        <p>{q.text}</p>
+                        <p>{q.emoji} {q.text}</p>
                         <br/>
                         {q.answers ? 
                             (<div className={'answers'}>

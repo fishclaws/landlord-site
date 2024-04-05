@@ -1,6 +1,7 @@
 
 export interface Question {
     text: string,
+    details?: string,
     answers: Array<string>,
     answersOfNote: Array<number>,
     statement: string,
@@ -20,7 +21,7 @@ export const qs: Question[] = [
         ],
         answersOfNote: [1,2,3],
         statement: 'their rent went up <answer>',
-        emoji: '📈'
+        emoji: '💵'
     },
     {
         text: 'Does this landlord respond to maintenance problems?',
@@ -34,18 +35,20 @@ export const qs: Question[] = [
         emoji: '🛠️'
     },
     {
-        text: 'Is this landlord unprofessional or creepy? (unwanted comments, rude, aggressive, privacy violations, retaliation)',
+        text: 'Is this landlord unprofessional or creepy? ',
+        details: '(unwanted comments, rude, aggressive, privacy violations, retaliation)',
         answers: [
             'Yes',
             'No'
         ],
         answersOfNote: [0],
         statement: 'this landlord is <answer> unprofessional or creepy',
-        emoji: '🚫'
+        emoji: '🛑'
 
     },
     {
-        text: 'Is this building unlivable or unsafe? (mold, pests, leaks, maintenance needs, insufficient heat)',
+        text: 'Is this building unlivable or unsafe?',
+        details: '(mold, pests, leaks, maintenance needs, insufficient heat)',
         answers: [
             'Yes',
             'No'

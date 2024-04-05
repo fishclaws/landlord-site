@@ -27,7 +27,7 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
             setPropertyComments(property_reviews.map(rev => rev.review_text.trim()).filter(rev => rev.length))
         }
         if (other_reviews) {
-            setOtherAgg(getStatements(other_reviews))
+            setOtherAgg(getStatements(other_reviews.filter(rev => !property_reviews.find(pr => pr.id === rev.id))))
             setOtherComments(other_reviews.map(rev => rev.review_text.trim()).filter(rev => rev.length))
         }
     }, [])
@@ -65,13 +65,13 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
                 {
                 <button
                     className={'review-type-bttn ' + (selected === 'this' ? 'selected' : '')}
-                    onClick={() => { setSelected('this'); onOpen.func() }}>this address</button>
+                    onClick={() => { setSelected('this'); onOpen.func() }}>reviews for this address</button>
                 }
                 {
 
                 <button
                     className={'review-type-bttn ' + (selected === 'other' ? 'selected' : '')}
-                    onClick={() => { setSelected('other'); onOpen.func() }}>other addresses</button>
+                    onClick={() => { setSelected('other'); onOpen.func() }}>reviews for other addresses</button>
                 }
             </div>
             <div className={'reviews-wrapper'}>
@@ -82,7 +82,7 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
                                 {/* <Twemoji options={{ className: 'twemoji' }}>
                                     <span className="emoji">{question.emoji}</span>
                                 </Twemoji> */}
-                                <div className='review-question'>{question.question}</div>
+                                <div className='review-question'>{question.emoji} {question.question}</div>
                                 {
                                     question.answers.map((a) => (
                                         <div className='review-answer'><span className="count">{a.count} {a.count === 1 ? 'person' : 'people'} said: </span><span className="statment">{a.text}</span></div>
@@ -91,7 +91,7 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
                             </div>
                         ))
                     :
-                    <div>
+                    <div className="review-section">
                         <span className='review-question'>{selected === 'this' ? 'no reviews for this address' : 'no other reviews'}</span>
                         <div className='leave-a-review-wrapper'>
                             <button className='leave-a-review' onClick={() => scrollToReviews()}>leave a review</button>
