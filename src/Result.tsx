@@ -588,7 +588,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             <div className='properties'>
               {
                 result.data.market_value_sum &&
-                <><div className='market-value-str'>total market-value of properties:</div><div className='market-value'>{convertToUSD(result.data.market_value_sum)}</div></>
+                <><div className='market-value-str'>total market-value of properties:</div><div className='market-value'>{convertToUSD(result.data.market_value_sum)}<Info message="calculated using tax information for the 2023 year collected from PorlandMaps.com"/></div></>
               }
               {
                 result.data.locations && result.data.locations.length > 0 ?

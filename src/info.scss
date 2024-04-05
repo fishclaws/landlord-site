@@ -5,9 +5,8 @@
 .absCenter {
     //display: inline;
     margin: 10px;
-    position: fixed;
-    right: 1%;
-    top: 1%;
+    position: relative;
+    z-index: 100;
 }
 
 
@@ -19,11 +18,11 @@
     padding: 0;
     margin: 0;
     font-size: 14px;
-    position: relative;
+    position: absolute;
+    bottom: -10px;
 }
 
 .infoButton-btn {
-    scale: 1.5;
     appearance: none;
     background-color: transparent;
     border: 2px solid rgb(0, 0, 0);
@@ -31,7 +30,7 @@
     width: 20px;
     height: 20px;
     color: rgb(0, 0, 0);
-    background-color: rgb(255, 255, 255);
+    background-color: rgb(233, 233, 233);
     font-weight: 700;
     transform: rotate(-45deg);
     transition: border-radius 200ms ease-in-out;

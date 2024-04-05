@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Montserrat");
 
 
-$lime: #c8c815;
+$lime: #98ae0f;
 $orange: #ff5100;
 $light-orange: #fa6e1d;
 $gray: #232020;
@@ -736,6 +736,10 @@ label {
   border-radius: 5px;
 
   text-align: left;
+
+  :hover {
+    background-color: $teal;
+  }
 }
 
 @media (max-width: 800px) {
@@ -1275,7 +1279,7 @@ svg {
   // box-shadow: 6px 6px 0px rgb(255, 145, 0);
   // background-color: $orange;
   box-shadow: 6px 6px 0px $lime;
-  background-color: rgb(255, 0, 72);
+  background-color: rgb(255, 54, 111);
   width: fit-content;
   margin: auto;
   color: rgb(0, 0, 0);
@@ -1315,6 +1319,7 @@ svg {
   font-size: 1.5em;
   color: #18819e;
   font-weight: bold;
+  display: flex;
 
 }
 @media (max-width: 800px) {
