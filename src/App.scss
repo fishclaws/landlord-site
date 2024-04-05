@@ -1694,7 +1694,7 @@ $line-transition: all .2s cubic-bezier(.25,.46,.45,.94);
   font-size: 1.4em;
   border-style: none;
   border-radius: 10px;
-  background-color: $lime;
+  background-color: $bright;
 
 }
 
@@ -2256,7 +2256,6 @@ small {
 }
 
 .mobile-search {
-  display: none;
 }
 
 @media (max-width: 800px) {
