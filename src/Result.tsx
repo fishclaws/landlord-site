@@ -470,7 +470,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
               <div className='address-title'>{result.property.address_full}</div>
             }
             {
-              resultType === 'landlord' &&
+              resultType === 'landlord' && result.data && result.data?.business_owners &&
               <div className='address-title'>{result.data?.business_owners![0].business_name}</div>
             }
               <div className='main-marker-inline' />
@@ -482,8 +482,11 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
               {
                 <div className='owned_by'>owned by</div>
               }
-              {owners.map((o, i) =>
+              {owners ? owners.map((o, i) =>
                 (<>{i !== 0 ? <div className='ampersand'>&amp;</div> : undefined}<div className='owner-name'>{o}</div></>))
+                : (result.data?.owned_addresses && result.data?.owned_addresses.length &&
+                    <div className='owner-name'>{result.data?.owned_addresses[0].owner}</div>
+                )
               }
               {
                 result && result.property && result.property.owner && hierarchies && hierarchies.length > 0 ?
@@ -508,47 +511,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
 
             </div>
             
-            {
-                  result.data && result.data.reviews && result.data.reviews.length > 0 ?
-                  // 
-                  <div className='ratings-wrapper'>
-                    {/* <div className='ratings-circle'> */}
-                      {/* <div className='ratings-warning'>
-                      </div> */}
-                      
-                    {/* </div> */}
-                    {/* <Collapsible
-                      title={`${result.data.reviews.length} reviews`}
-                      title_class='ratings-circle'
-                      onOpen={openHandler}> */}
-                      <Reviews 
-                        property_reviews={result.property && result.property.reviews} 
-                        other_reviews={result.data && result.data.reviews}
-                        onOpen={openHandler}
-                        scrollToReviews={scrollToReviews}/>
-                    {/* </Collapsible> */}
-                  </div> : (
-                    result.property && result.property.reviews && result.property.reviews.length > 0 ?
-                      <div className='ratings-wrapper'>
-                      {/* <div className='ratings-circle'> */}
-                        {/* <div className='ratings-warning'>
-                        </div> */}
-                        
-                      {/* </div> */}
-                      <Collapsible
-                        title={`${result.property.reviews.length} reviews`}
-                        title_class='ratings-circle'
-                        onOpen={openHandler}>
-                        <Reviews 
-                          property_reviews={result.property && result.property.reviews} 
-                          other_reviews={null}
-                          onOpen={openHandler}
-                          scrollToReviews={scrollToReviews}/>
-                      </Collapsible>
-                    </div> : undefined
 
-                  )
-              }
 
               
             {
@@ -708,7 +671,49 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                 </div>
                 : undefined
             }
+            {
+                  result.data && result.data.reviews && result.data.reviews.length > 0 ?
+                  // 
+                  <div className='ratings-wrapper'>
+                    {/* <div className='ratings-circle'> */}
+                      {/* <div className='ratings-warning'>
+                      </div> */}
+                      
+                    {/* </div> */}
+                    {/* <Collapsible
+                      title={`${result.data.reviews.length} reviews`}
+                      title_class='ratings-circle'
+                      onOpen={openHandler}> */}
+                      <Reviews 
+                        property_reviews={result.property && result.property.reviews} 
+                        other_reviews={result.data && result.data.reviews}
+                        onOpen={openHandler}
+                        scrollToReviews={scrollToReviews}/>
+                    {/* </Collapsible> */}
+                  </div> : (
+                    result.property && result.property.reviews && result.property.reviews.length > 0 ?
+                      <div className='ratings-wrapper'>
+                      {/* <div className='ratings-circle'> */}
+                        {/* <div className='ratings-warning'>
+                        </div> */}
+                        
+                      {/* </div> */}
+                      <Collapsible
+                        title={`${result.property.reviews.length} reviews`}
+                        title_class='ratings-circle'
+                        onOpen={openHandler}>
+                        <Reviews 
+                          property_reviews={result.property && result.property.reviews} 
+                          other_reviews={null}
+                          onOpen={openHandler}
+                          scrollToReviews={scrollToReviews}/>
+                      </Collapsible>
+                    </div> : undefined
 
+                  )
+              }
+
+            <hr className="dashed"/>
             <div ref={survey} className='survey-container'>
               {
                 showSurvey ?

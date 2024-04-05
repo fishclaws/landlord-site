@@ -1,5 +1,6 @@
 export interface PropertyAddress {
   objectid: string
+  owner: string
   property_id: string
   address_id: string
   address_full: string

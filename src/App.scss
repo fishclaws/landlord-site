@@ -412,7 +412,7 @@ button:focus {
   background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
 
   color: rgb(12, 12, 12);
-  font-size: 100%;
+  font-size: 150%;
   padding: 2%;
   margin: 30px;
   font-weight: 500;
@@ -892,8 +892,8 @@ table tr td:last-child {
 
 @keyframes right-up-animation {
   from {
-    top: 40%;
-    height: 60%;
+    top: 32%;
+    height: 66.66%;
   }
 
   to {
@@ -1159,7 +1159,8 @@ px
   margin: auto;
   margin-bottom: 10px;
   padding: 10px;
-  color: #f2ff00;
+  letter-spacing: .2em;
+  color: $bright;
 
   text-align: center;
   font-size: 2.0em;
@@ -1169,7 +1170,7 @@ px
 }
 
 .question {
-  color: rgb(218, 218, 218);
+  color: $bright;
   background-color: rgba(0, 0, 0, 0.72);
   box-shadow: 2px 2px rgb(0 0 0 / 42%);
   margin-bottom: 20px;
@@ -1857,6 +1858,10 @@ button[disabled]{
   border-top-style: none;
   padding: 20px;
   background-color: #949616c3;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  
+
   // max-width: 500px;
   
 }
@@ -2233,4 +2238,10 @@ small {
   padding-left: 10px;
   padding-right: 10px;
   font-weight: bold;
+}
+
+.dashed {
+  margin-top: 20px;
+  border-top: 3px dashed #bbb;
+  border-radius: 5px;
 }
