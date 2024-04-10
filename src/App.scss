@@ -862,7 +862,7 @@ table tr td:last-child {
   background-color: $gray;
   border-width: 10px;
   margin-top: 20px;
-
+  scroll-margin: 130px;
 }
 
 .locations-container {
@@ -1295,11 +1295,10 @@ svg {
   font-weight: bold;
   // box-shadow: 6px 6px 0px rgb(255, 145, 0);
   // background-color: $orange;
-  box-shadow: 6px 6px 0px $lime;
-  background-color: rgb(255, 54, 111);
+  // box-shadow: 6px 6px 0px $lime;
+  color: rgb(255, 54, 111);
   width: fit-content;
   margin: auto;
-  color: rgb(0, 0, 0);
 }
 
 .table-wrapper {
@@ -1876,7 +1875,6 @@ button[disabled]{
   background-color: #5a5c0ec3;
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
-  
 
   // max-width: 500px;
   
@@ -1885,6 +1883,8 @@ button[disabled]{
 .ratings-wrapper {
   margin: auto;
   width: fit-content;
+  margin-top: 50px;
+
 }
 
 .review-statement{
@@ -2009,21 +2009,30 @@ button[disabled]{
   padding: 10px;
 }
 
+.jump-to-reviews-wrapper {
+  position: fixed;
+  text-align:center;
+
+}
+
 .jump-to-reviews {
+  width: 100%;
   position: fixed;
   bottom: 0px;
   color: $gray;
-  background-color: $green;
-  border-color: $lime;
-  width: 100%;
+  background-color: $light-orange;
+  border-color: $orange;
   border-style: solid;
-  font-size: 1.5em;
-  padding-top: 4px;
+  font-size: 1.2em;
+  padding-top: 5px;
   padding-bottom: 4px;
-  border-top-right-radius: 90px;
-  border-top-left-radius: 90px;
-  letter-spacing: .15em;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+
+  letter-spacing: .14em;
   font-weight: bold;
+  padding-right: 0px;
+  padding-bottom: 5px;
 
 }
 

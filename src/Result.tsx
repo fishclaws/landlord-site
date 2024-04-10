@@ -203,7 +203,7 @@ function dedup(names: string[] | undefined) {
   const obj = names.reduce((agg, n) => {
     agg[n] = true
     return agg;
-  },{} as {[key: string]: boolean})
+  }, {} as { [key: string]: boolean })
   return Object.keys(obj)
 }
 
@@ -417,10 +417,45 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
     setShowSurvey(false)
   }
 
+  const resultRef = useRef(null)
+
+  function checkBrowser() {
+    let browser = "";
+    let c = navigator.userAgent.search("Chrome");
+    let f = navigator.userAgent.search("Firefox");
+    let m8 = navigator.userAgent.search("MSIE 8.0");
+    let m9 = navigator.userAgent.search("MSIE 9.0");
+    if (c > -1) {
+      browser = "Chrome";
+    } else if (f > -1) {
+      browser = "Firefox";
+    } else if (m9 > -1) {
+      browser = "MSIE 9.0";
+    } else if (m8 > -1) {
+      browser = "MSIE 8.0";
+    }
+    return browser;
+  }
+
   function scrollToReviews() {
     setScrolled(true)
+    if (checkBrowser() !== 'Firefox') {
+      setTimeout(() => {
+        if (resultRef.current) {
+          let padding = 0;
+          let paddingStr = (resultRef.current as any).style.getPropertyValue('padding-top');
+          if (paddingStr === '') {
+            padding = 130
+          } else {
+            padding = Number(paddingStr.replace('px', ''))
+          }
+          (resultRef.current as any).style.setProperty('padding-top', `${padding + 130}px`);
+
+        }
+      }, 100)
+    }
     if (survey && survey.current) {
-      (survey.current as any).scrollIntoView({ behavior: 'smooth'})
+      (survey.current as any).scrollIntoView({ behavior: 'smooth' })
     }
   }
 
@@ -433,7 +468,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   }
 
   return (
-    <div className='result' >
+    <div className='result' ref={resultRef}>
       <Disclaimer />
       {/* {
         (!scrolled && !alreadyScrolled) &&
@@ -479,14 +514,14 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
 
           <div className='data-container'>
             <h3 className='address-title-container'>
-            {
-              result.property &&
-              <div className='address-title'>{result.property.address_full}</div>
-            }
-            {
-              resultType === 'landlord' && result.data && result.data?.business_owners &&
-              <div className='address-title'>{result.data?.business_owners![0].business_name}</div>
-            }
+              {
+                result.property &&
+                <div className='address-title'>{result.property.address_full}</div>
+              }
+              {
+                resultType === 'landlord' && result.data && result.data?.business_owners &&
+                <div className='address-title'>{result.data?.business_owners![0].business_name}</div>
+              }
               <div className='main-marker-inline' />
             </h3>
             {/* {result.property.description !== "undefined" ?
@@ -499,7 +534,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
               {owners ? owners.map((o, i) =>
                 (<>{i !== 0 ? <div className='ampersand'>&amp;</div> : undefined}<div className='owner-name'>{o}</div></>))
                 : (result.data?.owned_addresses && result.data?.owned_addresses.length &&
-                    <div className='owner-name'>{result.data?.owned_addresses[0].owner}</div>
+                  <div className='owner-name'>{result.data?.owned_addresses[0].owner}</div>
                 )
               }
               {
@@ -524,14 +559,14 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
 
 
             </div>
-            
 
 
-              
+
+
             {
               result.data && result.data.evictions && result.data.evictions.length &&
               <div className='evictions-wrapper'>
-                <div className='evictions' onClick={() => false && setShowEvictions(!showEvictions)}>{result.data.evictions.length !== 1 ? result.data.evictions.length + ' EVICTIONS ON RECORD': '1 EVICTION ON RECORD'} </div>
+                <div className='evictions' onClick={() => false && setShowEvictions(!showEvictions)}>{result.data.evictions.length !== 1 ? result.data.evictions.length + ' EVICTIONS ON RECORD' : '1 EVICTION ON RECORD'} </div>
                 {/* <button className='evictions' onClick={() => setShowEvictions(!showEvictions)}>Found {result.data.evictions.length} eviction court-records associated with this landlord</button> */}
 
                 {
@@ -561,68 +596,68 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                 }
               </div>
             }
-            { result.data &&
-            <div className='properties'>
-              {
-                result.data.market_value_sum &&
-                <><div className='market-value-str'>total market-value of properties:</div><div className='market-value'>{convertToUSD(result.data.market_value_sum)}<Info message="calculated using tax information collected from PorlandMaps.com"/></div></>
-              }
-              {
-                result.data.locations && result.data.locations.length > 0 ?
-                  (
-                    <div className='locations-container'>
-                      {
-                        result.data?.owned_addresses && result.data?.owned_addresses.length > 0 && locations && locations.length > 0 ?
-                          (
+            {result.data &&
+              <div className='properties'>
+                {
+                  result.data.market_value_sum &&
+                  <><div className='market-value-str'>total market-value of properties:</div><div className='market-value'>{convertToUSD(result.data.market_value_sum)}<Info message="calculated using tax information collected from PorlandMaps.com" /></div></>
+                }
+                {
+                  result.data.locations && result.data.locations.length > 0 ?
+                    (
+                      <div className='locations-container'>
+                        {
+                          result.data?.owned_addresses && result.data?.owned_addresses.length > 0 && locations && locations.length > 0 ?
+                            (
 
-                            <div className='counts-container'>
-                              {/* <div className='also-owns'>{'who also own' + (owners.length > 0 ? '': 's')}</div> */}
+                              <div className='counts-container'>
+                                {/* <div className='also-owns'>{'who also own' + (owners.length > 0 ? '': 's')}</div> */}
 
-                              {unitTotal == null || unitTotal === addressTotal ? undefined : (
+                                {unitTotal == null || unitTotal === addressTotal ? undefined : (
+                                  <div className='counts-element'>
+                                    <span className='count-number'>{unitTotal}</span>
+                                    <br />
+                                    units
+                                  </div>)
+                                }
                                 <div className='counts-element'>
-                                  <span className='count-number'>{unitTotal}</span>
-                                  <br />
-                                  units
-                                </div>)
-                              }
-                              <div className='counts-element'>
-                                <span className='count-number'>{addressTotal}</span>
-                                <br></br>
-                                addresses
-                              </div>
-                              <div className='counts-element'>
-                                <div className='marker-inline-wrapper'>
-                                  <span className='count-number'>{locations ? locations.length : 1}</span>
-                                  <div onClick={() => scrollToTop()} className='marker-inline' />
+                                  <span className='count-number'>{addressTotal}</span>
                                   <br></br>
-                                  locations
+                                  addresses
+                                </div>
+                                <div className='counts-element'>
+                                  <div className='marker-inline-wrapper'>
+                                    <span className='count-number'>{locations ? locations.length : 1}</span>
+                                    <div onClick={() => scrollToTop()} className='marker-inline' />
+                                    <br></br>
+                                    locations
+                                  </div>
                                 </div>
                               </div>
-                            </div>
 
 
-                          ) : undefined
-                      }
-                      {/* <div className='owns-button-container'>
+                            ) : undefined
+                        }
+                        {/* <div className='owns-button-container'>
                       <button className='owns-button' onClick={() => toggleLocations()}>{showingLocations ? 'HIDE' : 'SHOW'}</button>
                     </div> */}
-                      {showingLocations ?
-                        <div className='address-groups'>
-                          {locations ? locations.filter(loc => loc).map(loc => (
-                            <div className='address-group'>
-                              {loc.addresses.map(address =>
-                              (
-                                <><a className='address-link' href={`/address/${address.address_full}`}>{address.address_full}</a><br /></>
-                              ))}
-                            </div>
-                          )) : undefined
-                          }
-                        </div> : undefined
-                      }
-                    </div>
-                  ) : undefined
-              }
-            </div>
+                        {showingLocations ?
+                          <div className='address-groups'>
+                            {locations ? locations.filter(loc => loc).map(loc => (
+                              <div className='address-group'>
+                                {loc.addresses.map(address =>
+                                (
+                                  <><a className='address-link' href={`/address/${address.address_full}`}>{address.address_full}</a><br /></>
+                                ))}
+                              </div>
+                            )) : undefined
+                            }
+                          </div> : undefined
+                        }
+                      </div>
+                    ) : undefined
+                }
+              </div>
             }
 
             {
@@ -686,28 +721,28 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                 : undefined
             }
             {
-                  result.data && result.reviews && result.reviews.length > 0 ?
-                  // 
-                  <div className='ratings-wrapper'>
-                      <Reviews 
-                        property_reviews={result.property && result.property.reviews} 
-                        other_reviews={result.data && result.reviews}
+              result.data && result.reviews && result.reviews.length > 0 ?
+                // 
+                <div className='ratings-wrapper'>
+                  <Reviews
+                    property_reviews={result.property && result.property.reviews}
+                    other_reviews={result.data && result.reviews}
+                    onOpen={openHandler}
+                    scrollToReviews={scrollToReviews} />
+                </div> : (
+                  result.property && result.property.reviews && result.property.reviews.length > 0 ?
+                    <div className='ratings-wrapper'>
+                      <Reviews
+                        property_reviews={result.property && result.property.reviews}
+                        other_reviews={null}
                         onOpen={openHandler}
-                        scrollToReviews={scrollToReviews}/>
-                  </div> : (
-                    result.property && result.property.reviews && result.property.reviews.length > 0 ?
-                      <div className='ratings-wrapper'>
-                        <Reviews 
-                          property_reviews={result.property && result.property.reviews} 
-                          other_reviews={null}
-                          onOpen={openHandler}
-                          scrollToReviews={scrollToReviews}/>
+                        scrollToReviews={scrollToReviews} />
                     </div> : undefined
 
-                  )
-              }
+                )
+            }
 
-            <hr className="dashed"/>
+            <hr className="dashed" />
             <div ref={survey} className='survey-container'>
               {
                 showSurvey ?
@@ -725,12 +760,14 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                   </div>
               }
             </div>
-            
+
           </div>
         </div>
       </div >
-
-      <button className={'jump-to-reviews ' + (atBottom ? 'hide-jump' : 'show-jump')} onClick={() => scrollToReviews()}>leave a review</button>
+      {
+        showSurvey &&
+        <div className='jump-to-reviews-wrapper'><button className={'jump-to-reviews ' + (atBottom ? 'hide-jump' : 'show-jump')} onClick={() => scrollToReviews()}>leave a review</button></div>
+      }
     </div >
   );
 }
