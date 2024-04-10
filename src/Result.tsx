@@ -240,7 +240,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   const [unitTotal] = useState(getUnitTotalCount(result))
   const [addressTotal] = useState(result.data && result.data?.owned_addresses ? 1 + (result.data?.owned_addresses.filter(a => a).length) : undefined)
   const [owners, setOwners]: [string[], any] = useState([])
-  const [atBottom, setAtBottom]: [boolean, any] = useState(false)
+  const [atBottom, setAtBottom]: [boolean, any] = useState(true)
   const [scrolled, setScrolled]: [boolean, any] = useState(false)
   const [showEvictions, setShowEvictions]: [boolean, any] = useState(false)
   const [landlordList, setLandlordList]: [{ name: string, origin: string }[], any] = useState([])
@@ -307,14 +307,14 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
     const o = getOwners(hier!, result)
     setOwners(o)
 
-    const observer = new IntersectionObserver((entries, observer) => {
-      const entry = entries[0];
-      console.log('entry', entry);
-      console.log('entry.isIntersecting', entry.isIntersecting);
-      setAtBottom(entry.isIntersecting)
-    });
+    // const observer = new IntersectionObserver((entries, observer) => {
+    //   const entry = entries[0];
+    //   console.log('entry', entry);
+    //   console.log('entry.isIntersecting', entry.isIntersecting);
+    //   setAtBottom(entry.isIntersecting)
+    // });
 
-    observer.observe(survey.current!)
+    // observer.observe(survey.current!)
 
     showAllLocations()
     setLandlordList(getLandlordList(result, hier))
@@ -323,7 +323,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
     const target = event.target! as any
     console.log('Current Scroll Position:', target.scrollTop)
-    setScrolled(target.scrollTop > 300)
+    setScrolled(target.scrollTop > 20)
     if (target.scrollTop > 20) {
       setAlreadyScrolled(true)
     }

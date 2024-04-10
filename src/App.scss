@@ -945,13 +945,13 @@ table tr td:last-child {
   }
 
   .right-up {
-    animation: right-up-animation .5s ease-in;
+    animation: right-up-animation .2s ease-in;
     animation-direction: normal;
     animation-fill-mode: forwards;
   }
 
   .right-down {
-    animation: right-down-animation .5s ease-in;
+    animation: right-down-animation .2s ease-in;
     animation-direction: reverse;
     animation-fill-mode: forwards;
   }
@@ -1159,7 +1159,7 @@ px
   border-radius: 25px;
   border-width: 2px;
   border-color: $lime;
-  margin-bottom: 100px;
+  margin-bottom: 300px;
 }
 
 .survey-title {
