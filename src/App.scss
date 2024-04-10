@@ -2169,29 +2169,58 @@ small {
 .organize-wrapper {
   position: absolute;
   width: 100%;
-  background-color: white;
-  height: 100%;
-  overflow: scroll;
+  height: calc( 100vh - ( 100px ) ); 
+  background-color: rgb(99, 99, 99);
+  overflow: auto;
+  font-size: 1.2em;
 }
 
 .org-section {
+  box-sizing: border-box;
   margin: auto;
   padding: 20px;
-  background-color: #38a8c7;
+  background-color: #323232;
   max-width: 500px;
   margin-top: 50px;
+  letter-spacing: 0.0em;
+
 }
 
 .org-title {
   margin: auto;
   font-size: 1.9em;
-  color: black;
+  color: rgb(187, 255, 0);
+  letter-spacing: 0.2em;
+  font-weight: bold;
 }
 
 .org-question {
   font-size: 1.3em;
   color: white;
   padding: 5px;
+}
+
+.org-desc {
+  color: rgb(192, 192, 192);
+
+}
+
+.org-add {
+  letter-spacing: -0.08rem;
+
+  color: rgb(183, 255, 0);
+  font-size: 1.2em;
+}
+
+.org-bullets {
+  color: $lime;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.org-bullet {
+  display:list-item;
+  padding: 10px;
 }
 
 .org-answers {
@@ -2207,9 +2236,19 @@ small {
     flex-grow: 4;
     width: fit-content;
 
+
+
     .active {
       background-color: #a2af13;
     }
+  }
+
+  .selected {
+    background-color: #7a9c12;
+  }
+
+  .disabled {
+    background-color: #8c8c8c;
   }
 }
 
