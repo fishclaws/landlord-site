@@ -307,14 +307,14 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
     const o = getOwners(hier!, result)
     setOwners(o)
 
-    // const observer = new IntersectionObserver((entries, observer) => {
-    //   const entry = entries[0];
-    //   console.log('entry', entry);
-    //   console.log('entry.isIntersecting', entry.isIntersecting);
-    //   setAtBottom(entry.isIntersecting)
-    // });
+    const observer = new IntersectionObserver((entries, observer) => {
+      const entry = entries[0];
+      console.log('entry', entry);
+      console.log('entry.isIntersecting', entry.isIntersecting);
+      setAtBottom(entry.isIntersecting)
+    });
 
-    // observer.observe(survey.current!)
+    observer.observe(survey.current!)
 
     showAllLocations()
     setLandlordList(getLandlordList(result, hier))
@@ -434,11 +434,11 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   return (
     <div className='result' >
       <Disclaimer />
-      {
+      {/* {
         (!scrolled && !alreadyScrolled) &&
         <div className='full-screen'>
         </div>
-      }
+      } */}
       <div className='headerContainer small-header'>
         {/* <img className='post' src="/images/post.png" alt="a post"></img> */}
         {/* <h1 onClick={() => closeResult()}>
@@ -474,7 +474,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
           </div>
         </div>
 
-        <div className={scrolled && atBottom ? 'right right-up' : 'right right-down'} onScroll={handleScroll} ref={rightRef}>
+        <div className={scrolled ? 'right right-up' : 'right right-down'} onScroll={handleScroll} ref={rightRef}>
 
           <div className='data-container'>
             <h3 className='address-title-container'>
@@ -728,6 +728,8 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
           </div>
         </div>
       </div >
+
+      <button className={'jump-to-reviews ' + (atBottom ? 'hide-jump' : 'show-jump')} onClick={() => scrollToReviews()}>leave a review</button>
     </div >
   );
 }
