@@ -1763,16 +1763,18 @@ button[disabled]{
 .disclaimer-screen {
   width: 100%;
   height: 100%;
-  position: fixed;
+  position: absolute;
   background-color: #31391bb8;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 99;
 }
 
 .disclaimer {
   font-size: .8em;
   margin: auto;
+  margin-top: 10px;
   width: 80%;
   max-width: 500px;
   color: white;
@@ -2016,8 +2018,8 @@ button[disabled]{
   width: 100%;
   border-style: solid;
   font-size: 1.5em;
-  padding-top: 10px;
-  padding-bottom: 10px;
+  padding-top: 4px;
+  padding-bottom: 4px;
   border-top-right-radius: 90px;
   border-top-left-radius: 90px;
   letter-spacing: .15em;

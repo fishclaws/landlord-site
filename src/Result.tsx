@@ -418,6 +418,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   }
 
   function scrollToReviews() {
+    setScrolled(true)
     if (survey && survey.current) {
       (survey.current as any).scrollIntoView({ behavior: 'smooth'})
     }
