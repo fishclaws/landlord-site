@@ -439,21 +439,21 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
 
   function scrollToReviews() {
     setScrolled(true)
-    if (checkBrowser() !== 'Firefox') {
-      setTimeout(() => {
-        if (resultRef.current) {
-          let padding = 0;
-          let paddingStr = (resultRef.current as any).style.getPropertyValue('padding-top');
-          if (paddingStr === '') {
-            padding = 130
-          } else {
-            padding = Number(paddingStr.replace('px', ''))
-          }
-          (resultRef.current as any).style.setProperty('padding-top', `${padding + 130}px`);
+    // if (checkBrowser() !== 'Firefox') {
+    //   setTimeout(() => {
+    //     if (resultRef.current) {
+    //       let padding = 0;
+    //       let paddingStr = (resultRef.current as any).style.getPropertyValue('padding-top');
+    //       if (paddingStr === '') {
+    //         padding = 130
+    //       } else {
+    //         padding = Number(paddingStr.replace('px', ''))
+    //       }
+    //       (resultRef.current as any).style.setProperty('padding-top', `${padding + 130}px`);
 
-        }
-      }, 100)
-    }
+    //     }
+    //   }, 100)
+    // }
     if (survey && survey.current) {
       (survey.current as any).scrollIntoView({ behavior: 'smooth' })
     }
