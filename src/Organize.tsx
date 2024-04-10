@@ -70,7 +70,7 @@ const sections: Section[] = [
 
 ]
 
-function SectionComponent({sect, addSection}: {sect: Section, addSection: (id: number) => void}) {
+function SectionComponent({ index, sect, addSection }: { index: number, sect: Section, addSection: (id: number) => void }) {
     const ref: any = useRef();
 
     const [answerStatuses, setStatuses] = useState(sect.answers?.map(a => 'unselected'))
@@ -78,50 +78,43 @@ function SectionComponent({sect, addSection}: {sect: Section, addSection: (id: n
     useEffect(() => {
         if (ref.current) {
             setTimeout(() =>
-            (ref.current as any).scrollIntoView({ behavior: "smooth", block: "end" }), 
-            100);
+                (ref.current as any).scrollIntoView({ behavior: "smooth", block: "nearest", inline: 'start' }),
+                100);
+            
         }
     }, []);
 
     return (
-        <div className="org-section" ref={ref}>
-            <div className="org-title">{sect.title}</div>
-            <p className="org-desc">{sect.desc}</p>
-            {
-                sect.bullets && <div className="org-bullets">
-                    {
-                        sect.bullets.map(b => <div className="org-bullet">{b}</div>)
-                    }
-                </div>
-            }
-            <p className="org-add">{sect.additional}</p>
-            <p className="org-question">{sect.question}</p>
-            {sect.answers &&
-                <div className="org-answers">
-                    {
-                        sect.answers.map((a, i) => 
-                        <button 
-                            className={answerStatuses![i]} 
-                            disabled = {answerStatuses![i] === 'disabled'}
+        <>
+            {index !== 0 && <div className="downArrow">↯</div>}
+            <div className="org-section" ref={ref}>
+                <div className="org-title">{sect.title}</div>
+                <p className="org-desc">{sect.desc}</p>
+                {sect.bullets && <div className="org-bullets">
+                    {sect.bullets.map(b => <div className="org-bullet">{b}</div>)}
+                </div>}
+                <p className="org-add">{sect.additional}</p>
+                <p className="org-question">{sect.question}</p>
+                {sect.answers &&
+                    <div className="org-answers">
+                        {sect.answers.map((a, i) => <button
+                            className={answerStatuses![i]}
+                            disabled={answerStatuses![i] === 'disabled'}
                             onClick={(e) => {
                                 for (let j = 0; j < sect.answers!.length; j++) {
-                                    answerStatuses![j] = 'disabled'
+                                    answerStatuses![j] = 'disabled';
                                 }
-                                answerStatuses![i] = 'selected'
-                                setStatuses(answerStatuses)
+                                answerStatuses![i] = 'selected';
+                                setStatuses(answerStatuses);
                                 e.preventDefault();
                                 addSection(a.next);
-                            }}>{a.reply}</button>)
-                    }
-                </div>
-            }
-            {sect.join &&
-                <div className="org-join">
-                    {
-                    }
-                </div>
-            }
-        </div>
+                            }}>{a.reply}</button>)}
+                    </div>}
+                {sect.join &&
+                    <div className="org-join">
+
+                    </div>}
+            </div></>
     );
 }
 
@@ -140,9 +133,9 @@ function Organize() {
         <div className="organize-wrapper">
 
             {
-                flow.map((sect, i) => 
-                    <SectionComponent sect={sect} addSection={addSection}/>
-            )
+                flow.map((sect, i) =>
+                    <SectionComponent index={i} sect={sect} addSection={addSection} />
+                )
             }
         </div>
     );

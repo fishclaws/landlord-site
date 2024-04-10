@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import './App.scss';
-import logo from './logo.png';
+import logo2 from './logo3.png';
 import image_logo from './image_logo.png';
 import { useLocation, useNavigate } from "react-router-dom";
 import { Donate } from 'react-kofi-overlay'
@@ -15,7 +15,7 @@ function Header() {
         <div className="header">
            <button onClick={() => navigate('/')} className="logo">
             {/* <img className="image_logo" src={image_logo}/> */}
-            <img src={logo}/>
+            <img src={logo2}/>
             {location.pathname !== '/' ? <button className="search-button-nav" onClick={() => navigate('/')}>search</button> : undefined}
 
             </button>

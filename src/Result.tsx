@@ -423,8 +423,16 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
     }
   }
 
+  const rightRef = useRef(null)
+
+  function scrollToTop() {
+    if (rightRef.current) {
+      (rightRef.current as HTMLElement).scrollTo(0, 0)
+    }
+  }
+
   return (
-    <div className='result'>
+    <div className='result' >
       <Disclaimer />
       {
         (!scrolled && !alreadyScrolled) &&
@@ -466,7 +474,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
           </div>
         </div>
 
-        <div className={scrolled && atBottom ? 'right right-up' : 'right right-down'} onScroll={handleScroll}>
+        <div className={scrolled && atBottom ? 'right right-up' : 'right right-down'} onScroll={handleScroll} ref={rightRef}>
 
           <div className='data-container'>
             <h3 className='address-title-container'>
@@ -584,7 +592,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                               <div className='counts-element'>
                                 <div className='marker-inline-wrapper'>
                                   <span className='count-number'>{locations ? locations.length : 1}</span>
-                                  <div className='marker-inline' />
+                                  <div onClick={() => scrollToTop()} className='marker-inline' />
                                   <br></br>
                                   locations
                                 </div>

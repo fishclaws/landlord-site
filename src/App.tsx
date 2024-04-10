@@ -197,7 +197,7 @@ function App({organize}: {organize?: boolean}) {
       location.pathname === '/' ? <Banner></Banner> : undefined
       }
       <Header></Header>
-      <div className='body'>
+      {!result && !organize && <div className='body'>
       {/* <Info message="This data is collected from PortlandMaps.com and sos.oregon.gov. If something is incorrect please hover-over it and click the &quot;!&quot; button" /> */}
 
       {isLoading ?
@@ -297,7 +297,7 @@ function App({organize}: {organize?: boolean}) {
                 <button key={i} className='address-options' onClick={() => search_selected(address)}>{address}</button>
               ))
             }
-            <button className='address-options' onClick={() => setAddressOptions([])}>None of These</button>
+            <button className='address-options none-of-these' onClick={() => setAddressOptions([])}>None of These</button>
           </div>
           : <div></div>}
 
@@ -317,7 +317,7 @@ function App({organize}: {organize?: boolean}) {
 
 
 
-    </div>
+    </div>}
           {result &&
         <Result result={result} closeResult={closeResult} resultType={searchType}></Result>}
 

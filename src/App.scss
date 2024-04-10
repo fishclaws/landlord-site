@@ -95,7 +95,7 @@ $light-blue_2: #7ba1aca3;
 }
 
 html {
-  overflow: hidden;
+  overflow: clip;
 }
 
 body {
@@ -233,9 +233,10 @@ h1 {
 
 .main-container {
 
-  position: absolute;
   width: 100%;
   top: 10%;
+  padding: 130px 0 0;
+
 }
 
 .minimized {
@@ -562,15 +563,17 @@ button:focus {
   background: #c8c815;
   overflow-x: hidden;
   overflow-y: hidden;
+  padding: 60px 0 0;
+
 }
 
-// @media (max-width: 800px) {
-//   .result {
-//     top: 5%;
-//     height: 95%;
-//   }
+@media (max-width: 800px) {
+  .result {
+    padding: 130px 0 0;
 
-// }
+  }
+
+}
 
 .result-container {
   top: 0%;
@@ -945,13 +948,13 @@ table tr td:last-child {
   }
 
   .right-up {
-    animation: right-up-animation .2s ease-in;
+    animation: right-up-animation .4s ease-in;
     animation-direction: normal;
     animation-fill-mode: forwards;
   }
 
   .right-down {
-    animation: right-down-animation .2s ease-in;
+    animation: right-down-animation .4s ease-in;
     animation-direction: reverse;
     animation-fill-mode: forwards;
   }
@@ -2004,12 +2007,14 @@ button[disabled]{
 .header {
   position: relative;
   font-size: 1.6 em;
-  background-color: rgb(231, 236, 90);
+  background-color: rgb(0, 0, 0);
   font-weight: bold;
   z-index: 100;
   width: 100%;
   display: inline-flex;
   padding-top: 5px;
+  position: fixed;
+  scroll-margin-top: 5rem; 
 }
 
 .logo {
@@ -2066,7 +2071,7 @@ button[disabled]{
 .body {
   height: 100%;
   position: relative;
-
+  
 }
 
 .banner {
@@ -2173,6 +2178,9 @@ small {
   background-color: rgb(99, 99, 99);
   overflow: auto;
   font-size: 1.2em;
+  padding-bottom: 50px;
+  padding: 130px 0 0;
+
 }
 
 .org-section {
@@ -2181,7 +2189,7 @@ small {
   padding: 20px;
   background-color: #323232;
   max-width: 500px;
-  margin-top: 50px;
+  margin-top: 10px;
   letter-spacing: 0.0em;
 
 }
@@ -2208,7 +2216,7 @@ small {
 .org-add {
   letter-spacing: -0.08rem;
 
-  color: rgb(183, 255, 0);
+  color: $lime;
   font-size: 1.2em;
 }
 
@@ -2328,3 +2336,12 @@ small {
   display: flex;
 }
 
+.downArrow {
+  text-align: center;
+  width: 100%;
+  top: 10%;
+  font-weight: bold;
+  font-size: 3.0em;
+  color: $lime;
+
+}
