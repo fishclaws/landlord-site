@@ -677,42 +677,22 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                 : undefined
             }
             {
-                  result.data && result.data.reviews && result.data.reviews.length > 0 ?
+                  result.data && result.reviews && result.reviews.length > 0 ?
                   // 
                   <div className='ratings-wrapper'>
-                    {/* <div className='ratings-circle'> */}
-                      {/* <div className='ratings-warning'>
-                      </div> */}
-                      
-                    {/* </div> */}
-                    {/* <Collapsible
-                      title={`${result.data.reviews.length} reviews`}
-                      title_class='ratings-circle'
-                      onOpen={openHandler}> */}
                       <Reviews 
                         property_reviews={result.property && result.property.reviews} 
-                        other_reviews={result.data && result.data.reviews}
+                        other_reviews={result.data && result.reviews}
                         onOpen={openHandler}
                         scrollToReviews={scrollToReviews}/>
-                    {/* </Collapsible> */}
                   </div> : (
                     result.property && result.property.reviews && result.property.reviews.length > 0 ?
                       <div className='ratings-wrapper'>
-                      {/* <div className='ratings-circle'> */}
-                        {/* <div className='ratings-warning'>
-                        </div> */}
-                        
-                      {/* </div> */}
-                      <Collapsible
-                        title={`${result.property.reviews.length} reviews`}
-                        title_class='ratings-circle'
-                        onOpen={openHandler}>
                         <Reviews 
                           property_reviews={result.property && result.property.reviews} 
                           other_reviews={null}
                           onOpen={openHandler}
                           scrollToReviews={scrollToReviews}/>
-                      </Collapsible>
                     </div> : undefined
 
                   )

@@ -162,18 +162,23 @@ export interface FoundBusiness {
   type: 'found-business'
   data: DataResult
   property: PropertyResult
+  reviews?: []
+
 }
 
 export interface NoBusinessFound {
   type: 'no-businesses'
   data: DataResultNoBusiness
   property: PropertyResult
+  reviews?: []
+
 }
 
 export interface NoLandlordFound {
   type: 'no-landlord'
   data: null
   property: PropertyResult
+  reviews?: []
 }
 
 export interface MultipleAddresses {

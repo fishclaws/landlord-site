@@ -27,7 +27,9 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
             setPropertyComments(property_reviews.map(rev => rev.review_text.trim()).filter(rev => rev.length))
         }
         if (other_reviews) {
-            const or = other_reviews.filter(rev => !property_reviews.find(pr => pr.id === rev.id))
+            let or = other_reviews
+            if (property_reviews)
+                or = or.filter(rev => !property_reviews.find(pr => pr.id === rev.id))
             setOtherAgg(getStatements(or))
             setOtherComments(or.map(rev => rev.review_text.trim()).filter(rev => rev.length))
         }
