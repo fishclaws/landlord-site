@@ -2229,13 +2229,13 @@ small {
 .organize-wrapper {
   position: absolute;
   width: 100%;
-  height: calc( 100vh - ( 100px ) ); 
+  height: calc( 100vh - ( 140px ) ); 
   background-color: rgb(99, 99, 99);
   overflow: auto;
-  font-size: 1.2em;
-  padding-bottom: 50px;
+  font-size: 1.0em;
+  padding-bottom: 150px;
   padding: 130px 0 0;
-  scroll-margin-top: 5rem; 
+  scroll-margin-top: 130px; 
 
 }
 
@@ -2245,8 +2245,8 @@ small {
   padding: 20px;
   background-color: #323232;
   max-width: 500px;
-  margin-top: 10px;
   letter-spacing: 0.0em;
+  scroll-margin-top: 130px; 
 
 }
 

@@ -70,7 +70,7 @@ const sections: Section[] = [
 
 ]
 
-function SectionComponent({ index, sect, addSection, submitMe }: { index: number, sect: Section, addSection: (id: number) => void, submitMe: (name: string, email: string) => void }) {
+function SectionComponent({ index, sect, addSection, submitMe, scrollToBottom }: { index: number, sect: Section, addSection: (id: number) => void, submitMe: (name: string, email: string) => void, scrollToBottom: any }) {
     const ref: any = useRef();
 
     const [answerStatuses, setStatuses] = useState(sect.answers?.map(a => 'unselected'))
@@ -80,10 +80,10 @@ function SectionComponent({ index, sect, addSection, submitMe }: { index: number
 
     useEffect(() => {
         if (ref.current) {
-            setTimeout(() =>
-                (ref.current as any).scrollIntoView({ behavior: "smooth", block: "nearest", inline: 'start' }),
-                100);
-            
+            // setTimeout(() =>
+                //(ref.current as any).scrollIntoView({ behavior: "smooth", block: "nearest", inline: 'start' })//,
+                // 100);
+            scrollToBottom()
         }
     }, []);
 
@@ -97,7 +97,7 @@ function SectionComponent({ index, sect, addSection, submitMe }: { index: number
                     {sect.bullets.map(b => <div className="org-bullet">{b}</div>)}
                 </div>}
                 <p className="org-add">{sect.additional}</p>
-                <p className="org-question">{sect.question}</p>
+                {sect.question && <p className="org-question">{sect.question}</p> }
                 {sect.answers &&
                     <div className="org-answers">
                         {sect.answers.map((a, i) => <button
@@ -155,6 +155,7 @@ function Organize() {
 
 
     const [flow, setFlow] = useState([sections.find(s => s.id === 0)] as Section[])
+    const wrapper = useRef(null)
 
     function addSection(id: number) {
         const section = sections.find(s => s.id === id)!;
@@ -168,12 +169,23 @@ function Organize() {
         })
     }
 
+    function scrollToBottom() {
+        if (wrapper.current) {
+            (wrapper.current as any).scrollTo({
+                left: 0, 
+                top: (wrapper.current as any).scrollHeight,
+                behavior: 'smooth'
+            });
+
+        }
+    }
+
     return (
-        <div className="organize-wrapper">
+        <div className="organize-wrapper" ref={wrapper}>
 
             {
                 flow.map((sect, i) =>
-                    <SectionComponent index={i} sect={sect} addSection={addSection} submitMe={submitMe}/>
+                    <SectionComponent index={i} sect={sect} addSection={addSection} submitMe={submitMe} scrollToBottom={scrollToBottom}/>
                 )
             }
         </div>
