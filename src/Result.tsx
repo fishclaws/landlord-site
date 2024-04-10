@@ -530,7 +530,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             {
               result.data && result.data.evictions && result.data.evictions.length &&
               <div className='evictions-wrapper'>
-                <button className='evictions' onClick={() => false && setShowEvictions(!showEvictions)}>{result.data.evictions.length !== 1 ? result.data.evictions.length + ' EVICTIONS ON RECORD': '1 EVICTION ON RECORD'} </button>
+                <div className='evictions' onClick={() => false && setShowEvictions(!showEvictions)}>{result.data.evictions.length !== 1 ? result.data.evictions.length + ' EVICTIONS ON RECORD': '1 EVICTION ON RECORD'} </div>
                 {/* <button className='evictions' onClick={() => setShowEvictions(!showEvictions)}>Found {result.data.evictions.length} eviction court-records associated with this landlord</button> */}
 
                 {
