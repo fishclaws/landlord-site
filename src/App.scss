@@ -1763,7 +1763,7 @@ button[disabled]{
 .disclaimer-screen {
   width: 100%;
   height: 100%;
-  position: absolute;
+  position: fixed;
   background-color: #31391bb8;
   display: flex;
   justify-content: center;
