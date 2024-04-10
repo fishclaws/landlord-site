@@ -571,6 +571,7 @@ button:focus {
 @media (max-width: 800px) {
   .result {
     padding: 130px 0 0;
+    scroll-margin-top: 5rem; 
 
   }
 
@@ -2234,6 +2235,7 @@ small {
   font-size: 1.2em;
   padding-bottom: 50px;
   padding: 130px 0 0;
+  scroll-margin-top: 5rem; 
 
 }
 
@@ -2398,4 +2400,36 @@ small {
   font-size: 3.0em;
   color: $lime;
 
+}
+
+.org-join {
+  text-align: center;
+  background: radial-gradient(circle, rgba(238, 174, 202, 1) 0%, rgba(148, 187, 233, 1) 100%);
+  padding: 10px;
+
+  p {
+    font-weight: bold;
+  }
+
+  input {
+    padding: 10px;
+    margin: auto;
+    background-color: rgb(255, 255, 255);
+    margin-top: 10px;
+  }
+
+  button {
+    border-style: none;
+    margin: 10px;
+    font-size: 1.3em;
+    padding: 8px;
+    padding-left: 10px;
+    padding-right: 10px;
+    background: radial-gradient(circle, rgb(222, 51, 125) 0%, rgb(159, 37, 135) 100%);
+    color: white;
+  }
+
+  .small-text {
+    font-size: .8em;
+  }
 }

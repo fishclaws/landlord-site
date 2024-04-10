@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { submitContact } from "./services";
 
 interface Section {
     id: number;
@@ -8,7 +9,7 @@ interface Section {
     bullets?: string[];
     additional?: string;
     answers?: { reply: string, next: number }[],
-    join?: true;
+    join?: string;
 }
 
 const sections: Section[] = [
@@ -64,16 +65,18 @@ const sections: Section[] = [
         id: 5,
         title: 'Keep it Rolling',
         desc: `Keep the momentum going by holding regular meetings, following up with the landlord on agreed-upon actions, and supporting each other through any challenges that arise. Remember that change may take time, but by staying organized and persistent, you can make a difference in your building.`,
-        question: 'Do you want to join the Portland Metro Tenant Union? Together we can come together and and build renter power to change the policies of the area.',
-        join: true
+        join: 'Join the Portland Metro Tenant Union! Together we can build renter power in this city.',
     }
 
 ]
 
-function SectionComponent({ index, sect, addSection }: { index: number, sect: Section, addSection: (id: number) => void }) {
+function SectionComponent({ index, sect, addSection, submitMe }: { index: number, sect: Section, addSection: (id: number) => void, submitMe: (name: string, email: string) => void }) {
     const ref: any = useRef();
 
     const [answerStatuses, setStatuses] = useState(sect.answers?.map(a => 'unselected'))
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [joined, setJoined] = useState(false)
 
     useEffect(() => {
         if (ref.current) {
@@ -112,7 +115,37 @@ function SectionComponent({ index, sect, addSection }: { index: number, sect: Se
                     </div>}
                 {sect.join &&
                     <div className="org-join">
-
+                        {!joined ? <>
+                            <p>{sect.join}</p>
+                            <br/>
+                            <label className="small-text">(You don't have to use your real name)</label>
+                            <input 
+                                type="text"
+                                value={name}
+                                placeholder="Your Name"
+                                onChange={event => {
+                                    setName(
+                                    event.target.value
+                                    );
+                                }}
+                            ></input>
+                            <input type="email"
+                                    value={email}
+                                    placeholder="Email"
+                                    onChange={event => {
+                                        setEmail(
+                                        event.target.value
+                                        );
+                                    }}></input>
+                            <button onClick={() => {
+                                setJoined(true)
+                                submitMe(name, email)
+                            }}>add me!</button>
+                        </> :
+                        <>
+                            <p>Thanks for Joining! We'll reach out soon once we start growing</p>
+                        </>
+                        }
                     </div>}
             </div></>
     );
@@ -129,12 +162,18 @@ function Organize() {
             setFlow([...flow, section])
     }
 
+    function submitMe(name: string, email: string) {
+        submitContact({
+            name, email
+        })
+    }
+
     return (
         <div className="organize-wrapper">
 
             {
                 flow.map((sect, i) =>
-                    <SectionComponent index={i} sect={sect} addSection={addSection} />
+                    <SectionComponent index={i} sect={sect} addSection={addSection} submitMe={submitMe}/>
                 )
             }
         </div>

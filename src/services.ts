@@ -32,3 +32,16 @@ export function submitResponse(submission: any) {
       },
     })
 }
+
+export function submitContact(contact: any) {
+  return fetch(`${api_path}/submit-contact`,
+    {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify(contact),
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+}
