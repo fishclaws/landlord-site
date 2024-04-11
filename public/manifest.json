@@ -1,6 +1,6 @@
 {
   "short_name": "Rate Your Landlord PDX",
-  "name": "Rate Your Landlord PDX",
+  "name": "Rate Your Landlord :: Portland Oregon",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,12 +8,12 @@
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "logo3.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo.png",
+      "src": "logo3.png",
       "type": "image/png",
       "sizes": "512x512"
     }
