@@ -2106,13 +2106,14 @@ button[disabled]{
   padding-bottom: 10px;
   button {
 
-    border-style: none;
     display: inline-block;
     margin-top: 5px;
     margin-right: 10px;
     padding: 5px;
-    background-color: #3c4233;
-    color: rgb(219, 219, 219);
+    background-color: transparent;
+    border-color: #3c4233;
+    border-style: solid;
+    color: rgba(219, 219, 219, 0.897);
     font-size: 1.2em;
     border-radius: 10px;
     padding-left: 10px;
@@ -2122,6 +2123,10 @@ button[disabled]{
   :hover {
     background-color: #18819e;
   }
+}
+
+.donateBtn {
+  background-color: #3c4233;
 }
 
 

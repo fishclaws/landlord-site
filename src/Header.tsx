@@ -34,6 +34,14 @@ function Header() {
                 classNames={{
                 donateBtn: 'donateBtn'
                 }}
+                styles= {{
+                    donateBtn: {
+                    backgroundColor: 'transparent',
+                    borderColor: '#3c4233',
+                    borderStyle: 'solid',
+                    borderWidth: '2px'
+                    }
+                }}
                 onToggle={(opened) => {
                     ReactGA.event({
                         category: "navbar",
