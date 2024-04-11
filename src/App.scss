@@ -96,7 +96,7 @@ $light-blue_2: #7ba1aca3;
 }
 
 html {
-  overflow: clip;
+  overflow: hidden;
 }
 
 body {
@@ -570,9 +570,12 @@ button:focus {
 
 @media (max-width: 800px) {
   .result {
-    padding: 130px 0 0;
     scroll-margin-top: 5rem; 
 
+  }
+
+  .extra-padding {
+    padding: 130px 0 0;
   }
 
 }
@@ -2241,12 +2244,12 @@ small {
   width: 100%;
   height: calc( 100vh - ( 140px ) ); 
   background-color: rgb(99, 99, 99);
-  overflow: auto;
+  overflow-y: scroll;
   font-size: 1.0em;
-  padding-bottom: 150px;
   padding: 130px 0 0;
   scroll-margin-top: 130px; 
-  scroll-margin-bottom: 130px; 
+  scroll-margin-bottom: 500px; 
+  padding-bottom: 300px;
 
 }
 .org-section {
@@ -2257,7 +2260,7 @@ small {
   max-width: 500px;
   letter-spacing: 0.0em;
   scroll-margin-top: 130px; 
-
+  width: 90%;
 }
 
 .org-title {
@@ -2318,6 +2321,7 @@ small {
   }
 
   .selected {
+    font-weight: bold;
     background-color: #7a9c12;
   }
 

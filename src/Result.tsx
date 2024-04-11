@@ -248,6 +248,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   const [alreadyScrolled, setAlreadyScrolled]: [boolean, any] = useState(false)
   const [showHierarchy, setShowHierarchy]: [number | null, any] = useState(null)
   const [propertyManagers]: [string[] | undefined, any] = useState(dedup(result.data?.evictions?.reduce((agg, e, i) => e.evicting_property_managers ? agg.concat(e.evicting_property_managers) : agg, [] as string[])))
+  const [extraPadding, setExtraPadding] = useState(true)
 
   const [openHandler] = useState(new OnOpen())
 
@@ -454,8 +455,14 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
     //     }
     //   }, 100)
     // }
+    setExtraPadding(false)
+    setTimeout(() => setExtraPadding(true), 2000)
+    setTimeout(() => setExtraPadding(false), 2100)
+    setTimeout(() => setExtraPadding(true), 2200)
+
     if (survey && survey.current) {
-      (survey.current as any).scrollIntoView({ behavior: 'smooth' })
+      (survey.current as any).scrollIntoView({ behavior: "smooth", block: "nearest", inline: 'start' }) 
+
     }
   }
 
@@ -468,7 +475,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   }
 
   return (
-    <div className='result' ref={resultRef}>
+    <div className={'result ' + (extraPadding ? 'extra-padding' : '')} ref={resultRef}>
       <Disclaimer />
       {/* {
         (!scrolled && !alreadyScrolled) &&

@@ -188,6 +188,10 @@ function Organize() {
                     <SectionComponent index={i} sect={sect} addSection={addSection} submitMe={submitMe} scrollToBottom={scrollToBottom}/>
                 )
             }
+            <br/>
+            <br/>
+            <br/>
+
         </div>
     );
 }

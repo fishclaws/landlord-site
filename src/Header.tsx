@@ -42,8 +42,7 @@ function Header() {
                       });
                     setOpened(opened)
                 }}
-            >
-                ❤️ support us
+            >💚 support us
             </Donate>
            </div>
 
