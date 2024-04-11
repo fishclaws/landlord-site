@@ -20,6 +20,13 @@ function Map() {
 
     function getLabelText(rev: any) {
         console.log(rev)
+        if (rev.review_text && rev.review_text !== 'null' && rev.review_text !== 'undefined') {
+            if (rev.review_text.length > 8) {
+              return (rev.review_text as string).slice(0, 8) + '...'
+            } else {
+              return rev.review_text;
+            }
+        }
         if (rev.selected_answers) {
           const emojis = rev.selected_answers.map((sa: any, i: number) => {
             if (sa === null) {
@@ -33,12 +40,7 @@ function Map() {
             return (emojis as string[]).join(' ');
           }
         }
-        if (rev.review_text && rev.review_text !== 'null')
-          if (rev.review_text.length > 8) {
-            return (rev.review_text as string).slice(0, 8) + '...'
-          } else {
-            return rev.review_text;
-          }
+
     
         return null
       }
