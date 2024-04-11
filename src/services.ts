@@ -45,3 +45,47 @@ export function submitContact(contact: any) {
       },
     })
 }
+
+// export function login(credential: string): any {
+//   return fetch(`${api_path}/auth/google/callback`,
+//   {
+//     method: 'GET',
+//     mode: 'no-cors',
+//     headers: {
+//       "Content-Type": "application/json",
+//       'Authorization': `Bearer ${credential}`,
+//       // 'Content-Type': 'application/x-www-form-urlencoded',
+//     },
+//   })
+//   .then(response => response.json())
+//   .then(data => {
+//     console.log(data);
+//   })
+//   .catch(error => {
+//     console.error('Error:', error);
+//   });
+// }
+
+export function admin(password: string) {
+  return fetch(`${api_path}/admin?password=${password}`,
+  {
+    method: 'GET',
+    mode: 'cors',
+    headers: {
+      "Content-Type": "application/json",
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  }).then(response => response.json())
+}
+
+export function determine(password: string, id: number, approve: boolean) {
+  return fetch(`${api_path}/determine?password=${password}&id=${id}&approve=${approve ? 'yes': 'no'}`,
+  {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      "Content-Type": "application/json",
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  })
+}

@@ -2129,6 +2129,25 @@ button[disabled]{
   background-color: #3c4233;
 }
 
+.approval-table {
+  margin: 10px;
+  margin: auto;
+  border-style: solid;
+  td {
+    margin: 10px;
+  }
+  button {
+    margin: 10px;
+  }
+
+}
+
+.approved {
+  background-color: $lime;
+}
+.rejected {
+  background-color: rgb(188, 81, 81);
+}
 
 
 @media (max-width: 800px) {

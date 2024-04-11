@@ -24,14 +24,14 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
     useEffect(() => {
         if (property_reviews) {
             setPropertyAgg(getStatements(property_reviews))
-            setPropertyComments(property_reviews.map(rev => rev.review_text.trim()).filter(rev => rev.length))
+            setPropertyComments(property_reviews.filter(rev => rev.review_text).map(rev => rev.review_text.trim()).filter(rev => rev.length))
         }
         if (other_reviews) {
             let or = other_reviews
             if (property_reviews)
                 or = or.filter(rev => !property_reviews.find(pr => pr.id === rev.id))
             setOtherAgg(getStatements(or))
-            setOtherComments(or.map(rev => rev.review_text.trim()).filter(rev => rev.length))
+            setOtherComments(or.filter(rev => rev.review_text).map(rev => rev.review_text.trim()).filter(rev => rev.length))
         }
     }, [])
 

@@ -11,6 +11,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import ErrorBoundary from './ErrorBoundary';
+import Admin from './Admin';
 // import dotenv from 'dotenv'
 
 // dotenv.config()
@@ -34,8 +35,11 @@ const router = createBrowserRouter([
     path: "/organize",
     element: <App organize={true}/>,
     errorElement: <ErrorBoundary/>
-
   },
+  {
+    path: "/admin",
+    element: <Admin/>
+  }
 ]);
 
 
