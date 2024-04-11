@@ -25,7 +25,8 @@ function Map() {
             if (sa === null) {
               return null
             }
-            return qs[i].emoji
+            if (qs[i].answersOfNote.includes(sa))
+                return qs[i].emoji
           }).filter((a: any) => a)
     
           if (emojis.length !== 0) {

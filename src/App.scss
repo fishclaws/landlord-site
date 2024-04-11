@@ -209,7 +209,7 @@ h1 {
 .headerContainer {
   display: flex;
   justify-content: center;
-
+  padding-top:8px;
 }
 
 .post {
@@ -993,7 +993,7 @@ table tr td:last-child {
 }
 
 .mapboxgl-popup-content {
-  background-color: rgb(255, 255, 255) !important;
+  background-color: rgba(255, 255, 255) !important;
   border-left-style: solid !important;
 
   border-right-style: solid !important;
@@ -1010,10 +1010,13 @@ table tr td:last-child {
     color: black;
   }
   font-family: "Inconsolata", monospace, normal;
+  opacity: 80%;
 }
 
 .mapboxgl-popup-tip {
   border-top-color: rgb(255, 255, 255) !important;
+  opacity: 80%;
+
 }
 
 .mapboxgl-popup-close-button {
