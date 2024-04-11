@@ -240,7 +240,19 @@ h1 {
   width: 100%;
   top: 10%;
   padding: 130px 0 0;
+  scroll-margin-bottom: 300px;
+  max-height: 60%;
+}
 
+@media (max-height: 730px) {
+  .main-container {
+
+
+    display: block;
+
+    max-height: calc(110vh - 300px) !important;
+  }
+  
 }
 
 .minimized {
@@ -2205,7 +2217,8 @@ button[disabled]{
 .body {
   height: 100%;
   position: relative;
-  
+  overflow-y: scroll;
+
 }
 
 .banner {
