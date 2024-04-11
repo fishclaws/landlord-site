@@ -74,9 +74,9 @@ export const qs: Question[] = [
             'No',
             'Interested in learning more'
         ],
-        answersOfNote: [0, 2],
+        answersOfNote: [0],
         statement: 'this landlord attempted to evict them',
-        emoji: '🏢👥'
+        emoji: '👥'
     }
     // {
     //     text: 'Is your building unlivable?',
