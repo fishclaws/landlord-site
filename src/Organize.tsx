@@ -89,7 +89,7 @@ function SectionComponent({ index, sect, addSection, submitMe, scrollToBottom }:
 
     return (
         <>
-            {index !== 0 && <div className="downArrow">↯</div>}
+            <div className="downArrow">↯</div>
             <div className="org-section" ref={ref}>
                 <div className="org-title">{sect.title}</div>
                 <p className="org-desc">{sect.desc}</p>
