@@ -159,7 +159,11 @@ body {
 }
 
 .name {
+  letter-spacing: .2em;
+  font-size: 1.4em;
+  padding-bottom: 10px;
   background: rgb(26, 29, 17);
+  font-weight: bold;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -203,7 +207,6 @@ h1 {
 
 
 .headerContainer {
-  margin-top: 10px;
   display: flex;
   justify-content: center;
 
@@ -248,7 +251,10 @@ h1 {
 .or {
   color: #383838;
   font-size: 1.5em;
-  margin: 10px;
+  font-weight: bold;
+  margin: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   margin-left: 4%;
   margin-right: 4%;
   justify-content: center;
@@ -976,6 +982,7 @@ table tr td:last-child {
 
 }
 
+
 .marker {
   background-image: url('main_marker.png');
   background-size: cover;
@@ -983,6 +990,38 @@ table tr td:last-child {
   height: 60px;
   cursor: pointer;
   padding-bottom: 10px;
+}
+
+.mapboxgl-popup-content {
+  background-color: rgb(255, 255, 255) !important;
+  border-left-style: solid !important;
+
+  border-right-style: solid !important;
+
+  border-width: 1px !important;
+  border-color: white !important;
+  padding: 2px 4px 4px !important;
+  a {
+    text-decoration: none;
+    letter-spacing: .05em;
+    background-color: transparent;
+    font-size: 1em;
+    font-weight: bold;
+    color: black;
+  }
+  font-family: "Inconsolata", monospace, normal;
+}
+
+.mapboxgl-popup-tip {
+  border-top-color: rgb(255, 255, 255) !important;
+}
+
+.mapboxgl-popup-close-button {
+  display: none;
+}
+
+.review-marker {
+  font-size: 1.0em;
 }
 
 .show-others {
@@ -2470,4 +2509,61 @@ small {
   .small-text {
     font-size: .8em;
   }
+}
+
+.map-container-2 {
+  height: 100%;
+  width: 100%;
+  min-width: 90px;
+  min-height: 250px;
+}
+
+@media (max-width: 800px) {
+  .map-container-2 {
+    min-height: 200px;
+  }
+}
+
+
+
+
+
+.map-wrapper {
+  width: 90%;
+  height: 20%;
+  margin: auto;
+  margin-bottom: 20px;
+}
+
+.reviews-map-title {
+  color: #ffb1b1;
+  margin: auto;
+  width: fit-content;
+  text-align: center;
+  font-size: 1.3em;
+  padding: 1px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-top: 10px;
+  background-color: #393939;
+  font-weight: bold;
+  font-family: "Inconsolata", monospace;
+  opacity: 90%;
+  margin-bottom: 10px;
+  border-radius: 300px;
+  position: relative;
+
+}
+
+.search-title {
+  width: fit-content;
+  margin: auto;
+  margin-bottom: 16px;
+  font-size: 1.0em;
+  font-style: italic;
+  margin-top:25px;
+}
+
+.marker-text {
+  background-color: white;
 }

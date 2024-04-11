@@ -89,3 +89,15 @@ export function determine(password: string, id: number, approve: boolean) {
     },
   })
 }
+
+export function getAllReviews() {
+  return fetch(`${api_path}/all-reviews`,
+  {
+    method: 'GET',
+    mode: 'cors',
+    headers: {
+      "Content-Type": "application/json",
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  }).then(response => response.json())
+}
