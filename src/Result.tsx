@@ -12,6 +12,7 @@ import Collapsible from './Collapsible';
 import Reviews from './Reviews';
 import ReactGA from "react-ga4";
 import { useNavigate } from 'react-router-dom';
+import Join from './Join';
 
 var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 mapboxgl.accessToken = 'pk.eyJ1IjoibXNnc2x1dCIsImEiOiJja2NvZmFpbjAwMW84MnJvY3F1d2hzcW5nIn0.xMAHVsdszfolXUOk9_XI4g';
@@ -764,10 +765,20 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                   <div className='thanks'>Thanks for your feedback
                     <div className='action-items'>
                       {/* <button className='action orange'><div className='report'></div>report your landlord</button> */}
+                      
                       <button onClick={() => navigate('/organize')} className='action green'>connect with your neighbors</button>
                     </div>
                   </div>
               }
+            </div>
+            <div className='join-wrapper'>
+            {
+              !showSurvey && <Join text={"Join the Portland Metro Tenant Union! Together we can build renter power in this city."}/>
+            }
+            </div>
+
+            <div className='buffer'>
+
             </div>
 
           </div>

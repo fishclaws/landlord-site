@@ -82,7 +82,9 @@ function Survey(
                 <textarea name="Text1" cols={40} rows={5} maxLength={250} 
                             onChange={(event) => {
                                 setReviewText(event.target.value)
-                            }}></textarea>
+                            }}>
+                                
+                            </textarea><span className='char-counter'>{reviewText.length} / 250</span>
             </div>
             <div className='submit-button-wrapper'>
                 <button className={'submit-button' + (isLoading ? ' button--loading' : '')} 

@@ -1277,7 +1277,6 @@ px
   border-radius: 25px;
   border-width: 2px;
   border-color: $lime;
-  margin-bottom: 300px;
   scroll-margin: 150px;
 }
 
@@ -1311,6 +1310,8 @@ px
 
   textarea {
     margin-top: 10px;
+    padding: 10px;
+    font-size: 1.1em;
   }
 }
 
@@ -1683,6 +1684,8 @@ textarea {
 }
 
 .thanks {
+  color: black;
+  font-weight: bold;
   text-align: center;
   width: fit-content;
   margin: auto;
@@ -2675,4 +2678,15 @@ small {
 
 .marker-text {
   background-color: white;
+}
+
+.join-wrapper {
+  max-width: 600px;
+  margin: auto;
+  margin-top: 20px;
+  font-size: 1.3em;
+}
+
+.buffer {
+  margin-bottom: 400px;
 }

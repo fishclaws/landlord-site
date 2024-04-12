@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { submitContact } from "./services";
+import Join from "./Join";
 
 interface Section {
     id: number;
@@ -70,13 +71,11 @@ const sections: Section[] = [
 
 ]
 
-function SectionComponent({ index, sect, addSection, submitMe, scrollToBottom }: { index: number, sect: Section, addSection: (id: number) => void, submitMe: (name: string, email: string) => void, scrollToBottom: any }) {
+function SectionComponent({ index, sect, addSection, scrollToBottom }: { index: number, sect: Section, addSection: (id: number) => void, scrollToBottom: any }) {
     const ref: any = useRef();
 
     const [answerStatuses, setStatuses] = useState(sect.answers?.map(a => 'unselected'))
-    const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [joined, setJoined] = useState(false)
+
 
     useEffect(() => {
         if (ref.current) {
@@ -114,39 +113,7 @@ function SectionComponent({ index, sect, addSection, submitMe, scrollToBottom }:
                             }}>{a.reply}</button>)}
                     </div>}
                 {sect.join &&
-                    <div className="org-join">
-                        {!joined ? <>
-                            <p>{sect.join}</p>
-                            <br/>
-                            <label className="small-text">(You don't have to use your real name)</label>
-                            <input 
-                                type="text"
-                                value={name}
-                                placeholder="Your Name"
-                                onChange={event => {
-                                    setName(
-                                    event.target.value
-                                    );
-                                }}
-                            ></input>
-                            <input type="email"
-                                    value={email}
-                                    placeholder="Email"
-                                    onChange={event => {
-                                        setEmail(
-                                        event.target.value
-                                        );
-                                    }}></input>
-                            <button onClick={() => {
-                                setJoined(true)
-                                submitMe(name, email)
-                            }}>add me!</button>
-                        </> :
-                        <>
-                            <p>Thanks for Joining! We'll reach out soon once we start growing</p>
-                        </>
-                        }
-                    </div>}
+                    <Join text={sect.join}/>}
             </div></>
     );
 }
@@ -163,11 +130,7 @@ function Organize() {
             setFlow([...flow, section])
     }
 
-    function submitMe(name: string, email: string) {
-        submitContact({
-            name, email
-        })
-    }
+
 
     function scrollToBottom() {
         if (wrapper.current) {
@@ -185,7 +148,7 @@ function Organize() {
 
             {
                 flow.map((sect, i) =>
-                    <SectionComponent index={i} sect={sect} addSection={addSection} submitMe={submitMe} scrollToBottom={scrollToBottom}/>
+                    <SectionComponent index={i} sect={sect} addSection={addSection} scrollToBottom={scrollToBottom}/>
                 )
             }
             <br/>
