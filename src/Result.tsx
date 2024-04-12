@@ -607,8 +607,9 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             {result.data &&
               <div className='properties'>
                 {
-                  result.data.market_value_sum &&
-                  <><div className='market-value-str'>total market-value of properties:</div><div className='market-value'>{convertToUSD(result.data.market_value_sum)}<Info message="calculated using tax information collected from PorlandMaps.com" /></div></>
+                  result.data.market_value_sum === 0 || !result.data.market_value_sum?
+                  undefined :
+                  <><div className='market-value-str'>total market-value of properties:</div><div className='market-value'>{convertToUSD(result.data.market_value_sum!)}<Info message="calculated using tax information collected from PorlandMaps.com" /></div></>
                 }
                 {
                   result.data.locations && result.data.locations.length > 0 ?
