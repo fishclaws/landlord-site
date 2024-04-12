@@ -6,6 +6,8 @@ import {qs} from './SurveyQuestions'
 
 
 import mapboxgl from 'mapbox-gl';
+const AnimatedPopup = require('mapbox-gl-animated-popup');
+
 mapboxgl.accessToken = 'pk.eyJ1IjoibXNnc2x1dCIsImEiOiJja2NvZmFpbjAwMW84MnJvY3F1d2hzcW5nIn0.xMAHVsdszfolXUOk9_XI4g';
 
 function Map() {
@@ -13,8 +15,6 @@ function Map() {
     
     const map = useRef(null);
     const mapContainer = useRef(null);
-    const [lng, setLng] = useState();
-    const [lat, setLat] = useState();
     const [zoom, setZoom] = useState(12);
     const [allReviews, setAllReviews] = useState([])
     const [markerEls, setMarkerEls] = useState([] as HTMLElement[])
@@ -24,9 +24,15 @@ function Map() {
         console.log(rev)
         if (rev.review_text && rev.review_text !== 'null' && rev.review_text !== 'undefined') {
             if (rev.review_text.length > 15) {
-              return (rev.review_text as string).slice(0, 15) + '...'
+              return {
+                type: 'comment',
+                text: (rev.review_text as string).slice(0, 15) + '...'
+              }
             } else {
-              return rev.review_text;
+              return {
+                type: 'comment',
+                text: rev.review_text
+              }
             }
         }
         if (rev.selected_answers) {
@@ -39,7 +45,10 @@ function Map() {
           }).filter((a: any) => a)
     
           if (emojis.length !== 0) {
-            return (emojis as string[]).join(' ');
+            return {
+              type: 'emoji',
+              text: (emojis as string[]).join(' ')
+            };
           }
         }
 
@@ -59,14 +68,10 @@ function Map() {
         mapOptions['center'] = [-122.676483, 45.523064]
     
         map.current = new mapboxgl.Map(mapOptions) as any;
-        (map.current as any).on('move', () => {
-            setLng((map.current as any).getCenter().lng.toFixed(4));
-            setLat((map.current as any).getCenter().lat.toFixed(4));
-            setZoom((map.current as any).getZoom().toFixed(2));
-          });
+
       })
 
-
+      
 
       useEffect(() => {
         if (allReviews.length === 0)
@@ -75,6 +80,7 @@ function Map() {
             const coords: Array<[number, number]> = []
             const els = []
             const propertyIds = {} as any
+            let counter = 0;
             for (const rev of reviews) {
               const latlng = [parseFloat(rev.longitude), parseFloat(rev.latitude)]
               const el = document.createElement('div');
@@ -84,16 +90,50 @@ function Map() {
               if (text && !propertyIds[rev.property_id]) {
                 propertyIds[rev.property_id] = true
     
-                const popupHtml = `<a class="marker-text" href="/address/${rev.address}">` + text + '</a>';
-    
-                const popup = new mapboxgl.Popup({ className: 'review-marker' })
+                const popupHtml = `<a class="${text.type}-text" href="/address/${rev.address}"></a>`;
+                
+                const typeOut = (text: string, el: HTMLElement) => {
+                  const a = el.getElementsByTagName('a')[0]
+                  const addLetters = (index: number) => {
+                    if (index > text.length || text[index] === undefined) {
+                      return
+                    }
+                    a.innerText += text[index]
+                    setTimeout(addLetters, 100, index + 1)
+                  }
+                  addLetters(0)
+                }
+                // const popup = new mapboxgl.Popup({ className: 'review-marker' })
+                setTimeout(() => {
+                  const popup = new AnimatedPopup({
+                    openingAnimation: {
+                        duration: 1000,
+                        easing: 'easeOutElastic',
+                        transform: 'scale'
+                    },
+                    closingAnimation: {
+                        duration: 300,
+                        easing: 'easeInBack',
+                        transform: 'scale'
+                    },
+                    className: text.type + '-marker'
+              })
                   .setLngLat(latlng as any)
                   .setHTML(popupHtml)
                   .setMaxWidth("300px")
                   .addTo(map.current as any);
+              if (text.type === 'emoji') {
+                (popup._content as HTMLElement).style.scale = '1.8'
+              }
+              console.log(popup);
+              typeOut(text.text, popup._container)
+            
+            }, 1000 + counter * 500);
     
-    
+
                 coords.push(latlng as any)
+                counter++
+
               }
             }
     

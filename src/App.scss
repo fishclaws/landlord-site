@@ -1058,10 +1058,8 @@ table tr td:last-child {
 }
 
 .mapboxgl-popup-content {
-  background-color: rgba(255, 255, 255) !important;
-  border-left-style: solid !important;
+  background-color: rgba(255, 255, 255);
 
-  border-right-style: solid !important;
 
   border-width: 1px !important;
   border-color: white !important;
@@ -1070,13 +1068,15 @@ table tr td:last-child {
     text-decoration: none;
     letter-spacing: .05em;
     background-color: transparent;
-    font-size: 1em;
+    font-size: 1em !important;
     font-weight: bold;
     color: black;
   }
   font-family: "Inconsolata", monospace, normal;
   opacity: 80%;
+
 }
+
 
 .mapboxgl-popup-tip {
   border-top-color: rgb(255, 255, 255) !important;
@@ -1088,8 +1088,22 @@ table tr td:last-child {
   display: none;
 }
 
-.review-marker {
+.comment-marker {
   font-size: 1.0em;
+
+}
+
+.emoji-marker {
+  font-size: 1.0em;
+  background-color: transparent;
+  .mapboxgl-popup-content {
+    background-color: transparent;
+  }
+  transform: scale(3);
+}
+
+.emoji-text {
+  transform: scale(3);
 }
 
 .show-others {
@@ -2648,21 +2662,27 @@ small {
   z-index: 100;
 }
 
-@media (max-width: 800px) {
-  .map-container-2 {
-    min-height: 200px;
-  }
-}
+
 
 
 
 
 
 .map-wrapper {
-  width: 90%;
+  width: 70%;
   height: 20%;
   margin: auto;
   margin-bottom: 20px;
+}
+
+@media (max-width: 800px) {
+  .map-container-2 {
+    min-height: 200px;
+  }
+
+  .map-wrapper {
+    width: 100%;
+  }
 }
 
 .reviews-map-title {
