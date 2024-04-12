@@ -716,7 +716,9 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                           <div className='related-businesses-title'>Related Businesses</div>
                           <div className='data-rows'>
                             {related_businesses ?
-                              related_businesses.map((name: any) => (<div className='data-row'>{name.business_name}</div>)) : undefined}
+                              related_businesses.map((name: any) => (<button className='data-row' onClick={() => {
+                                window.location.href = `/search/${name.business_name}`
+                              }}>{name.business_name}</button>)) : undefined}
                           </div>
                         </div>
                         : undefined
