@@ -769,6 +769,8 @@ label {
 .map-container {
   height: 100%;
   width: 100%;
+  z-index: 100;
+
 }
 
 .mapboxgl-canvas {
@@ -2619,6 +2621,7 @@ small {
   width: 100%;
   min-width: 90px;
   min-height: 250px;
+  z-index: 100;
 }
 
 @media (max-width: 800px) {

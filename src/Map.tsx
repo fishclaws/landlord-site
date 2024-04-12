@@ -5,7 +5,7 @@ import { getAllReviews } from "./services";
 import {qs} from './SurveyQuestions'
 
 
-var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
+import mapboxgl from 'mapbox-gl';
 mapboxgl.accessToken = 'pk.eyJ1IjoibXNnc2x1dCIsImEiOiJja2NvZmFpbjAwMW84MnJvY3F1d2hzcW5nIn0.xMAHVsdszfolXUOk9_XI4g';
 
 function Map() {
@@ -13,6 +13,8 @@ function Map() {
     
     const map = useRef(null);
     const mapContainer = useRef(null);
+    const [lng, setLng] = useState();
+    const [lat, setLat] = useState();
     const [zoom, setZoom] = useState(12);
     const [allReviews, setAllReviews] = useState([])
     const [markerEls, setMarkerEls] = useState([] as HTMLElement[])
@@ -56,8 +58,15 @@ function Map() {
     
         mapOptions['center'] = [-122.676483, 45.523064]
     
-        map.current = new mapboxgl.Map(mapOptions);
+        map.current = new mapboxgl.Map(mapOptions) as any;
+        (map.current as any).on('move', () => {
+            setLng((map.current as any).getCenter().lng.toFixed(4));
+            setLat((map.current as any).getCenter().lat.toFixed(4));
+            setZoom((map.current as any).getZoom().toFixed(2));
+          });
       })
+
+
 
       useEffect(() => {
         if (allReviews.length === 0)
@@ -78,10 +87,10 @@ function Map() {
                 const popupHtml = `<a class="marker-text" href="/address/${rev.address}">` + text + '</a>';
     
                 const popup = new mapboxgl.Popup({ className: 'review-marker' })
-                  .setLngLat(latlng)
+                  .setLngLat(latlng as any)
                   .setHTML(popupHtml)
                   .setMaxWidth("300px")
-                  .addTo(map.current);
+                  .addTo(map.current as any);
     
     
                 coords.push(latlng as any)
@@ -95,7 +104,7 @@ function Map() {
                 bounds.extend(coord);
               }
     
-              (map.current as any).fitBounds(bounds, { padding: 60, pitch: 70, maxZoom: 15 });
+              (map.current as any).fitBounds(bounds, { padding: 60, pitch: 55, maxZoom: 15 });
             }
     
             setMarkerEls(els)
