@@ -78,8 +78,8 @@ export function admin(password: string) {
   }).then(response => response.json())
 }
 
-export function determine(password: string, id: number, approve: boolean) {
-  return fetch(`${api_path}/determine?password=${password}&id=${id}&approve=${approve ? 'yes': 'no'}`,
+export function determine(password: string, id: number, approve: string) {
+  return fetch(`${api_path}/determine?password=${password}&id=${id}&approve=${approve}`,
   {
     method: 'POST',
     mode: 'cors',

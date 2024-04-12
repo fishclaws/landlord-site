@@ -36,28 +36,45 @@ function Admin() {
                 
                 content.map((c: any, i: number) => 
                     <tr className={history[i]}>
-                        <td>{c.content}</td>
-                        <td><button
-                            disabled={history[i]} 
-                            onClick={() => {
-                            determine(password, c.review_id, true)
-                            const copy = {
-                                ...history,
-                            }
-                            copy[i] = 'approved'
-                            setHistory(copy)
-                        }}>approve</button></td>
-                        <td><button 
-                                                    disabled={history[i]} 
-                                                    onClick={() => {
-                            determine(password, c.review_id, false)
-                            const copy = {
-                                ...history,
-                            }
-                            copy[i] = 'rejected'
-                            setHistory(copy)
-                        }
-                        }>reject</button></td>
+                        <td>
+                            <p>{c.content}</p>
+                            <div className="admin-buttons">
+                                <button
+                                    className="approved"
+                                    disabled={history[i]} 
+                                    onClick={() => {
+                                    determine(password, c.review_id, 'yes')
+                                    const copy = {
+                                        ...history,
+                                    }
+                                    copy[i] = 'approved'
+                                    setHistory(copy)
+                                }}>approve</button>
+                                <button 
+                                    className="rejected"
+                                    disabled={history[i]} 
+                                    onClick={() => {
+                                    determine(password, c.review_id, 'no')
+                                    const copy = {
+                                        ...history,
+                                    }
+                                    copy[i] = 'rejected'
+                                    setHistory(copy)
+                                }
+                                }>reject</button>
+                                <button
+                                    className="praise"
+                                    disabled={history[i]} 
+                                    onClick={() => {
+                                    determine(password, c.review_id, 'praise')
+                                    const copy = {
+                                        ...history,
+                                    }
+                                    copy[i] = 'praise'
+                                    setHistory(copy)
+                                }}>mark as praise</button>
+                            </div>
+                        </td>
                     </tr>)
             }
             </tbody>

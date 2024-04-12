@@ -15,6 +15,7 @@ import Banner from './Banner';
 import Organize from './Organize';
 import Map from './Map';
 import { qs } from './SurveyQuestions';
+import Footer from './Footer';
 
 const MEASUREMENT_ID = "G-2B5P18PPBF"; // YOUR_OWN_TRACKING_ID
 
@@ -344,6 +345,8 @@ function App({ organize }: { organize?: boolean }) {
         organize &&
         <Organize></Organize>
       }
+
+      {/* <Footer/> */}
     </div>
   );
 }
