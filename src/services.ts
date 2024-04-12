@@ -3,7 +3,7 @@ import { NameSearchResult, SearchResult } from "./ResultTypes"
 const api_path = window.location.hostname === 'localhost' ? 'http://localhost:3001' : '/api'
 
 export function getAddresses(address: string) {
-  return fetch(`${api_path}/search?address=${address}`)
+  return fetch(`${api_path}/search?address=${address.replaceAll('#', '%23')}`)
     .then(data => {
       return data.json().then((json: SearchResult) => {
         return json
