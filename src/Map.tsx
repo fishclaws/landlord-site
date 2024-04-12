@@ -23,8 +23,8 @@ function Map() {
     function getLabelText(rev: any) {
         console.log(rev)
         if (rev.review_text && rev.review_text !== 'null' && rev.review_text !== 'undefined') {
-            if (rev.review_text.length > 8) {
-              return (rev.review_text as string).slice(0, 8) + '...'
+            if (rev.review_text.length > 15) {
+              return (rev.review_text as string).slice(0, 15) + '...'
             } else {
               return rev.review_text;
             }
