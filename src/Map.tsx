@@ -98,7 +98,11 @@ function Map() {
                     if (index > text.length || text[index] === undefined) {
                       return
                     }
-                    a.innerText += text[index]
+                    if (text[index] === ' ') {
+                      a.innerText += '\u00A0'
+                    } else {
+                      a.innerText += text[index]
+                    }
                     setTimeout(addLetters, 100, index + 1)
                   }
                   addLetters(0)
@@ -128,7 +132,7 @@ function Map() {
               console.log(popup);
               typeOut(text.text, popup._container)
             
-            }, 1000 + counter * 500);
+            }, 1000 + counter * 1000);
     
 
                 coords.push(latlng as any)
