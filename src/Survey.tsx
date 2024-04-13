@@ -13,7 +13,7 @@ function Survey(
         propertyId
     }: {
         landlordList: Landlord[], 
-        hideSurvey: () => void, 
+        hideSurvey: (showJoin: boolean) => void, 
         address: string, 
         propertyId: string
     }) {
@@ -27,13 +27,23 @@ function Survey(
 
     function submit() {
         setIsLoading(true)
+
+        let showJoin = false
+
+        const answers = Object.keys(answersSelected).reduce((agg, curr) => {
+            const questionId = Number(curr)
+            agg[questionId] = answersSelected[questionId]
+            return agg;
+        }, [] as number[])
+
+        const answer = answers[qs.findIndex(q => q.tenantUnion)]
+        if (answer === 0 || answer === 2) {
+            showJoin = true
+        }
+
         submitResponse({
             QUESTION_SET,
-            answersSelected: Object.keys(answersSelected).reduce((agg, curr) => {
-                const questionId = Number(curr)
-                agg[questionId] = answersSelected[questionId]
-                return agg;
-            }, [] as number[]),
+            answersSelected: answers,
             landlordList,
             reviewText,
             address,
@@ -41,7 +51,7 @@ function Survey(
         }).then((result) => {
             console.log(result)
             setIsLoading(false)
-            hideSurvey()
+            hideSurvey(showJoin)
         })
     }
 

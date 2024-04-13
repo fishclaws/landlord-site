@@ -5,7 +5,8 @@ export interface Question {
     answers: Array<string>,
     answersOfNote: Array<number>,
     statement: string,
-    emoji: string
+    emoji: string,
+    tenantUnion?: boolean;
 }
 
 export const QUESTION_SET = '23326db2f378920858c29ea3c228351b'
@@ -76,7 +77,8 @@ export const qs: Question[] = [
         ],
         answersOfNote: [0],
         statement: 'this landlord attempted to evict them',
-        emoji: '👥'
+        emoji: '👥',
+        tenantUnion: true
     }
     // {
     //     text: 'Is your building unlivable?',

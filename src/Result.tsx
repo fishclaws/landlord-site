@@ -250,6 +250,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   const [showHierarchy, setShowHierarchy]: [number | null, any] = useState(null)
   const [propertyManagers]: [string[] | undefined, any] = useState(dedup(result.data?.evictions?.reduce((agg, e, i) => e.evicting_property_managers ? agg.concat(e.evicting_property_managers) : agg, [] as string[])))
   const [extraPadding, setExtraPadding] = useState(true)
+  const [showJoin, setShowJoin] = useState(false)
 
   const [openHandler] = useState(new OnOpen())
 
@@ -415,7 +416,8 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
     }
   }
 
-  function hideSurvey() {
+  function hideSurvey(showJoin: boolean) {
+    setShowJoin(showJoin)
     setShowSurvey(false)
   }
 
@@ -774,7 +776,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             </div>
             <div className='join-wrapper'>
             {
-              !showSurvey && <Join text={"Join the Portland Metro Tenant Union! Together we can build renter power in this city."}/>
+              !showSurvey && showJoin && <Join text={"Join the Portland Metro Tenant Union! Together we can build renter power in this city."}/>
             }
             </div>
 
