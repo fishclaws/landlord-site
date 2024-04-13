@@ -99,16 +99,16 @@ function Map() {
                       return
                     }
                     if (text[index] === ' ') {
-                      a.innerText += '\u00A0'
+                      a.textContent += '\u00A0'
                     } else {
-                      a.innerText += text[index]
+                      a.textContent += text[index]
                     }
                     setTimeout(addLetters, 100, index + 1)
                   }
                   addLetters(0)
                 }
                 // const popup = new mapboxgl.Popup({ className: 'review-marker' })
-                setTimeout(() => {
+                //setTimeout(() => {
                   const popup = new AnimatedPopup({
                     openingAnimation: {
                         duration: 1000,
@@ -132,7 +132,7 @@ function Map() {
               console.log(popup);
               typeOut(text.text, popup._container)
             
-            }, 1000 + counter * 1000);
+            //}, 1000 + counter * 1000);
     
 
                 coords.push(latlng as any)
