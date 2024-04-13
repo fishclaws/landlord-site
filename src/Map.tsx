@@ -148,7 +148,7 @@ function Map() {
                 bounds.extend(coord);
               }
     
-              (map.current as any).fitBounds(bounds, { padding: 3, pitch: 55, maxZoom: 15 });
+              (map.current as any).fitBounds(bounds, { padding: 50, maxZoom: 15 });
             }
     
             setMarkerEls(els)
