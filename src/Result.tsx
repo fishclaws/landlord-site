@@ -247,7 +247,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   const [lng, setLng] = useState(property && parseFloat(property.longitude));
   const [lat, setLat] = useState(property && parseFloat(property.latitude));
   const [zoom, setZoom] = useState(12);
-  const [related_businesses, setRelatedBusinesses] = useState(result.data && removeDuplicateBusinesses(result.data.related_businesses?.filter(bus => bus.reg_num)))
+  const [related_businesses, setRelatedBusinesses] = useState(result.data && removeDuplicateBusinesses(result.data.related_businesses?.filter(bus => bus && bus.reg_num)))
   const [markersDisplayed, setMarkersDisplayed] = useState(false)
   const [locations, setLocations] = useState(linkLocations())
   const [markerElements, setMarkerElements]: [HTMLDivElement[], any] = useState([])
