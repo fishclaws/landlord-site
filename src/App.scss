@@ -586,7 +586,6 @@ button:focus {
 
 
 .close-btn {
-
   color: #444;
   cursor: pointer;
 
@@ -596,8 +595,7 @@ button:focus {
   &:after {
     content: "";
     height: 2px;
-    background: #444;
-
+    padding: 5px;
     transition: 250ms ease;
   }
 
@@ -606,6 +604,7 @@ button:focus {
   }
 
   &:after {
+
     transform: rotate(45deg);
   }
 
@@ -1788,6 +1787,7 @@ $line-transition: all .2s cubic-bezier(.25,.46,.45,.94);
 .button-close-wrapper {
   width: 100%;
   position: absolute;
+  z-index: 1000;
 }
 
 .button-close{
@@ -2812,6 +2812,8 @@ small {
 }
 
 .report-screen {
+  padding-top: 10%;
+
   position: fixed;
   width: 100%;
   height: 100%;

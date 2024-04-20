@@ -23,7 +23,7 @@ function ReportScreen({property_id, callback}: {property_id: string | undefined,
     return (
         <div className="report-screen">
             <div>
-            <button className="close-btn" onClick={() => callback(false)}>🗙</button>
+            <button className="close-btn" onClick={() => callback(false)}>×</button>
             <h1>Is something incorrect?</h1>
             <p>We pull our data from public sources such as PortlandMaps.com & the Oregon Secretary of State</p>
             <p>If there's a problem please report it below</p>
