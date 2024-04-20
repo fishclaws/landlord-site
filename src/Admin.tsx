@@ -1,13 +1,14 @@
 import axios from "axios";
 import "./App.scss";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
-import { admin, determine } from "./services";
+import { admin, determine, resolveReport } from "./services";
 import { useEffect, useState } from "react";
 
 function Admin() {
 
     const [password, setPassword] = useState('')
     const [content, setContent] = useState([])
+    const [reports, setReports] = useState([])
     const [history, setHistory] = useState([] as any)
 
     useEffect(() => {
@@ -28,7 +29,10 @@ function Admin() {
                 }}>
             </input>
             <button onClick={() => {
-                admin(password).then(data => setContent(data))
+                admin(password).then(data => {
+                    setContent(data.content);
+                    setReports(data.reports);
+            })
             }}>Get Content</button>
             <table className="approval-table">
                 <tbody>
@@ -73,6 +77,33 @@ function Admin() {
                                     copy[i] = 'praise'
                                     setHistory(copy)
                                 }}>mark as praise</button>
+                            </div>
+                        </td>
+                    </tr>)
+            }
+            </tbody>
+            </table>
+            <br/>
+            <table className="reports-table">
+                <tbody>
+            {
+                
+                reports.map((report: any, i: number) => 
+                    <tr>
+                        <td>
+                            <p>TEXT: {report.text}</p>
+                            <br/>
+                            <p>URL: {report.url}</p>
+                            <br/>
+                            <p>PROPERTY_ID: {report.property_id}</p>
+                            <div className="admin-buttons">
+                                <button
+                                    className="approved"
+                                    onClick={() => {
+                                        resolveReport(password, report.id)
+                                        setReports([...reports].filter((r: any) => r.id !== report.id))
+
+                                }}>mark resolved</button>
                             </div>
                         </td>
                     </tr>)

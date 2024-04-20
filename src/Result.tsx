@@ -13,6 +13,7 @@ import Reviews from './Reviews';
 import ReactGA from "react-ga4";
 import { useNavigate } from 'react-router-dom';
 import Join from './Join';
+import ReportScreen from './Report';
 
 var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 mapboxgl.accessToken = 'pk.eyJ1IjoibXNnc2x1dCIsImEiOiJja2NvZmFpbjAwMW84MnJvY3F1d2hzcW5nIn0.xMAHVsdszfolXUOk9_XI4g';
@@ -46,6 +47,16 @@ function getUnitTotalCount(result: SearchResultPicked) {
   return count
 }
 
+function uniq(arr: string[] | undefined) {
+  if (!arr) {
+    return arr
+  }
+  var seen = {} as any;
+  return arr.filter(function (item) {
+    return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+  });
+}
+
 function generateHierarchies(result: SearchResultPicked): HierarchyNodeGroup[] | null {
   if (!result.data || !result.data.hierarchy_nodes) {
     return null
@@ -61,7 +72,10 @@ function generateHierarchies(result: SearchResultPicked): HierarchyNodeGroup[] |
       continue
     }
 
+
+
     let top_names = top?.business_members
+      .filter(mem => mem.first_name)
       .map(mem => `${mem.first_name}${mem.middle_name ? ' ' + mem.middle_name : ''} ${mem.last_name}`)
 
     top_names = top_names!.filter((name, index) => top_names!.indexOf(name) === index)
@@ -125,7 +139,7 @@ function getOwners(hierarchies: HierarchyNodeGroup[], result: SearchResultPicked
         owners = owners.concat((top_node as any).names ? (top_node as any).names : top_node.business_name)
       }
     })
-    return owners.reverse()
+    return uniq(owners.reverse())
   } else {
     if (result.property) {
       return result.property.owner.split('&')
@@ -216,6 +230,10 @@ class OnOpen {
   func = () => this.callback && this.callback()
 }
 
+function matchAddresses(longAddress: string, shortAddress: string) {
+  return longAddress.includes(shortAddress)
+}
+
 function Result({ result, closeResult, resultType }: { result: SearchResultPicked, closeResult: () => void, resultType: ResultType }) {
   console.log(result)
   const navigate = useNavigate();
@@ -251,9 +269,13 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   const [propertyManagers]: [string[] | undefined, any] = useState(dedup(result.data?.evictions?.reduce((agg, e, i) => e.evicting_property_managers ? agg.concat(e.evicting_property_managers) : agg, [] as string[])))
   const [extraPadding, setExtraPadding] = useState(true)
   const [showJoin, setShowJoin] = useState(false)
-
+  const [showDisclaimer, setShowDisclaimer] = useState(false)
+  const [showReportScreen, setShowReportScreen] = useState(false)
+  const [hideReportButton, setHideReportButton] = useState(false)
   const [openHandler] = useState(new OnOpen())
-
+  const [isOwnerAddress] = useState(result.property ? matchAddresses(result.property.owner_address, result.property.address_full) : false)
+  const [viewOwnerAddress, setViewOwnerAddress] = useState(false)
+  const [foundOwnerLink, setFoundOwnerLink] = useState(null as (string | null))
   useEffect(() => {
     if (viewBusinessInfo) {
       ReactGA.event({
@@ -294,6 +316,9 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
 
       const el = document.createElement('div');
       el.className = 'main-marker';
+      if (matchAddresses(result.property.owner_address, result.property.address_full)) {
+        el.className = 'main-owner-home-marker';
+      }
       new mapboxgl.Marker(el)
         .setLngLat([lng, lat])
         .addTo(map.current);
@@ -322,6 +347,17 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
     showAllLocations()
     setLandlordList(getLandlordList(result, hier))
   });
+
+  useEffect(() => {
+    if (showReportScreen) {
+      ReactGA.event({
+        category: "result_page",
+        action: "button_click",
+        label: "show report screen", // optional
+      });
+    }
+  }, [showReportScreen])
+
 
   function handleScroll(event: React.UIEvent<HTMLDivElement>) {
     const target = event.target! as any
@@ -371,7 +407,17 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
           el.innerHTML = `<span class="dot">${loc.addresses.length}</span>`
         }
         // el.innerHTML += loc.addresses.map(a => a)
-        el.className = 'marker';
+        const confidence = loc.addresses.reduce((max, curr) => max > curr.confidence ? max : curr.confidence, 0)
+        el.className = confidence >= .5 ? 'marker' : 'question-marker';
+
+        if (result.property) {
+          const owner_address = loc.addresses.find(a => matchAddresses(result.property.owner_address, a.address_full))
+          if (!isOwnerAddress && owner_address) {
+            el.className = 'owner-home-marker';
+            setFoundOwnerLink(`/address/${owner_address.address_full}`)
+          }
+        }
+
         el.onclick = (ev) => {
           const menu = el.getElementsByClassName('menu-container')[0]
           if (loc.addresses.length === 1) {
@@ -442,6 +488,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   }
 
   function scrollToReviews() {
+    hideAllMarkerMenus()
     setScrolled(true)
     // if (checkBrowser() !== 'Firefox') {
     //   setTimeout(() => {
@@ -464,7 +511,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
     setTimeout(() => setExtraPadding(true), 2200)
 
     if (survey && survey.current) {
-      (survey.current as any).scrollIntoView({ behavior: "smooth", block: "nearest", inline: 'start' }) 
+      (survey.current as any).scrollIntoView({ behavior: "smooth", block: "nearest", inline: 'start' })
 
     }
   }
@@ -477,9 +524,21 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
     }
   }
 
+  useEffect(() => {
+    if (scrolled) hideAllMarkerMenus()
+  }, [scrolled])
+
   return (
     <div className={'result ' + (extraPadding ? 'extra-padding' : '')} ref={resultRef}>
-      <Disclaimer />
+      <Disclaimer callback={null} />
+      {showDisclaimer && <Disclaimer callback={(val) => setShowDisclaimer(val)} />}
+      {showReportScreen &&
+        <ReportScreen
+          property_id={result.property?.property_id}
+          callback={(hide) => {
+            setHideReportButton(hide)
+            setShowReportScreen(false)
+          }}></ReportScreen>}
       {/* {
         (!scrolled && !alreadyScrolled) &&
         <div className='full-screen'>
@@ -521,13 +580,17 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
         </div>
 
         <div className={scrolled ? 'right right-up' : 'right right-down'} onScroll={handleScroll} ref={rightRef}>
-
+          <div className='view-disclaimer'><button onClick={() => setShowDisclaimer(true)}>view disclaimer</button></div>
           <div className='data-container'>
             <h3 className='address-title-container'>
               {
                 result.property &&
-                <div className='address-title'>{result.property.address_full}</div>
+                  <div className={'address-title' + (isOwnerAddress ? ' owner-title' : '')}>{result.property.address_full}</div>
+
               }
+              {/* {
+                result.property && isOwnerAddress && <p>(is likely to be their main address)</p>
+              } */}
               {
                 resultType === 'landlord' && result.data && result.data?.business_owners &&
                 <div className='address-title'>{result.data?.business_owners![0].business_name}</div>
@@ -539,7 +602,9 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             } */}
             <div className='owner-container'>
               {
-                <div className='owned_by'>owned by</div>
+                <div className='owned_by'>likely owned by
+                  {!hideReportButton && <div className="report-button"><button onClick={() => setShowReportScreen(true)}><div></div></button></div>}
+                </div>
               }
               {owners ? owners.map((o, i) =>
                 (<>{i !== 0 ? <div className='ampersand'>&amp;</div> : undefined}<div className='owner-name'>{o}</div></>))
@@ -566,7 +631,20 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                     </div>
                   ) : undefined
               }
-
+              {
+                propertyManagers && propertyManagers.length > 0 &&
+                  <div className='via-wrapper'>
+                    <div className='via'><span className='via-text'>property management companies:</span> </div>
+                    <div>
+                      {
+                        propertyManagers
+                          .map(pm =>
+                            <div className='via'>{pm}</div>
+                          )
+                      }
+                    </div>
+                  </div>
+              }
 
             </div>
 
@@ -574,7 +652,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
 
 
             {
-              result.data && result.data.evictions && result.data.evictions.length &&
+              result.data && result.data.evictions && result.data.evictions.length > 0 &&
               <div className='evictions-wrapper'>
                 <div className='evictions' onClick={() => false && setShowEvictions(!showEvictions)}>{result.data.evictions.length !== 1 ? result.data.evictions.length + ' EVICTIONS ON RECORD' : '1 EVICTION ON RECORD'} </div>
                 {/* <button className='evictions' onClick={() => setShowEvictions(!showEvictions)}>Found {result.data.evictions.length} eviction court-records associated with this landlord</button> */}
@@ -609,9 +687,9 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             {result.data &&
               <div className='properties'>
                 {
-                  result.data.market_value_sum === 0 || !result.data.market_value_sum?
-                  undefined :
-                  <><div className='market-value-str'>total market-value of properties:</div><div className='market-value'>{convertToUSD(result.data.market_value_sum!)}<Info message="calculated using tax information collected from PortlandMaps.com" /></div></>
+                  result.data.market_value_sum === 0 || !result.data.market_value_sum ?
+                    undefined :
+                    <><div className='market-value-str'>total market-value of properties:</div><div className='market-value'>{convertToUSD(result.data.market_value_sum!)}<Info message="calculated using tax information collected from PortlandMaps.com" /></div></>
                 }
                 {
                   result.data.locations && result.data.locations.length > 0 ?
@@ -649,6 +727,15 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
 
                             ) : undefined
                         }
+                        {
+                          // result.property && <div className='marker-inline-wrapper'>
+                          //   <br />
+                          //   <div className='market-value-str'>owner's address:</div>
+                          //   <div className='owner-address'> {result.property.owner_address}
+                          //     {/* <div onClick={() => scrollToTop()} className='owner-marker-inline' /> */}
+                          //   </div>
+                          // </div>
+                        }
                         {/* <div className='owns-button-container'>
                       <button className='owns-button' onClick={() => toggleLocations()}>{showingLocations ? 'HIDE' : 'SHOW'}</button>
                     </div> */}
@@ -670,7 +757,28 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                 }
               </div>
             }
-
+            {
+              result.property && 
+              <div className='business-info'>
+                  <button className='view-business-data-button' onClick={() => setViewOwnerAddress(!viewOwnerAddress)}>{viewOwnerAddress ? 'Hide Address' : 'View Owner Address'}</button>
+                  { viewOwnerAddress && 
+                  <div className='owner-marker-inline-wrapper'>
+                    <div className='line-1'>
+                      <p className='owner-address'>{result.property.owner_address}</p>                  
+                      <div onClick={() => {
+                        if (foundOwnerLink) {
+                          window.location.href = foundOwnerLink
+                        }
+                      }} className='owner-marker-inline' />
+                      </div>
+                    <p className='line-2'>
+                      <span>as indicated on PortlandMaps.com</span>
+                      <br/>
+                      <span>(this is often wrong)</span>  
+                    </p>
+                </div>}
+              </div>
+            }
             {
               hierarchies || (related_businesses && related_businesses.length) ?
                 <div className='business-info'>
@@ -733,6 +841,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                 </div>
                 : undefined
             }
+
             {
               result.data && result.reviews && result.reviews.length > 0 ?
                 // 
@@ -768,16 +877,16 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                   <div className='thanks'>Thanks for your feedback
                     <div className='action-items'>
                       {/* <button className='action orange'><div className='report'></div>report your landlord</button> */}
-                      
+
                       <button onClick={() => navigate('/organize')} className='action green'>connect with your neighbors</button>
                     </div>
                   </div>
               }
             </div>
             <div className='join-wrapper'>
-            {
-              !showSurvey && showJoin && <Join text={"Join the Portland Metro Tenant Union! Together we can build renter power in this city."}/>
-            }
+              {
+                !showSurvey && showJoin && <Join text={"Join the Portland Metro Tenant Union! Together we can build renter power in this city."} />
+              }
             </div>
 
             <div className='buffer'>

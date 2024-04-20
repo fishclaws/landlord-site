@@ -1057,6 +1057,26 @@ table tr td:last-child {
   padding-bottom: 10px;
 }
 
+.question-marker {
+  background-image: url('quest_marker.png');
+  background-size: cover;
+  width: 23px;
+  height: 30px;
+  cursor: pointer;
+  padding-left: 5px;
+  padding-bottom: 10px;
+}
+
+.owner-home-marker {
+  background-image: url('home_marker.png');
+  background-size: cover;
+  width: 23px;
+  height: 30px;
+  cursor: pointer;
+  padding-left: 5px;
+  padding-bottom: 10px;
+}
+
 .mapboxgl-popup-content {
   background-color: rgba(255, 255, 255);
 
@@ -1127,13 +1147,13 @@ table tr td:last-child {
 .dot {
   height: 20px;
   width: 20px;
-  background-color: #2d2d2d;
+  background-color: #000000;
   border-radius: 50%;
   display: inline-block;
   text-align: center;
-  left: 5px;
+  left: 20px;
   position: absolute;
-  top: 3px;
+  top: -5px;
   color: white;
 }
 
@@ -1728,17 +1748,17 @@ textarea {
 }
 
 .hierarchy-wrapper {
-  position: fixed;
+  position: absolute;
   z-index: 10000;
   width: 100%;
   height: 100%;
   left: 0px;
   top: 85px;
-  background-color: #77ff0093;
+  background-color: #00000093;
 }
 
 .hierarchy {
-  top: 40%;
+  top: 10%;
   position: relative;
   width: 50%;
   height: 50%;
@@ -1746,7 +1766,10 @@ textarea {
 }
 
 @media (max-width: 800px) {
+  .hierarchy-wrapper {
+    position: fixed;
 
+  }
   .hierarchy {
     top: 20%;
     position: relative;
@@ -2295,8 +2318,8 @@ button[disabled]{
   }
 
   margin-top: 30px;
-  width: 100%;
   display: table;
+  padding: 10px;
 }
 
 .admin-buttons {
@@ -2743,4 +2766,150 @@ small {
     text-align: center;
     z-index: 50;
   }
+}
+
+.view-disclaimer {
+  text-align: center;
+  width: 100%;
+  button {
+    border-style: none;
+    font-size: 1.1em;
+    background-color: #000000;
+    color: rgba(255, 255, 255, 0.586);
+    letter-spacing: .1em;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: $orange;
+  }
+}
+
+.report-button {
+  position: absolute;
+  right: -10px;
+  button {
+    border-style: solid;
+    border-color: rgb(134, 134, 134);
+    padding: 3px;
+    border-width: 1px;
+    background-color: transparent;
+    border-radius: 30px;
+
+    div {
+      background-image: url('flag.png');
+      background-size: cover;
+      width: 15px;
+      height: 15px;
+      border-radius: 30px;
+      filter: invert(80%);
+      background-color: white;
+
+    }
+  }
+}
+
+.report-screen {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background-color: #00000095;
+  z-index: 10000;
+  h1 {
+    font-size: 1.1em;
+  }
+  .close-btn {
+    position: absolute;
+    right: 10px;
+    background-color: rgb(255, 81, 0);
+    color: white;
+    font-size: 1.2em;
+    padding-bottom: 5px;
+  }
+  div {
+    position: relative;
+    background-color: white;
+    padding: 10px;
+    margin: auto;
+    width: fit-content;
+    padding-top: 5px;
+  }
+  textarea {
+    color: white;
+    padding: 5px;
+    font-size: 1.5em;
+  }
+  button:disabled {
+    color: rgba(255, 255, 255, 0.662);
+  }
+}
+
+.reports-table {
+  margin: auto;
+  padding: 10px;
+  button {
+    font-weight: bold;
+    font-size: 1.3em;
+  }
+}
+
+.owner-address {
+  letter-spacing: .05em;
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #e85284;
+  padding-top: 10px;
+  display: inline-flex;
+  flex-grow: 4;
+  padding-left: 5px;
+
+  // background-color: #00000079;
+
+}
+.owner-marker-inline-wrapper {
+
+  border-color: #e85284;
+  border-style: dashed;
+  border-width: 2px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-radius: 15px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  .line-1 {
+    display: flex;
+  }
+
+  .line-2 {
+    margin-top: 0px;
+    color: white;
+  }
+
+
+}
+.owner-marker-inline {
+  background-image: url('home_marker.png');
+  background-size: cover;
+  width: 50px;
+  height: 66px;
+  cursor: pointer;
+  display: inline-flex;
+  transform: scale(.7, .7);
+
+
+}
+
+.main-owner-home-marker {
+  @extend .owner-home-marker;
+  background-image: url('main_home_marker.png');
+  width: 35px;
+  height: 80px;
+  flex-grow: 4;
+  z-index: 100;
+}
+
+.owner-title {
+  color: #f1e729;
 }

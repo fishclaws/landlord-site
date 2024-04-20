@@ -250,6 +250,8 @@ function App({ organize }: { organize?: boolean }) {
 
             <div className="input-container">
               <input
+                key="address-input" 
+                autoFocus={true}
                 className={focus === 'address' ? 'grow' : undefined}
                 value={address}
                 type='text'
@@ -267,8 +269,9 @@ function App({ organize }: { organize?: boolean }) {
                 onKeyDown={handleKeyPress}></input>{address && focus === 'address' && <div className='mobile-search'><button onClick={() => search(searchType, address)}>→</button></div>}
             </div>
             <div className='or'>or</div>
-            <div className="input-container">
+            <div  className="input-container">
               <input
+                key="landlord-input"
                 className={focus === 'landlord' ? 'grow' : undefined}
                 value={landlord}
                 type='text'

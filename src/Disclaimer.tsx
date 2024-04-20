@@ -1,21 +1,21 @@
 import { useEffect, useState } from "react";
 import './App.scss';
 
-function Disclaimer() {
+function Disclaimer({callback}: {callback: ((val: boolean) => void) | null}) {
     const [accepted, setAccepted] = useState(() => {
-        return localStorage.getItem('accepted-disclaimer') === 'yes'
+        return callback ? false : localStorage.getItem('accepted-disclaimer') === 'yes'
     });
 
     useEffect(() => {
-        if (accepted) {
+        if (accepted && !callback) {
             localStorage.setItem('accepted-disclaimer', 'yes')
-
         }
+        if (callback) callback(!accepted)
     }, [accepted]);
 
     return (
         <div>
-            { !accepted ?
+            { !accepted || callback != null ?
             <div className="disclaimer-screen">
                 <div className='disclaimer'>
                     <div className="disclaimer-title">Disclaimer</div>

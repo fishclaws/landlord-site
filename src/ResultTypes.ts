@@ -14,6 +14,7 @@ export interface PropertyAddress {
   address_type: string
   building_id: string
   simplified_address: string
+  confidence: number
 }
 
 export interface PropertyLocation {

@@ -46,6 +46,19 @@ export function submitContact(contact: any) {
     })
 }
 
+export function submitReport(report: any) {
+  return fetch(`${api_path}/submit-report`,
+    {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify(report),
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+}
+
 // export function login(credential: string): any {
 //   return fetch(`${api_path}/auth/google/callback`,
 //   {
@@ -80,6 +93,18 @@ export function admin(password: string) {
 
 export function determine(password: string, id: number, approve: string) {
   return fetch(`${api_path}/determine?password=${password}&id=${id}&approve=${approve}`,
+  {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      "Content-Type": "application/json",
+      // 'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  })
+}
+
+export function resolveReport(password: string, id: number) {
+  return fetch(`${api_path}/resolve?password=${password}&id=${id}`,
   {
     method: 'POST',
     mode: 'cors',
