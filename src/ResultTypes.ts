@@ -187,12 +187,39 @@ export interface MultipleAddresses {
   addresses: any
 }
 
-export type SearchResult = MultipleAddresses | NoLandlordFound | NoBusinessFound | FoundBusiness
-
-export type SearchResultPicked = NoLandlordFound | NoBusinessFound | FoundBusiness
-
 export interface OneLandlordFound {
   data: DataResult
+  property: undefined
+
+}
+
+export type SearchResult = MultipleAddresses | NoLandlordFound | NoBusinessFound | FoundBusiness
+
+export interface PropertyManagerProperty {
+  property_id: string
+  address: string,
+  longitude: string,
+  latitude: string,
+  unit_count: number | null
+}
+export interface FoundPropertyManagerResult {
+  property: undefined
+  data: undefined
+
+  type: 'property-manager-found'
+  name: string
+  properties: PropertyManagerProperty[]
+  businesses: string[]
+  owners: string[]
+ }
+
+
+export type SearchResultPicked = NoLandlordFound | NoBusinessFound | FoundBusiness | OneLandlordFound | FoundPropertyManagerResult
+
+export interface OneLandlordFound {
+  type: undefined
+  data: DataResult
+  reviews: SubmittedReview[]
 }
 
 export type LandlordResult = null | OneLandlordFound
@@ -208,3 +235,10 @@ export interface NoLandlordNameFound {
 
 
  export type NameSearchResult =  LandlordNameFound | NoLandlordNameFound
+
+
+ export interface PropertyManagerResult {
+  name: string
+  locations: PropertyLocation[]
+  addresses: PropertyAddress[]
+ }

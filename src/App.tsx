@@ -4,7 +4,7 @@ import logo from './logo.svg';
 import './App.scss';
 
 import { MapContainer, Marker, Popup, TileLayer, useMap } from 'react-leaflet'
-import { findByName, getAddresses, getAllReviews } from './services'
+import { findByName, findPropertyManager, getAddresses, getAllReviews } from './services'
 import { LandlordNameFound, NameSearchResult, SearchResult } from './ResultTypes';
 import { useParams } from 'react-router';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -47,7 +47,7 @@ function draw(canvas: any) {
 
 
 function App({ organize }: { organize?: boolean }) {
-  const { addressSearch, query } = useParams();
+  const { addressSearch, query, propertyManager } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -98,10 +98,13 @@ function App({ organize }: { organize?: boolean }) {
     } else if (query) {
       setSearchType('landlord')
       search('landlord', query)
+    } else if (propertyManager) {
+      setSearchType('propertyManager')
+      search('propertyManager', propertyManager)
     } else {
       setResult(null)
     }
-  }, [location, addressSearch, query]);
+  }, [location, addressSearch, propertyManager, query]);
 
   useEffect(() => {
     if (organize) {
@@ -164,10 +167,14 @@ function App({ organize }: { organize?: boolean }) {
       findByName(query || landlord)
         .then((result: NameSearchResult) => {
           setIsLoading(false)
+          let foundButIncludesPropertyManagment = false
           if (result.type === 'no-landlord-name-found') {
             setShowLandlordSearchError(true)
+          } else {
+            foundButIncludesPropertyManagment = (result as any).data.business_owners[0].business_name.includes('PROPERTY MANAGEMENT')
           }
-          if (result.type === 'landlord-name-found') {
+          
+          if (result.type === 'landlord-name-found' && !foundButIncludesPropertyManagment) {
             setNameNotFound(false)
             setResult(result as any)
             setAddress('')
@@ -178,8 +185,37 @@ function App({ organize }: { organize?: boolean }) {
             }
             setStopSearch(true)
 
-          } else if (result.type === 'no-landlord-name-found') {
-            setNameNotFound(true)
+          } else if (result.type === 'no-landlord-name-found' || foundButIncludesPropertyManagment) {
+            const name = query || landlord
+            findPropertyManager(name)
+            .then((result: any) => {
+              setIsLoading(false)
+              if (result.type === 'property-manager-found') {
+                setNameNotFound(false)
+                setResult(result as any)
+                const newPath = `/property-manager/${name}`;
+                if (location.pathname !== newPath && !stopSearch) {
+                  navigate(newPath)
+                }
+                setStopSearch(true)
+              } else {
+                setNameNotFound(true)
+              }
+            })
+          }
+        })
+    } else if (searchType === 'propertyManager') {
+      findPropertyManager(propertyManager!)
+        .then((result: any) => {
+          setIsLoading(false)
+          if (result.type === 'property-manager-found') {
+            setNameNotFound(false)
+            setResult(result as any)
+            const newPath = `/property-manager/${result.name}`;
+            if (location.pathname !== newPath && !stopSearch) {
+              navigate(newPath)
+            }
+            setStopSearch(true)
           }
         })
     }

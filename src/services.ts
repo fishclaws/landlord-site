@@ -20,6 +20,15 @@ export function findByName(name: string) {
     })
 }
 
+export function findPropertyManager(name: string) {
+  return fetch(`${api_path}/property_manager?name=${name}`)
+    .then(data => {
+      return data.json().then((json: NameSearchResult) => {
+        return json
+      })
+    })
+}
+
 export function submitResponse(submission: any) {
   return fetch(`${api_path}/submit-review`,
     {

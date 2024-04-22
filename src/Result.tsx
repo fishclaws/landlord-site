@@ -223,7 +223,7 @@ function dedup(names: string[] | undefined) {
 }
 
 
-type ResultType = string | 'address' | 'landlord'
+type ResultType = string | 'address' | 'landlord' | 'property-manager'
 
 class OnOpen {
   callback: any = null
@@ -342,7 +342,9 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
       setAtBottom(entry.isIntersecting)
     });
 
-    observer.observe(survey.current!)
+    if (survey && survey.current) {
+      observer.observe(survey.current!)
+    }
 
     showAllLocations()
     setLandlordList(getLandlordList(result, hier))
@@ -391,7 +393,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   function showAllLocations() {
     if (markersDisplayed) return;
     const coords: Array<[number, number]> = []
-    if (result.property) {
+    if (result.property && lng && lat) {
       coords.push([lng, lat])
     }
 
@@ -427,6 +429,29 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             setSelectedLocation(loc as any)
           }
 
+        }
+        new mapboxgl.Marker(el)
+          .setLngLat(latlng)
+          .addTo(map.current);
+
+        coords.push(latlng as any)
+      }
+      setMarkerElements(markerEls)
+    }
+    if (result.type === 'property-manager-found') {
+      const markerEls = []
+
+      for (const prop of result.properties) {
+        const latlng = [parseFloat(prop.longitude), parseFloat(prop.latitude)]
+        const el = document.createElement('div');
+        if (prop.unit_count && prop.unit_count > 1) {
+          el.innerHTML = `<span class="dot">${prop.unit_count}</span>`
+        }
+        markerEls.push(el)
+        el.className = 'marker';
+        el.onclick = (ev) => {
+          const menu = el.getElementsByClassName('menu-container')[0]
+          window.location.href = `/address/${prop.address}`;
         }
         new mapboxgl.Marker(el)
           .setLngLat(latlng)
@@ -585,7 +610,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             <h3 className='address-title-container'>
               {
                 result.property &&
-                  <div className={'address-title' + (isOwnerAddress ? ' owner-title' : '')}>{result.property.address_full}</div>
+                <div className={'address-title' + (isOwnerAddress ? ' owner-title' : '')}>{result.property.address_full}</div>
 
               }
               {/* {
@@ -595,11 +620,16 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                 resultType === 'landlord' && result.data && result.data?.business_owners &&
                 <div className='address-title'>{result.data?.business_owners![0].business_name}</div>
               }
+              {
+                result.type === 'property-manager-found' &&
+                <div className='address-title'><span className='small'>property manager:</span> {result.name}</div>
+              }
               <div className='main-marker-inline' />
             </h3>
             {/* {result.property.description !== "undefined" ?
               (<div className='address-description'>{result.property.description}</div>) : undefined
             } */}
+            { result.type !== 'property-manager-found' &&
             <div className='owner-container'>
               {
                 <div className='owned_by'>likely owned by
@@ -633,23 +663,36 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
               }
               {
                 propertyManagers && propertyManagers.length > 0 &&
-                  <div className='via-wrapper'>
-                    <div className='via'><span className='via-text'>property management companies:</span> </div>
-                    <div>
-                      {
-                        propertyManagers
-                          .map(pm =>
-                            <div className='via'>{pm}</div>
-                          )
-                      }
-                    </div>
+                <div className='via-wrapper'>
+                  <div className='via'><span className='via-text'>property management companies:</span> </div>
+                  <div>
+                    {
+                      propertyManagers
+                        .map(pm =>
+                          <button className='pm-link' onClick={() => window.location.href = `/property-manager/${pm}`}>{pm}</button>
+                        )
+                    }
                   </div>
+                </div>
               }
 
             </div>
+            }
 
 
-
+              {
+                result.type as any === 'property-manager-found' &&
+                (result as any).businesses && 
+                (result as any).businesses.length > 0 &&
+                <div className='pm-businesses-list'>
+                  <div className='related-businesses-title'>Businesses using this Property Management Company</div>
+                  <div className='data-rows'>
+                    {(result as any).businesses.map((name: any) => (<button className='data-row' onClick={() => {
+                        window.location.href = `/search/${name}`
+                      }}>{name}</button>))}
+                  </div>
+                </div>
+              }
 
             {
               result.data && result.data.evictions && result.data.evictions.length > 0 &&
@@ -758,25 +801,25 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
               </div>
             }
             {
-              result.property && 
+              result.property &&
               <div className='business-info'>
-                  <button className='view-business-data-button' onClick={() => setViewOwnerAddress(!viewOwnerAddress)}>{viewOwnerAddress ? 'Hide Address' : 'View Owner Address'}</button>
-                  { viewOwnerAddress && 
+                <button className='view-business-data-button' onClick={() => setViewOwnerAddress(!viewOwnerAddress)}>{viewOwnerAddress ? 'Hide Address' : 'View Owner Address'}</button>
+                {viewOwnerAddress &&
                   <div className='owner-marker-inline-wrapper'>
                     <div className='line-1'>
-                      <p className='owner-address'>{result.property.owner_address}</p>                  
+                      <p className='owner-address'>{result.property.owner_address}</p>
                       <div onClick={() => {
                         if (foundOwnerLink) {
                           window.location.href = foundOwnerLink
                         }
                       }} className='owner-marker-inline' />
-                      </div>
+                    </div>
                     <p className='line-2'>
                       <span>as indicated on PortlandMaps.com</span>
-                      <br/>
-                      <span>(this is often wrong)</span>  
+                      <br />
+                      <span>(this is often wrong)</span>
                     </p>
-                </div>}
+                  </div>}
               </div>
             }
             {
@@ -847,7 +890,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                 // 
                 <div className='ratings-wrapper'>
                   <Reviews
-                    property_reviews={result.property && result.property.reviews}
+                    property_reviews={result.property && result.property.reviews as any}
                     other_reviews={result.data && result.reviews}
                     onOpen={openHandler}
                     scrollToReviews={scrollToReviews} />
@@ -865,24 +908,27 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             }
 
             <hr className="dashed" />
-            <div ref={survey} className='survey-container'>
-              {
-                showSurvey ?
-                  <Survey
-                    landlordList={landlordList}
-                    hideSurvey={hideSurvey}
-                    address={result.property && result.property.address_full}
-                    propertyId={result.property && result.property.property_id}></Survey>
-                  :
-                  <div className='thanks'>Thanks for your feedback
-                    <div className='action-items'>
-                      {/* <button className='action orange'><div className='report'></div>report your landlord</button> */}
+            {
+              result.type !== 'property-manager-found' &&
+              <div ref={survey} className='survey-container'>
+                {
+                  showSurvey ?
+                    <Survey
+                      landlordList={landlordList}
+                      hideSurvey={hideSurvey}
+                      address={result.property && result.property.address_full as any}
+                      propertyId={result.property && result.property.property_id as any}></Survey>
+                    :
+                    <div className='thanks'>Thanks for your feedback
+                      <div className='action-items'>
+                        {/* <button className='action orange'><div className='report'></div>report your landlord</button> */}
 
-                      <button onClick={() => navigate('/organize')} className='action green'>connect with your neighbors</button>
+                        <button onClick={() => navigate('/organize')} className='action green'>connect with your neighbors</button>
+                      </div>
                     </div>
-                  </div>
-              }
-            </div>
+                }
+              </div>
+            }
             <div className='join-wrapper'>
               {
                 !showSurvey && showJoin && <Join text={"Join the Portland Metro Tenant Union! Together we can build renter power in this city."} />
@@ -897,7 +943,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
         </div>
       </div >
       {
-        showSurvey &&
+        showSurvey && result.type !== 'property-manager-found' &&
         <div className='jump-to-reviews-wrapper'><button className={'jump-to-reviews ' + (atBottom ? 'hide-jump' : 'show-jump')} onClick={() => scrollToReviews()}>leave a review</button></div>
       }
     </div >

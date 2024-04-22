@@ -10,6 +10,8 @@ function Admin() {
     const [content, setContent] = useState([])
     const [reports, setReports] = useState([])
     const [history, setHistory] = useState([] as any)
+    const [contacts, setContacts] = useState([] as any[])
+    const [reviewCount, setReviewCount] = useState(0)
 
     useEffect(() => {
         setHistory(content.map(c => ''))
@@ -17,8 +19,9 @@ function Admin() {
 
     return (
     <div className="admin">
-            <h1>Welcome</h1>
+            <h1 >Welcome</h1>
             <input
+                className="pass"
                 placeholder="password"
                 value={password}
                 type='text'
@@ -28,12 +31,19 @@ function Admin() {
                 );
                 }}>
             </input>
-            <button onClick={() => {
-                admin(password).then(data => {
-                    setContent(data.content);
-                    setReports(data.reports);
-            })
-            }}>Get Content</button>
+            <div className="get-content" >
+                <button
+                    
+                    onClick={() => {
+                    admin(password).then(data => {
+                        setContent(data.content);
+                        setReports(data.reports);
+                        setContacts(data.contacts);
+                        setReviewCount(data.reviewCount);
+                })
+                }}>Get Content</button>
+            </div>
+            <h3  className="contact-list">submitted reviews</h3>
             <table className="approval-table">
                 <tbody>
             {
@@ -84,6 +94,7 @@ function Admin() {
             </tbody>
             </table>
             <br/>
+            <h3  className="contact-list">reports</h3>
             <table className="reports-table">
                 <tbody>
             {
@@ -110,6 +121,20 @@ function Admin() {
             }
             </tbody>
             </table>
+
+            <div className="contact-list">
+                <h3>contacts</h3>
+                {
+                    contacts.map(contact =>
+                        <div>
+                            <div>{contact.name}</div>
+                            <div>{contact.email}</div>
+                        </div>
+                    )
+                }
+            </div>
+
+            <h3  className="contact-list">review count: {reviewCount}</h3>
     </div>
     );
 }

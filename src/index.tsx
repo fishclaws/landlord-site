@@ -34,6 +34,11 @@ const router = createBrowserRouter([
     errorElement: <ErrorBoundary/>
   },
   {
+    path: "/property-manager/:propertyManager",
+    element: <App/>,
+    errorElement: <ErrorBoundary/>
+  },
+  {
     path: "/organize",
     element: <App organize={true}/>,
     errorElement: <ErrorBoundary/>
