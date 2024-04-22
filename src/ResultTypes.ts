@@ -211,6 +211,7 @@ export interface FoundPropertyManagerResult {
   properties: PropertyManagerProperty[]
   businesses: string[]
   owners: string[]
+  eviction_count: number
  }
 
 

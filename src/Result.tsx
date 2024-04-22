@@ -629,70 +629,76 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             {/* {result.property.description !== "undefined" ?
               (<div className='address-description'>{result.property.description}</div>) : undefined
             } */}
-            { result.type !== 'property-manager-found' &&
-            <div className='owner-container'>
-              {
-                <div className='owned_by'>likely owned by
-                  {!hideReportButton && <div className="report-button"><button onClick={() => setShowReportScreen(true)}><div></div></button></div>}
-                </div>
-              }
-              {owners ? owners.map((o, i) =>
-                (<>{i !== 0 ? <div className='ampersand'>&amp;</div> : undefined}<div className='owner-name'>{o}</div></>))
-                : (result.data?.owned_addresses && result.data?.owned_addresses.length &&
-                  <div className='owner-name'>{result.data?.owned_addresses[0].owner}</div>
-                )
-              }
-              {
-                result && result.property && result.property.owner && hierarchies && hierarchies.length > 0 ?
-                  (
-                    <div className='via-wrapper'>
-                      <div className='via'><span className='via-text'>via</span> </div>
-                      <div>
-                        <div className='via'>{result.property.owner} </div>
-                        {
-                          landlordList ? landlordList
-                            .filter(l => l.origin === 'businesses')
-                            .map(l =>
-                              <div className='via'>{l.name}</div>
-                            )
-                            : undefined
-                        }
-                      </div>
-                    </div>
-                  ) : undefined
-              }
-              {
-                propertyManagers && propertyManagers.length > 0 &&
-                <div className='via-wrapper'>
-                  <div className='via'><span className='via-text'>property management companies:</span> </div>
-                  <div>
-                    {
-                      propertyManagers
-                        .map(pm =>
-                          <button className='pm-link' onClick={() => window.location.href = `/property-manager/${pm}`}>{pm}</button>
-                        )
-                    }
+            {result.type !== 'property-manager-found' &&
+              <div className='owner-container'>
+                {
+                  <div className='owned_by'>likely owned by
+                    {!hideReportButton && <div className="report-button"><button onClick={() => setShowReportScreen(true)}><div></div></button></div>}
                   </div>
-                </div>
-              }
+                }
+                {owners ? owners.map((o, i) =>
+                  (<>{i !== 0 ? <div className='ampersand'>&amp;</div> : undefined}<div className='owner-name'>{o}</div></>))
+                  : (result.data?.owned_addresses && result.data?.owned_addresses.length &&
+                    <div className='owner-name'>{result.data?.owned_addresses[0].owner}</div>
+                  )
+                }
+                {
+                  result && result.property && result.property.owner && hierarchies && hierarchies.length > 0 ?
+                    (
+                      <div className='via-wrapper'>
+                        <div className='via'><span className='via-text'>via</span> </div>
+                        <div>
+                          <div className='via'>{result.property.owner} </div>
+                          {
+                            landlordList ? landlordList
+                              .filter(l => l.origin === 'businesses')
+                              .map(l =>
+                                <div className='via'>{l.name}</div>
+                              )
+                              : undefined
+                          }
+                        </div>
+                      </div>
+                    ) : undefined
+                }
+                {
+                  propertyManagers && propertyManagers.length > 0 &&
+                  <div className='via-wrapper'>
+                    <div className='via'><span className='via-text'>property management companies:</span> </div>
+                    <div>
+                      {
+                        propertyManagers
+                          .map(pm =>
+                            <button className='pm-link' onClick={() => window.location.href = `/property-manager/${pm}`}>{pm}</button>
+                          )
+                      }
+                    </div>
+                  </div>
+                }
 
-            </div>
+              </div>
             }
 
 
-              {
-                result.type as any === 'property-manager-found' &&
-                (result as any).businesses && 
-                (result as any).businesses.length > 0 &&
+            {
+              result.type === 'property-manager-found' &&
+              (result as any).businesses &&
+              (result as any).businesses.length > 0 &&
+              <div>
+                <div className='evictions-wrapper'>
+                  <div className='evictions'>{result.eviction_count !== 1 ? result.eviction_count + ' EVICTIONS ON RECORD' : '1 EVICTION ON RECORD'} </div>
+                </div>
                 <div className='pm-businesses-list'>
+
                   <div className='related-businesses-title'>Businesses using this Property Management Company</div>
                   <div className='data-rows'>
                     {(result as any).businesses.map((name: any) => (<button className='data-row' onClick={() => {
-                        window.location.href = `/search/${name}`
-                      }}>{name}</button>))}
+                      window.location.href = `/search/${name}`
+                    }}>{name}</button>))}
                   </div>
                 </div>
-              }
+              </div>
+            }
 
             {
               result.data && result.data.evictions && result.data.evictions.length > 0 &&
