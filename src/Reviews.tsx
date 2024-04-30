@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Review } from "./ResultTypes"
-import { qs } from "./SurveyQuestions"
+import { qs, selectionQuestions } from "./SurveyQuestions"
 import './App.scss';
 import Twemoji from 'react-twemoji';
 
@@ -20,11 +20,14 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
     const [propertyComments, setPropertyComments]: [string[], any] = useState([])
     const [otherComments, setOtherComments]: [string[], any] = useState([])
     const [selected, setSelected] = useState('this')
+    const [propertyItemized, setPropertyItemized] = useState([] as any[])
+    const [otherItemized, setOtherItemized] = useState([] as any[])
 
     useEffect(() => {
         if (property_reviews) {
             setPropertyAgg(getStatements(property_reviews))
             setPropertyComments(property_reviews.filter(rev => rev.review_text).map(rev => rev.review_text.trim()).filter(rev => rev.length))
+            setPropertyItemized(getItemized(property_reviews))
         }
         if (other_reviews) {
             let or = other_reviews
@@ -32,6 +35,7 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
                 or = or.filter(rev => !property_reviews.find(pr => pr.id === rev.id))
             setOtherAgg(getStatements(or))
             setOtherComments(or.filter(rev => rev.review_text).map(rev => rev.review_text.trim()).filter(rev => rev.length))
+            setOtherItemized(getItemized(or))
         }
     }, [])
 
@@ -61,6 +65,23 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
             }
         )).filter(agg => agg.answers.length > 0)
 
+    }
+
+    function getItemized(arr: Review[]) {
+        const result: number[] = []
+        for (let rev of arr) {
+            for (let i = qs.length; i < qs.length + selectionQuestions.questions.length; i++) {
+                const review = rev.selected_answers[i]
+                if (review === 1) {
+                    if (!result[i - qs.length]) {
+                        result[i - qs.length] = 1
+                    } else {
+                        result[i - qs.length]++
+                    }
+                }
+            }
+        }
+        return result
     }
     return (
         <div>
@@ -94,6 +115,7 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
                             </div>
                         ))
                     :
+                    (selected === 'this' ? propertyItemized : otherItemized).length === 0 &&
                     <div className="review-section">
                         <div className='review-question'>{selected === 'this' ? 'no reviews for this address' : 'no other reviews'}</div>
                         <div className='leave-a-review-wrapper'>
@@ -101,6 +123,17 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
                         </div>
                     </div>
                 }
+                 <div className='selection-questions'>
+                    {
+                        (selected === 'this' ? propertyItemized : otherItemized).length > 0 &&
+                        (selected === 'this' ? propertyItemized : otherItemized).map((q, i) => 
+                                <div 
+                                    key={`${i}-sq`}
+                                    className="selection-question selection-selected">{selectionQuestions.questions[i].emoji} {selectionQuestions.questions[i].text} <span className="item-count">x{q}</span>
+                                </div>
+                        )
+                    }
+                </div>
                 {
                     (selected === 'this' ? propertyComments : otherComments).length !== 0 &&
                     <div>

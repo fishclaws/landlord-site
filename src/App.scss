@@ -159,20 +159,17 @@ body {
 }
 
 .name {
-  letter-spacing: .2em;
+  color: rgb(217, 255, 0);
+  letter-spacing: .1em;
   font-size: 1.4em;
-  padding-bottom: 10px;
-  background: rgb(26, 29, 17);
+  padding-top: 7px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 7px;
+  background: rgba(0, 0, 0, 0.503);
   font-weight: bold;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-@media (max-height: 730px) {
-  .name {
-    letter-spacing: 0em;
-  }
-  
+  position: absolute;
+  z-index: 10000;
 }
 
 .canvas-container {
@@ -246,7 +243,7 @@ h1 {
 
   width: 100%;
   top: 10%;
-  padding: 130px 0 0;
+  padding: 110px 0 0;
   scroll-margin-bottom: 300px;
   max-height: 60%;
 }
@@ -1330,7 +1327,7 @@ px
 
 .question {
   color: $bright;
-  background-color: rgba(0, 0, 0, 0.72);
+  background-color: #232020;
   box-shadow: 2px 2px rgb(0 0 0 / 42%);
   margin-bottom: 20px;
   font-size: 1.2em;
@@ -2037,7 +2034,7 @@ button[disabled]{
   margin: auto;
   width: fit-content;
   margin-top: 50px;
-
+  max-width: 600px;
 }
 
 .review-statement{
@@ -2696,8 +2693,8 @@ small {
   height: 100%;
   width: 100%;
   min-width: 90px;
-  min-height: 250px;
-  z-index: 100;
+  min-height: 400px;
+  z-index: 80;
 }
 
 
@@ -2708,12 +2705,32 @@ small {
 
 .map-wrapper {
   width: 70%;
-  height: 20%;
+  height: 25%;
   margin: auto;
   margin-bottom: 20px;
 }
 
+@media (max-height: 700px) {
+  .map-container-2 {
+    min-height: 300px;
+  }
+
+  .map-wrapper {
+    width: 100%;
+  }
+}
+
 @media (max-width: 800px) {
+  .map-container-2 {
+    min-height: 300px;
+  }
+
+  .map-wrapper {
+    width: 100%;
+  }
+}
+
+@media (max-height: 600px) {
   .map-container-2 {
     min-height: 200px;
   }
@@ -2967,4 +2984,51 @@ small {
 .pass {
   margin: auto;
   width: fit-content;
+}
+
+.select-any-title {
+  color: $bright;
+  padding: 5px;
+  text-align: center;
+  font-size: 1.2em;
+  margin-bottom: 0px;
+}
+
+.selection-questions {
+  background-color: #232020;
+  display: flexbox;
+  margin-bottom: 20px;
+}
+
+.selection-question {
+    display: inline-flex;
+  flex-grow: 4;
+  margin: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-bottom: 3px;
+  background-color: #454545;
+  color: rgb(187, 187, 187);
+  font-size: 1.0em;
+  font-weight: bold;
+  border-style: none;
+  letter-spacing: -.02em;
+
+
+}
+
+.selection-selected {
+  color: black;
+  background-color: $bright;
+}
+
+.item-count {
+  margin-left: 5px;
+  margin-top: 1px;
+  padding: 3px;
+  background-color: #000000;
+  color: white;
+  border-radius: 10px;
+  font-size: .9em;
+  font-weight: bold;
 }

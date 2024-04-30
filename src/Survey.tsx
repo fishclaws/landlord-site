@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './App.scss';
 import { submitResponse } from './services'
-import { Landlord, QUESTION_SET, Question, qs } from './SurveyQuestions';
+import { Landlord, QUESTION_SET, Question, qs, selectionQuestions } from './SurveyQuestions';
 
 
 function Survey(
@@ -23,6 +23,7 @@ function Survey(
     // const [selectedLandlords, setSelectedLandlords] = useState(landlordList.length === 1 ? landlordList : [])
     const [reviewText, setReviewText] = useState('')
     const [isLoading, setIsLoading] = useState(false)
+
     const maxLength = 0
 
     function submit() {
@@ -61,7 +62,7 @@ function Survey(
             <h3 className='survey-title'>rate this landlord</h3>
             {
                 questions.map((q, questionIndex) => (
-                    <div className='question'>
+                    !q.hidden && <div className='question'>
                         <p>{q.emoji} {q.text}</p>
                         <br/>
                         {q.answers ? 
@@ -77,7 +78,6 @@ function Survey(
                                             } else {
                                                 ans[questionIndex] = answerIndex
                                             }
-                                            console.log(ans)
                                             setAnswersSelected(ans)
                                         }}>{a}</button>
                                     ))
@@ -87,6 +87,27 @@ function Survey(
                     </div>
                 ))
             }
+            <div className='selection-questions'>
+            <p className='select-any-title'>Select any that apply</p>
+
+            {
+                selectionQuestions.questions.map((q, i) => 
+                        <button 
+                            key={`${i}-sq`}
+                            onClick={() => {
+                                const ans = { ...answersSelected}
+                                if (ans[i + questions.length]) {
+                                    ans[i + questions.length] = 0
+                                } else {
+                                    ans[i + questions.length] = 1
+                                }
+                                setAnswersSelected(ans) 
+                            }} 
+                            className={`selection-question ${answersSelected[i + questions.length] === 1 ? 'selection-selected' : ''}`}>{q.emoji} {q.text}
+                        </button>
+                )
+            }
+            </div>
             <div className='question'>
                 <p>What else do you want people to know about this landlord?</p>
                 <textarea name="Text1" cols={40} rows={5} maxLength={250} 
@@ -96,6 +117,10 @@ function Survey(
                                 
                             </textarea><span className='char-counter'>{reviewText.length} / 250</span>
             </div>
+            {/* <div>
+                (optional) leave your name and email if you want us to contact you
+                <input type="email"></input>
+            </div> */}
             <div className='submit-button-wrapper'>
                 <button className={'submit-button' + (isLoading ? ' button--loading' : '')} 
                     disabled={(Object.keys(answersSelected).length === 0 && reviewText === '') || isLoading}

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './App.scss';
 import { getAllReviews } from "./services";
-import {qs} from './SurveyQuestions'
+import {Question, qs, selectionQuestions} from './SurveyQuestions'
 
 
 import mapboxgl from 'mapbox-gl';
@@ -40,14 +40,17 @@ function Map() {
             if (sa === null) {
               return null
             }
-            if (qs[i].answersOfNote.includes(sa))
+            if (qs[i] === undefined) {
+              return selectionQuestions.questions[i - qs.length].emoji
+            }
+            else if (qs[i].answersOfNote && qs[i].answersOfNote!.includes(sa))
                 return qs[i].emoji
           }).filter((a: any) => a)
     
           if (emojis.length !== 0) {
             return {
               type: 'emoji',
-              text: (emojis as string[]).join(' ')
+              text: (emojis as string[]).join('')
             };
           }
         }
@@ -148,7 +151,7 @@ function Map() {
                 bounds.extend(coord);
               }
     
-              (map.current as any).fitBounds(bounds, { padding: 5, maxZoom: 15 });
+              (map.current as any).fitBounds(bounds, { padding: 50, maxZoom: 15 });
             }
     
             setMarkerEls(els)
