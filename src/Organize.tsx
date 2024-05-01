@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { submitContact } from "./services";
 import Join from "./Join";
 
 interface Section {

@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { submitContact } from "./services";
 
-function Join({text}: {text: string}) {
+function Join({text, property_id}: {text: string, property_id?: string}) {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [joined, setJoined] = useState(false)
 
     function submitMe(name: string, email: string) {
         submitContact({
-            name, email
+            name, email, property_id
         })
     }
 

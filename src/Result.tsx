@@ -937,7 +937,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             }
             <div className='join-wrapper'>
               {
-                !showSurvey && showJoin && <Join text={"Join the Portland Metro Tenant Union! Together we can build renter power in this city."} />
+                !showSurvey && showJoin && <Join text={"Join the Portland Metro Tenant Union! Together we can build renter power in this city."} property_id={result.property ? result.property.property_id : undefined} />
               }
             </div>
 
