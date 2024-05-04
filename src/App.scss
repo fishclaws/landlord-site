@@ -2336,6 +2336,8 @@ button[disabled]{
       border-radius: 10px;
     }
   }
+  overflow: scroll;
+  height: 100vh;
 }
 
 .approved {
@@ -2978,6 +2980,30 @@ small {
   div {
     margin: 4px;
     background-color: whitesmoke;
+  }
+  .contact-review {
+    border-color: #393939;
+    border-style: solid;
+    padding: 10px;
+    padding-left: 20px;
+    max-width: 500px;
+  }
+
+  img {
+    max-width: 30px;
+    background-color: #fc3200;
+    border-radius: 20px;
+  }
+
+  button {
+    margin: 3px;
+    font-size: .9em;
+    margin: 5px;
+    border-style: solid;
+    background-color: #18819e;
+    color: white;
+    font-weight: bold;
+    
   }
 }
 

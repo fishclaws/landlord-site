@@ -3,6 +3,7 @@ import "./App.scss";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { admin, determine, resolveReport } from "./services";
 import { useEffect, useState } from "react";
+import flag from "./flag.png"
 
 function Admin() {
 
@@ -12,10 +13,15 @@ function Admin() {
     const [history, setHistory] = useState([] as any)
     const [contacts, setContacts] = useState([] as any[])
     const [reviewCount, setReviewCount] = useState(0)
+    const [expanded, setExpanded] = useState([] as boolean[])
 
     useEffect(() => {
         setHistory(content.map(c => ''))
     }, [content])
+
+    function hasDeletedReview(c: any) {
+        return c.json.reviews.find((r: any) => r && r.deleted)
+    }
 
     return (
     <div className="admin">
@@ -125,10 +131,39 @@ function Admin() {
             <div className="contact-list">
                 <h3>contacts</h3>
                 {
-                    contacts.map(contact =>
+                    contacts.map((c, i) =>
                         <div>
-                            <div>{contact.name}</div>
-                            <div>{contact.email}</div>
+                            {(c.flagged || hasDeletedReview(c)) && <img src={flag}></img>}
+                            <div>{c.json.contact.name}</div>
+                            <div>{c.json.contact.email}</div>
+                            {
+                                c.json.reviews.filter((r: any) => r).length !== 0 && <button
+                                onClick={
+                                    () => {
+                                        const e = [...expanded]
+                                        e[i] = !e[i]
+                                        setExpanded(e)
+                                    }
+                                }
+                            >reviews left {c.json.reviews.filter((r: any) => r).length}</button>
+                            }
+                            {
+                                expanded[i] && c.json.reviews
+                                    .filter((r: any) => r)
+                                    .map((r: any) => 
+                                    <div className="contact-review">
+                                        {r.deleted && 
+                                            <div>
+                                                <img src={flag}></img>
+                                                DELETED
+                                            </div>}
+                                        <a href={`/address/${r.address}`}>link</a>
+                                        <br/>
+                                        {r.review_text && <span>comment: {r.review_text}</span>}
+                                        
+                                    </div>
+                                )
+                            }
                         </div>
                     )
                 }
