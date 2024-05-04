@@ -110,12 +110,12 @@ function Survey(
             </div>
             <div className='question'>
                 <p>What else do you want people to know about this landlord?</p>
-                <textarea name="Text1" cols={40} rows={5} maxLength={250} 
+                <textarea name="Text1" cols={40} rows={5} maxLength={600} 
                             onChange={(event) => {
                                 setReviewText(event.target.value)
                             }}>
                                 
-                            </textarea><span className='char-counter'>{reviewText.length} / 250</span>
+                            </textarea><span className='char-counter'>{reviewText.length} / 600</span>
             </div>
             {/* <div>
                 (optional) leave your name and email if you want us to contact you
