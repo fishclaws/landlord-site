@@ -370,7 +370,7 @@ function App({ organize }: { organize?: boolean }) {
               </div>
             </div>
           }
-
+          <div className='app-buffer'></div>
         </div>
 
 

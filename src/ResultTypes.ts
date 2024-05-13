@@ -100,6 +100,15 @@ export interface Review {
   selected_answers: number[]
 }
 
+export interface ReviewResult {
+  id: number,
+  review_text: string,
+  selected_answers: number[]
+  address: string
+  longitude: string
+  latitude: string
+}
+
 export interface DataResult {
   business_owners: Array<BusinessOwner>
   related_businesses: Array<BusinessOwner>
