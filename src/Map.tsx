@@ -161,6 +161,9 @@ function Map() {
     popup._container.addEventListener('click', () => {
       window.location.href=`/address/${rev[0].address}`
     });
+    if (!isText) {
+      (popup._content as HTMLElement).style.scale = '.7'
+    }
     popup._container.getElementsByClassName(className)[0].textContent = isText ? getLabelText(rev[0])!.text : rev[1];
     els.push(popup)
   }
