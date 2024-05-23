@@ -686,7 +686,7 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
               (result as any).businesses.length > 0 &&
               <div>
                 <div className='evictions-wrapper'>
-                  <div className='evictions'>{result.eviction_count !== 1 ? result.eviction_count + ' EVICTIONS ON RECORD' : '1 EVICTION ON RECORD'} </div>
+                  <div className='evictions'>{result.eviction_count !== 1 ? result.eviction_count + ' EVICTIONS FILED' : '1 EVICTION FILED'} </div>
                 </div>
                 <div className='pm-businesses-list'>
 
