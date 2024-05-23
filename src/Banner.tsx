@@ -27,11 +27,10 @@ function Banner() {
                         label: "tj for housing", // optional
                       });
                     //   setClicked(true)
-                    window.open('https://tj4housing.com/');
+                    window.open('https://rentersactionnetwork.org/');
                 }}>
             <div className='lets'>Stand against Landlord Greed</div>
-            <span className='vote'> Vote TJ</span>
-            <span className='vote-date'> on May 21st</span>
+            <span className='vote'> Join Renters Action Network</span>
             {/* <br/>
                 <span className='for'> for Multonomah County Commissioner District 3</span> */}
 
