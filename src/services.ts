@@ -1,4 +1,5 @@
 import { NameSearchResult, SearchResult } from "./ResultTypes"
+import { CreateUser, User } from "./UserType"
 
 const api_path = window.location.hostname === 'localhost' ? 'http://localhost:3001' : '/api'
 
@@ -88,37 +89,40 @@ export function submitReport(report: any) {
 //   });
 // }
 
-export function admin(password: string) {
-  return fetch(`${api_path}/admin?password=${password}`,
+export function admin(jwt: string) {
+  return fetch(`${api_path}/admin`,
   {
     method: 'GET',
     mode: 'cors',
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${jwt}`
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
   }).then(response => response.json())
 }
 
-export function determine(password: string, id: number, approve: string) {
-  return fetch(`${api_path}/determine?password=${password}&id=${id}&approve=${approve}`,
+export function determine(jwt: string, id: number, approve: string) {
+  return fetch(`${api_path}/determine?id=${id}&approve=${approve}`,
   {
     method: 'POST',
     mode: 'cors',
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${jwt}`
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
   })
 }
 
-export function resolveReport(password: string, id: number) {
-  return fetch(`${api_path}/resolve?password=${password}&id=${id}`,
+export function resolveReport(jwt: string, id: number) {
+  return fetch(`${api_path}/resolve?id=${id}`,
   {
     method: 'POST',
     mode: 'cors',
     headers: {
       "Content-Type": "application/json",
+      "Authorization": `Bearer ${jwt}`
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
   })
@@ -134,4 +138,75 @@ export function getAllReviews() {
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
   }).then(response => response.json())
+}
+
+export function login(token: string) {
+  return fetch(`${api_path}/auth/login`,
+    {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: JSON.stringify({
+        'token': token
+      })
+    }
+  ).then(response => response.json())
+}
+
+export function getAllUsers(jwt: string): Promise<User[]> {
+  return fetch(`${api_path}/users/all`,
+  {
+    method: 'GET',
+    mode: 'cors',
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${jwt}`
+    },
+  }
+).then(response => response.json())
+}
+
+export function updateUser(jwt: string, user: User) {
+  return fetch(`${api_path}/users/update`,
+  {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${jwt}`
+    },
+    body: JSON.stringify({user})
+  }
+).then(response => response.json())
+}
+
+export function createUser(jwt: string, user: CreateUser): Promise<User[]> {
+  return fetch(`${api_path}/users/create`,
+  {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${jwt}`
+    },
+    body: JSON.stringify({user})
+  }
+).then(response => response.json())
+}
+
+export function deleteUser(jwt: string, userId: number): Promise<User[]> {
+  return fetch(`${api_path}/users/delete`,
+  {
+    method: 'DELETE',
+    mode: 'cors',
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${jwt}`
+    },
+    body: JSON.stringify({userId})
+  }
+).then(response => response.json())
 }

@@ -39,6 +39,15 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
         }
     }, [])
 
+
+    useEffect(() => {
+        if (anyPropertyReviewsExist()) {
+            setSelected('this')
+        } else {
+            setSelected('other')
+        }
+    }, [propertyItemized, propertyAgg, propertyComments])
+
     function getCount(index: number, arr: Review[], answerOfNote: number) {
         return arr.reduce((total, rev) => {
             if (rev.selected_answers[index] === answerOfNote) {
@@ -83,21 +92,32 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
         }
         return result
     }
+
+    function anyPropertyReviewsExist() {
+        return propertyItemized.length + propertyAgg.length + propertyComments.length > 0
+    }
+
     return (
         <div>
-            <div className="reviews-title">
-                {
-                <button
-                    className={'review-type-bttn ' + (selected === 'this' ? 'selected' : '')}
-                    onClick={() => { setSelected('this'); onOpen.func() }}>reviews for this address</button>
-                }
-                {
-
-                <button
-                    className={'review-type-bttn ' + (selected === 'other' ? 'selected' : '')}
-                    onClick={() => { setSelected('other'); onOpen.func() }}>reviews for other addresses</button>
-                }
-            </div>
+            {
+            anyPropertyReviewsExist() ?
+                <div className="reviews-title">
+                    {
+                    
+                    <button
+                        className={'review-type-bttn ' + (selected === 'this' ? 'selected' : '')}
+                        onClick={() => { setSelected('this'); onOpen.func() }}>reviews for this address</button>
+                    }
+                    {
+                    
+                    <button
+                        className={'review-type-bttn ' + (selected === 'other' ? 'selected' : '')}
+                        onClick={() => { setSelected('other'); onOpen.func() }}>reviews for other addresses</button>
+                    }
+                </div>
+                :
+                <div className="reviews-title-singular">Reviews for other addresses owned by this landlord</div>
+            }
             <div className={'reviews-wrapper'}>
                 {
                     (selected === 'this' ? propertyAgg : otherAgg).length > 0 ?

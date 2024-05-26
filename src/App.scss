@@ -2076,6 +2076,21 @@ button[disabled]{
   border-top-right-radius: 10px;
 }
 
+.reviews-title-singular {
+  color: $lime;
+  background-color: transparent;
+  border-style: solid;
+  border-top-left-radius: 50px;
+  border-color: $lime;
+  padding: 5px;
+  flex-grow: 4;
+  font-size: 1.1em;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+
+}
+
 
 .review-question {
   font-size: 1.1em;
@@ -3034,7 +3049,9 @@ small {
 
 .contact-list {
   margin: auto;
-  width: fit-content;
+  width: 40%;
+  max-width: 500px;
+
   div {
     margin: 4px;
     background-color: whitesmoke;
@@ -3044,7 +3061,6 @@ small {
     border-style: solid;
     padding: 10px;
     padding-left: 20px;
-    max-width: 500px;
   }
 
   img {
@@ -3062,6 +3078,10 @@ small {
     color: white;
     font-weight: bold;
     
+  }
+
+  .added-on {
+    text-align: right;
   }
 }
 
@@ -3177,4 +3197,84 @@ small {
 
 .app-buffer {
   padding-bottom: 100px;
+}
+
+.auth-status {
+  font-size: 2em;
+  text-align: center;
+}
+
+.google-login {
+  width:fit-content;
+  margin: auto;
+}
+
+.logout-button {
+  width: fit-content;
+  margin: auto;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  button {
+  border-style: none;
+  font-size: 3em;
+  text-align: center;
+  }
+}
+
+.super-user {
+  margin: auto;
+  max-width: 600px;
+  background-color: #000000;
+  padding: 10px;
+  color: white;
+  font-size: 1.1em;
+  label {
+    color: rgb(207, 204, 42);
+    
+  }
+  input {
+    font-size: 1.3em;
+    display: inline-flex;
+  }
+  .email-input {
+    min-width: 400px;
+  }
+  .user {
+    padding: 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: white;
+  }
+  button {
+    margin: 5px;
+    background-color: orange;
+    border-style: none;
+    border-radius: 20px;
+    font-size: 1em;
+    font-weight: bold;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+  .add {
+    background-color: green;
+    background-color:rgb(143, 183, 0)
+  }
+  .delete {
+    background-color: rgb(255, 92, 55);
+  }
+}
+
+.groups {
+  width: 500px;
+  margin: auto;
+  p {
+    background-color: white;
+
+  }
+  a {
+    text-align: right;
+    background-color: #007BFF;
+    color: white;
+    padding: 5px;
+  }
 }
