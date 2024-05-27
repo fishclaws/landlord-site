@@ -32,6 +32,7 @@ function Admin() {
     const [users, setUsers] = useState([] as User[])
     const [newUser, setNewUser] = useState(newUserObj())
     const [addNewUser, setAddNewUser] = useState(false)
+    const [dataPulled, setDataPulled] = useState(false)
 
     useEffect(() => {
         // Check if we're already logged in
@@ -79,6 +80,7 @@ function Admin() {
             setContacts(data.contacts);
             setReviewCount(data.reviewCount);
             setGroupBys(data.reviewGroupBys)
+            setDataPulled(true)
         })
     }
 
@@ -86,8 +88,11 @@ function Admin() {
         if (authData && authData.data.super_user) {
             getAllUsers(authData.jwt.access_token)
                 .then(users => {
-                    console.log(users)
-                    setUsers(users)
+                    if (Array.isArray(users)) {
+                        setUsers(users)
+                    } else {
+                        console.log(`users is not an array ${users && JSON.stringify(users)}`)
+                    }
                 })
         }
     }
@@ -165,12 +170,18 @@ function Admin() {
                             if (result.statusCode === 401) {
                                 setUnauthorized(true)
                                 googleLogout();
-                            } else { 
-                                localStorage.setItem("authData", JSON.stringify(result));
-                                setAuthData(result);
-                                setLoggedIn(true)
-                                setUnauthorized(false)
-                                getUserList()
+                            } else {
+                                try {
+                                    if (result.message === 'success') {
+                                        localStorage.setItem("authData", JSON.stringify(result));
+                                        setAuthData(result);
+                                        setLoggedIn(true)
+                                        setUnauthorized(false)
+                                    }
+                                } catch(error) {
+                                    setUnauthorized(true)
+                                    googleLogout();
+                                }
                             }
                         }}
                         onError={() => {
@@ -195,7 +206,7 @@ function Admin() {
                     </div>
 
                     {
-                        authData.data.super_user && users && (
+                        authData && authData.data.super_user && users && (
                         <div className="super-user">
                             <div className="user-list">
                                 {
@@ -252,166 +263,176 @@ function Admin() {
                     <div className="get-content" >
                         <button
 
-                            onClick={getContent}>Get Content</button>
+                            onClick={getContent}>Get Data</button>
                     </div>
-                    <h3 className="contact-list">submitted reviews</h3>
-                    <table className="approval-table">
-                        <tbody>
-                            {
+                    {
+                        dataPulled && <div>
+                        <h3 className="contact-list">review count: {reviewCount}</h3>
 
-                                content && content.map((c: any, i: number) =>
-                                    <tr className={history[i]}>
-                                        <td>
-                                            <p>{c.content}</p>
-                                            {
-                                            authData.data.can_approve_reviews &&
-                                            <div className="admin-buttons">
-                                                <button
-                                                    className="approved"
-                                                    disabled={history[i]}
-                                                    onClick={() => {
-                                                        determine(authData.jwt.access_token, c.review_id, 'yes')
-                                                        const copy = {
-                                                            ...history,
+                        <h3 className="contact-list">reviews pending approval</h3>
+                        <table className="approval-table">
+                            <tbody>
+                                {
+
+                                    content && content.map((c: any, i: number) =>
+                                        <tr className={history[i]}>
+                                            <td>
+                                                <p>{c.content}</p>
+                                                {
+                                                authData && authData.data.can_approve_reviews &&
+                                                <div className="admin-buttons">
+                                                    <button
+                                                        className="approved"
+                                                        disabled={history[i]}
+                                                        onClick={() => {
+                                                            determine(authData.jwt.access_token, c.review_id, 'yes')
+                                                            const copy = {
+                                                                ...history,
+                                                            }
+                                                            copy[i] = 'approved'
+                                                            setHistory(copy)
+                                                        }}>approve</button>
+                                                    <button
+                                                        className="rejected"
+                                                        disabled={history[i]}
+                                                        onClick={() => {
+                                                            determine(authData.jwt.access_token, c.review_id, 'no')
+                                                            const copy = {
+                                                                ...history,
+                                                            }
+                                                            copy[i] = 'rejected'
+                                                            setHistory(copy)
                                                         }
-                                                        copy[i] = 'approved'
-                                                        setHistory(copy)
-                                                    }}>approve</button>
-                                                <button
-                                                    className="rejected"
-                                                    disabled={history[i]}
-                                                    onClick={() => {
-                                                        determine(authData.jwt.access_token, c.review_id, 'no')
-                                                        const copy = {
-                                                            ...history,
-                                                        }
-                                                        copy[i] = 'rejected'
-                                                        setHistory(copy)
-                                                    }
-                                                    }>reject</button>
-                                                <button
-                                                    className="praise"
-                                                    disabled={history[i]}
-                                                    onClick={() => {
-                                                        determine(authData.jwt.access_token, c.review_id, 'praise')
-                                                        const copy = {
-                                                            ...history,
-                                                        }
-                                                        copy[i] = 'praise'
-                                                        setHistory(copy)
-                                                    }}>mark as praise</button>
-                                            </div>
-                                            }
-                                        </td>
-                                    </tr>)
-                            }
-                        </tbody>
-                    </table>
-                    <br />
-                    <h3 className="contact-list">reports</h3>
-                    <table className="reports-table">
-                        <tbody>
-                            {
-
-                                reports && reports.map((report: any, i: number) =>
-                                    <tr>
-                                        <td>
-                                            <p>TEXT: {report.text}</p>
-                                            <br />
-                                            <p>URL: {report.url}</p>
-                                            <br />
-                                            <p>PROPERTY_ID: {report.property_id}</p>
-                                            <div className="admin-buttons">
-                                                <button
-                                                    className="approved"
-                                                    onClick={() => {
-                                                        resolveReport(authData.jwt.access_token, report.id)
-                                                        setReports([...reports].filter((r: any) => r.id !== report.id))
-
-                                                    }}>mark resolved</button>
-                                            </div>
-                                        </td>
-                                    </tr>)
-                            }
-                        </tbody>
-                    </table>
-                    <h3 className="contact-list">multiple reviews per address</h3>
-                    <div className="groups">
-                        {
-                            groupBys && groupBys.length && groupBys[0].filter((g: any) => g.c > 1).map((g: any) => (
-                                <div>
-                                    <p><span>{g.c}</span> reviews for {g.address} <a href={`/address/${g.address}`}>link</a></p>
-                                    
-                                </div>
-                            ))
-                        }
-                    </div>
-                    <h3 className="contact-list">multiple reviews per business</h3>
-                    <div className="groups">
-                        {
-                            groupBys && groupBys.length && groupBys[1].filter((g: any) => g.c > 1).map((g: any) => (
-                                <div>
-                                    <p><span>{g.c}</span> reviews for {g.name} <a href={`/search/${g.name}`}>link</a></p>
-                                    
-                                </div>
-                            ))
-                        }
-                    </div>
-                    <h3 className="contact-list">multiple reviews per "property owner"</h3>
-                    <div className="groups">
-                        {
-                            groupBys && groupBys.length && groupBys[3].filter((g: any) => g.c > 1).map((g: any) => (
-                                <div>
-                                    <p><span>{g.c}</span> reviews for {g.name}</p>
-                                    
-                                </div>
-                            ))
-                        }
-                    </div>
-
-                    <div className="contact-list">
-                        <h3>contacts</h3>
-                        {
-                            contacts && contacts.map((c, i) =>
-                                <div>
-                                    {(c.flagged || hasDeletedReview(c)) && <img src={flag}></img>}
-                                    <div>{c.json.contact.name}</div>
-                                    <div>{c.json.contact.email}</div>
-                                    <div className="added-on">added on {c.json.contact.date_added}</div>
-                                    {
-                                        c.json.reviews.filter((r: any) => r).length !== 0 && <button
-                                            onClick={
-                                                () => {
-                                                    const e = [...expanded]
-                                                    e[i] = !e[i]
-                                                    setExpanded(e)
-                                                }
-                                            }
-                                        >left {c.json.reviews.filter((r: any) => r).length} reviews</button>
-                                    }
-                                    {
-                                        expanded[i] && c.json.reviews
-                                            .filter((r: any) => r)
-                                            .map((r: any) =>
-                                                <div className="contact-review">
-                                                    {r.deleted &&
-                                                        <div>
-                                                            <img src={flag}></img>
-                                                            DELETED
-                                                        </div>}
-                                                    <a href={`/address/${r.address}`}>link</a>
-                                                    <br />
-                                                    {r.review_text && <span>comment: {r.review_text}</span>}
-
+                                                        }>reject</button>
+                                                    <button
+                                                        className="praise"
+                                                        disabled={history[i]}
+                                                        onClick={() => {
+                                                            determine(authData.jwt.access_token, c.review_id, 'praise')
+                                                            const copy = {
+                                                                ...history,
+                                                            }
+                                                            copy[i] = 'praise'
+                                                            setHistory(copy)
+                                                        }}>mark as praise</button>
                                                 </div>
-                                            )
-                                    }
-                                </div>
-                            )
-                        }
-                    </div>
+                                                }
+                                            </td>
+                                        </tr>)
+                                }
+                            </tbody>
+                        </table>
+                        <br />
+                        <h3 className="contact-list">reports</h3>
+                        <table className="reports-table">
+                            <tbody>
+                                {
 
-                    <h3 className="contact-list">review count: {reviewCount}</h3>
+                                    reports && reports.map((report: any, i: number) =>
+                                        <tr>
+                                            <td>
+                                                <p>TEXT: {report.text}</p>
+                                                <br />
+                                                <p>URL: {report.url}</p>
+                                                <br />
+                                                <p>PROPERTY_ID: {report.property_id}</p>
+                                                {
+                                                authData && authData.data.can_approve_reviews &&
+                                                <div className="admin-buttons">
+                                                    <button
+                                                        className="approved"
+                                                        onClick={() => {
+                                                            resolveReport(authData.jwt.access_token, report.id)
+                                                            setReports([...reports].filter((r: any) => r.id !== report.id))
+
+                                                        }}>mark resolved</button>
+                                                </div>
+                                            }
+                                            </td>
+                                        </tr>)
+                                }
+                            </tbody>
+                        </table>
+                        <div className="multiple-reviews">
+                        <h3 className="contact-list">multiple reviews per address</h3>
+                        <div className="groups">
+                            {
+                                groupBys && groupBys.length && groupBys[0].filter((g: any) => g.c > 1).map((g: any) => (
+                                    <div>
+                                        <p><span>{g.c}</span> reviews for {g.address} <a href={`/address/${g.address}`}>link</a></p>
+                                        
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        <h3 className="contact-list">multiple reviews per business</h3>
+                        <div className="groups">
+                            {
+                                groupBys && groupBys.length && groupBys[1].filter((g: any) => g.c > 1).map((g: any) => (
+                                    <div>
+                                        <p><span>{g.c}</span> reviews for {g.name} <a href={`/search/${g.name}`}>link</a></p>
+                                        
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        <h3 className="contact-list">multiple reviews per "property owner"</h3>
+                        <div className="groups">
+                            {
+                                groupBys && groupBys.length && groupBys[3].filter((g: any) => g.c > 1).map((g: any) => (
+                                    <div>
+                                        <p><span>{g.c}</span> reviews for {g.name}</p>
+                                        
+                                    </div>
+                                ))
+                            }
+                        </div>
+                        </div>
+
+                        <div className="contact-list">
+                            <h3>contacts</h3>
+                            {
+                                contacts && contacts.map((c, i) =>
+                                    <div>
+                                        {(c.flagged || hasDeletedReview(c)) && <img src={flag}></img>}
+                                        <div>{c.json.contact.name}</div>
+                                        <div>{c.json.contact.email}</div>
+                                        <div className="added-on">added on {c.json.contact.date_added}</div>
+                                        {
+                                            c.json.reviews.filter((r: any) => r).length !== 0 && <button
+                                                onClick={
+                                                    () => {
+                                                        const e = [...expanded]
+                                                        e[i] = !e[i]
+                                                        setExpanded(e)
+                                                    }
+                                                }
+                                            >left {c.json.reviews.filter((r: any) => r).length} reviews</button>
+                                        }
+                                        {
+                                            expanded[i] && c.json.reviews
+                                                .filter((r: any) => r)
+                                                .map((r: any) =>
+                                                    <div className="contact-review">
+                                                        {r.deleted &&
+                                                            <div>
+                                                                <img src={flag}></img>
+                                                                DELETED
+                                                            </div>}
+                                                        <a href={`/address/${r.address}`}>link</a>
+                                                        <br />
+                                                        {r.review_text && <span>comment: {r.review_text}</span>}
+
+                                                    </div>
+                                                )
+                                        }
+                                    </div>
+                                )
+                            }
+                        </div>
+
+                    </div>
+                    }
                 </>
 
             )}

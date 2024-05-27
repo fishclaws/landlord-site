@@ -2335,9 +2335,17 @@ button[disabled]{
   margin: 10px;
   margin: auto;
   border-style: solid;
+  max-width: 600px;
+  border-style: none;
+  border-radius: 20px;
+
   td {
     margin: 10px;
     white-space:unset;
+    padding: 10px;
+    background-color: rgb(255, 235, 196);
+    border-radius: 20px;
+
   }
   button {
     padding: 10px;
@@ -2368,7 +2376,7 @@ button[disabled]{
     margin: auto;
     button {
       margin: 10px;
-      font-size: 1.2em;
+      font-size: 1.5em;
       border-radius: 10px;
     }
   }
@@ -2380,10 +2388,10 @@ button[disabled]{
   background-color: $lime;
 }
 .rejected {
-  background-color: rgb(188, 81, 81);
+  background-color: rgb(240, 112, 84);
 }
 .praise {
-  background-color: rgb(255, 255, 65);
+  background-color: rgb(255, 149, 0);
 }
 
 
@@ -2958,6 +2966,7 @@ small {
 .reports-table {
   margin: auto;
   padding: 10px;
+  max-width: 600px;
   button {
     font-weight: bold;
     font-size: 1.3em;
@@ -3216,7 +3225,7 @@ small {
   margin-top: 10px;
   button {
   border-style: none;
-  font-size: 3em;
+  font-size: 1.8em;
   text-align: center;
   }
 }
@@ -3269,7 +3278,8 @@ small {
   margin: auto;
   p {
     background-color: white;
-
+    padding: 5px;
+    border-radius: 30px;
   }
   a {
     text-align: right;
@@ -3277,4 +3287,13 @@ small {
     color: white;
     padding: 5px;
   }
+}
+
+.multiple-reviews {
+  background-color: rgb(181, 200, 71);
+  padding: 20px;
+  max-width: 600px;
+  margin: auto;
+  margin-top: 10px;
+  border-radius: 30px;
 }
