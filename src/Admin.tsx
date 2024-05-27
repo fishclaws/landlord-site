@@ -50,7 +50,9 @@ function Admin() {
     }, [])
 
     useEffect(() => {
-        setHistory(content.map(c => ''))
+        if (content) {
+            setHistory(content.map(c => ''))
+        }
     }, [content])
 
     useEffect(() => {
@@ -257,7 +259,7 @@ function Admin() {
                         <tbody>
                             {
 
-                                content.map((c: any, i: number) =>
+                                content && content.map((c: any, i: number) =>
                                     <tr className={history[i]}>
                                         <td>
                                             <p>{c.content}</p>
@@ -311,7 +313,7 @@ function Admin() {
                         <tbody>
                             {
 
-                                reports.map((report: any, i: number) =>
+                                reports && reports.map((report: any, i: number) =>
                                     <tr>
                                         <td>
                                             <p>TEXT: {report.text}</p>
@@ -370,7 +372,7 @@ function Admin() {
                     <div className="contact-list">
                         <h3>contacts</h3>
                         {
-                            contacts.map((c, i) =>
+                            contacts && contacts.map((c, i) =>
                                 <div>
                                     {(c.flagged || hasDeletedReview(c)) && <img src={flag}></img>}
                                     <div>{c.json.contact.name}</div>
