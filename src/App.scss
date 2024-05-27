@@ -3057,12 +3057,13 @@ small {
 }
 
 .contact-list {
+  
   margin: auto;
-  width: 40%;
+  width: fit-content;
   max-width: 500px;
 
   div {
-    margin: 4px;
+    margin: 8px;
     background-color: whitesmoke;
   }
   .contact-review {
@@ -3091,6 +3092,13 @@ small {
 
   .added-on {
     text-align: right;
+  }
+
+  .copy-to-clip {
+    display: inline;
+    font-size: .7em;
+    border-style: none;
+    border-radius: 5px;
   }
 }
 
@@ -3274,7 +3282,7 @@ small {
 }
 
 .groups {
-  width: 500px;
+  width: fit-content;
   margin: auto;
   p {
     background-color: white;
@@ -3285,7 +3293,6 @@ small {
     text-align: right;
     background-color: #007BFF;
     color: white;
-    padding: 5px;
   }
 }
 
@@ -3297,3 +3304,5 @@ small {
   margin-top: 10px;
   border-radius: 30px;
 }
+
+

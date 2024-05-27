@@ -152,6 +152,18 @@ function Admin() {
         )
     }
 
+    function copyEmailsToClipboard() {
+        if (contacts) {
+            let emails = ''
+            for (const c of contacts) {
+                if (!(c.flagged || hasDeletedReview(c))) {
+                    emails += `${c.json.contact.email}, `
+                }
+            }
+            navigator.clipboard.writeText(emails);
+        }
+    }
+
     return (
         <div className="admin">
 
@@ -268,60 +280,54 @@ function Admin() {
                     {
                         dataPulled && <div>
                         <h3 className="contact-list">review count: {reviewCount}</h3>
-
-                        <h3 className="contact-list">reviews pending approval</h3>
-                        <table className="approval-table">
-                            <tbody>
-                                {
-
-                                    content && content.map((c: any, i: number) =>
-                                        <tr className={history[i]}>
+                        <br/>
+                        { content && content.length > 0 &&
+                        <><h3 className="contact-list">reviews pending approval:</h3><table className="approval-table">
+                                    <tbody>
+                                        {content && content.map((c: any, i: number) => <tr className={history[i]}>
                                             <td>
                                                 <p>{c.content}</p>
-                                                {
-                                                authData && authData.data.can_approve_reviews &&
-                                                <div className="admin-buttons">
-                                                    <button
-                                                        className="approved"
-                                                        disabled={history[i]}
-                                                        onClick={() => {
-                                                            determine(authData.jwt.access_token, c.review_id, 'yes')
-                                                            const copy = {
-                                                                ...history,
-                                                            }
-                                                            copy[i] = 'approved'
-                                                            setHistory(copy)
-                                                        }}>approve</button>
-                                                    <button
-                                                        className="rejected"
-                                                        disabled={history[i]}
-                                                        onClick={() => {
-                                                            determine(authData.jwt.access_token, c.review_id, 'no')
-                                                            const copy = {
-                                                                ...history,
-                                                            }
-                                                            copy[i] = 'rejected'
-                                                            setHistory(copy)
-                                                        }
-                                                        }>reject</button>
-                                                    <button
-                                                        className="praise"
-                                                        disabled={history[i]}
-                                                        onClick={() => {
-                                                            determine(authData.jwt.access_token, c.review_id, 'praise')
-                                                            const copy = {
-                                                                ...history,
-                                                            }
-                                                            copy[i] = 'praise'
-                                                            setHistory(copy)
-                                                        }}>mark as praise</button>
-                                                </div>
-                                                }
+                                                {authData && authData.data.can_approve_reviews &&
+                                                    <div className="admin-buttons">
+                                                        <button
+                                                            className="approved"
+                                                            disabled={history[i]}
+                                                            onClick={() => {
+                                                                determine(authData.jwt.access_token, c.review_id, 'yes');
+                                                                const copy = {
+                                                                    ...history,
+                                                                };
+                                                                copy[i] = 'approved';
+                                                                setHistory(copy);
+                                                            } }>approve</button>
+                                                        <button
+                                                            className="rejected"
+                                                            disabled={history[i]}
+                                                            onClick={() => {
+                                                                determine(authData.jwt.access_token, c.review_id, 'no');
+                                                                const copy = {
+                                                                    ...history,
+                                                                };
+                                                                copy[i] = 'rejected';
+                                                                setHistory(copy);
+                                                            } }>reject</button>
+                                                        <button
+                                                            className="praise"
+                                                            disabled={history[i]}
+                                                            onClick={() => {
+                                                                determine(authData.jwt.access_token, c.review_id, 'praise');
+                                                                const copy = {
+                                                                    ...history,
+                                                                };
+                                                                copy[i] = 'praise';
+                                                                setHistory(copy);
+                                                            } }>mark as praise</button>
+                                                    </div>}
                                             </td>
-                                        </tr>)
-                                }
-                            </tbody>
-                        </table>
+                                        </tr>)}
+                                    </tbody>
+                                </table></>
+                        }
                         <br />
                         <h3 className="contact-list">reports</h3>
                         <table className="reports-table">
@@ -390,7 +396,9 @@ function Admin() {
                         </div>
 
                         <div className="contact-list">
-                            <h3>contacts</h3>
+                            <h3>contacts <button 
+                                className="copy-to-clip"
+                                onClick={copyEmailsToClipboard}>copy emails to clipboard</button></h3>
                             {
                                 contacts && contacts.map((c, i) =>
                                     <div>
