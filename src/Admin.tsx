@@ -199,7 +199,7 @@ function Admin() {
                         <div className="super-user">
                             <div className="user-list">
                                 {
-                                    users.map(u => (
+                                    users && users.map(u => (
                                         <div className="user">
                                             <p>user id: <span>{u.id}</span></p>
                                             <p>email: <span>{u.email}</span></p>
@@ -338,7 +338,7 @@ function Admin() {
                     <h3 className="contact-list">multiple reviews per address</h3>
                     <div className="groups">
                         {
-                            groupBys.length && groupBys[0].filter((g: any) => g.c > 1).map((g: any) => (
+                            groupBys && groupBys.length && groupBys[0].filter((g: any) => g.c > 1).map((g: any) => (
                                 <div>
                                     <p><span>{g.c}</span> reviews for {g.address} <a href={`/address/${g.address}`}>link</a></p>
                                     
@@ -349,7 +349,7 @@ function Admin() {
                     <h3 className="contact-list">multiple reviews per business</h3>
                     <div className="groups">
                         {
-                            groupBys.length && groupBys[1].filter((g: any) => g.c > 1).map((g: any) => (
+                            groupBys && groupBys.length && groupBys[1].filter((g: any) => g.c > 1).map((g: any) => (
                                 <div>
                                     <p><span>{g.c}</span> reviews for {g.name} <a href={`/search/${g.name}`}>link</a></p>
                                     
@@ -360,7 +360,7 @@ function Admin() {
                     <h3 className="contact-list">multiple reviews per "property owner"</h3>
                     <div className="groups">
                         {
-                            groupBys.length && groupBys[3].filter((g: any) => g.c > 1).map((g: any) => (
+                            groupBys && groupBys.length && groupBys[3].filter((g: any) => g.c > 1).map((g: any) => (
                                 <div>
                                     <p><span>{g.c}</span> reviews for {g.name}</p>
                                     
