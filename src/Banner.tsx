@@ -29,7 +29,7 @@ function Banner() {
                     //   setClicked(true)
                     window.open('https://rentersactionnetwork.org/');
                 }}>
-            <div className='lets'>Stand against Landlord Greed</div>
+            {/* <div className='lets'>Stand against Landlord Greed</div> */}
             <span className='vote'> Join Renters Action Network</span>
             {/* <br/>
                 <span className='for'> for Multonomah County Commissioner District 3</span> */}

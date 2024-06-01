@@ -16,7 +16,14 @@ function Header() {
            <button onClick={() => navigate('/')} className="logo">
             {/* <img className="image_logo" src={image_logo}/> */}
             <img src={logo2}/>
-            {location.pathname !== '/' ? <button className="search-button-nav" onClick={() => navigate('/')}>search</button> : undefined}
+            {location.pathname !== '/' ? 
+                <button className="search-button-nav" onClick={() => navigate('/')}>search</button> : 
+                <div className='headerContainer'>
+                    {/* <img className='post' src="/images/post.png" alt="a post"></img> */}
+                    <div className="name">
+                    Rate Your Landlord PDX
+                    </div>
+                </div>}
 
             </button>
             <div className="right-buttons">

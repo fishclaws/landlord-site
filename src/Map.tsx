@@ -245,38 +245,38 @@ function Map() {
               addLetters(0)
             }
             // const popup = new mapboxgl.Popup({ className: 'review-marker' })
-            setTimeoutRAF(() => {
-              if (!animating.current) {
-                return
-              }
-              const popup = new AnimatedPopup({
-                openingAnimation: {
-                  duration: 1000,
-                  easing: 'easeOutElastic',
-                  transform: 'scale'
-                },
-                closingAnimation: {
-                  duration: 300,
-                  easing: 'easeInBack',
-                  transform: 'scale'
-                },
-                className: text.type + '-marker'
-              })
-                .setLngLat(latlng as any)
-                .setHTML(popupHtml)
-                .setMaxWidth("300px")
-                .addTo(map.current as any);
-              if (text.type === 'emoji') {
-                (popup._content as HTMLElement).style.scale = '.8'
-              }
-              console.log(popup);
-              popup._container.addEventListener('click', () => {
-                window.location.href=`/address/${rev.address}`
-              });
-              els.push(popup as any)
-              typeOut(text.text, popup._container, popup)
+            // setTimeoutRAF(() => {
+            //   if (!animating.current) {
+            //     return
+            //   }
+            //   const popup = new AnimatedPopup({
+            //     openingAnimation: {
+            //       duration: 1000,
+            //       easing: 'easeOutElastic',
+            //       transform: 'scale'
+            //     },
+            //     closingAnimation: {
+            //       duration: 300,
+            //       easing: 'easeInBack',
+            //       transform: 'scale'
+            //     },
+            //     className: text.type + '-marker'
+            //   })
+            //     .setLngLat(latlng as any)
+            //     .setHTML(popupHtml)
+            //     .setMaxWidth("300px")
+            //     .addTo(map.current as any);
+            //   if (text.type === 'emoji') {
+            //     (popup._content as HTMLElement).style.scale = '.8'
+            //   }
+            //   console.log(popup);
+            //   popup._container.addEventListener('click', () => {
+            //     window.location.href=`/address/${rev.address}`
+            //   });
+            //   els.push(popup as any)
+            //   typeOut(text.text, popup._container, popup)
 
-            }, 1000 + counter * 3000);
+            // }, 1000 + counter * 3000);
 
             coords.push(latlng as any)
             counter++

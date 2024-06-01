@@ -271,13 +271,7 @@ function App({ organize }: { organize?: boolean }) {
           {/* <div className='canvas-container'>
         <canvas id="canvas" height="100%" width="100%" ref={canvas}></canvas>
         </div> */}
-          <div className='headerContainer'>
-            {/* <img className='post' src="/images/post.png" alt="a post"></img> */}
-            <div className="name">
-              Rate Your Landlord PDX
-            </div>
 
-          </div>
           {
             !addressSearch && !query && !result && !organize && <Map/>
           }

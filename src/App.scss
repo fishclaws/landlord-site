@@ -102,7 +102,6 @@ html {
 body {
 
   box-sizing: border-box;
-  background: radial-gradient(hsl(200, 40%, 20%), hsl(200, 30%, 6%));
   font-family: "Inconsolata", monospace;
   background: $lime;
 }
@@ -160,19 +159,18 @@ body {
 }
 
 .name {
-  color: rgb(0, 0, 0);
-  letter-spacing: .1em;
-  font-size: 1.4em;
-  padding-top: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
+  color: $lime;
+  width: 100%;
+  font-size: 1.1em;
+  padding-top:0px;
+  padding-left: 6px;
+  padding-right: 6px;
   padding-bottom: 7px;
   font-weight: bold;
-  z-index: 10000;
+  overflow-x: visible;
 }
 @media (max-width: 365px) {
   .name {
-    padding-top: 30px;
     font-size: 1.2em;
 
   }
@@ -219,7 +217,6 @@ h1 {
 .headerContainer {
   display: flex;
   justify-content: center;
-  padding-top:8px;
 }
 
 .post {
@@ -257,7 +254,7 @@ h1 {
 @media (max-height: 800px) {
   .main-container {
 
-    padding: 50px 0 0;
+    padding: 100px 0 0;
 
     display: block;
 
@@ -2413,9 +2410,9 @@ button[disabled]{
 }
 
 .banner {
+
   width: 100%;
   border-style: none;
-    background-color: #3c7eff;
     
 
     font-family: 'Inter';
@@ -2423,7 +2420,7 @@ button[disabled]{
     font-weight: 900;
     letter-spacing: 0.35rem;
     text-transform: uppercase;
-    font-size: 1.1em;
+    font-size: .8em;
     .lets {
       // color: rgb(0, 0, 0);
       margin-bottom: 5px;
@@ -2432,7 +2429,8 @@ button[disabled]{
     .vote {
       font-size: 1.2em;
       font-weight: bolder;
-      color: black;
+      color: #fbe100;
+
     }
 
     .vote-date {
@@ -2453,8 +2451,12 @@ button[disabled]{
       letter-spacing: 0.1rem;
 
     }
-
+    button:hover {
+      background-color: #ff2600;
+    }
 }
+
+
 
 @media (max-height: 730px) {
   .banner {
@@ -2466,9 +2468,7 @@ button[disabled]{
 
 .banner-wrapper {
   position: relative;
-  :hover {
-    background-color: #6a9cff;
-  }
+
 }
 
 .circle-button {
