@@ -87,8 +87,9 @@ function Survey(
                     </div>
                 ))
             }
-            <div className='selection-questions'>
             <p className='select-any-title'>Select any that apply</p>
+
+            <div className='selection-questions'>
 
             {
                 selectionQuestions.questions.map((q, i) => 
