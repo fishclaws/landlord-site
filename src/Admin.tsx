@@ -430,9 +430,22 @@ function Admin() {
                                                         <a href={`/address/${r.address}`}>link</a>
                                                         <br />
                                                         {r.review_text && <span>comment: {r.review_text}</span>}
-
+                                                            
                                                     </div>
                                                 )
+                                        }
+                                        {
+                                            expanded[i] && c.json.rejected &&
+                                            c.json.rejected.length > 0 &&
+                                            <div>Rejected: </div>
+                                        }
+                                        {
+                                            expanded[i] && c.json.rejected
+                                                .filter((r: any) => r)
+                                                .map((r: string) => (
+                                                    <div className="contact-review"><span>{r}</span></div>
+                                                ))
+
                                         }
                                     </div>
                                 )
