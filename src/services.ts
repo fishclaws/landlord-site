@@ -210,3 +210,16 @@ export function deleteUser(jwt: string, userId: number): Promise<User[]> {
   }
 ).then(response => response.json())
 }
+
+export function ignoreContact(jwt: string, email: string, ignore: boolean) {
+  return fetch(`${api_path}/admin/ignore_contact?ignore=${ignore ? 'yes':'no'}&email=${email}`,
+    {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${jwt}`
+      }
+    }
+  )
+}

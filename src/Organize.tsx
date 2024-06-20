@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Join from "./Join";
+import Feed from "./Feed";
 
 interface Section {
     id: number;
@@ -143,7 +144,10 @@ function Organize() {
     }
 
     return (
+
+
         <div className="organize-wrapper" ref={wrapper}>
+            {/* <Feed/> */}
 
             {
                 flow.map((sect, i) =>

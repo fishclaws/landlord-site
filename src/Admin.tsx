@@ -1,7 +1,7 @@
 import axios from "axios";
 import "./App.scss";
 import { GoogleOAuthProvider, GoogleLogin, googleLogout } from "@react-oauth/google";
-import { admin, getAllUsers, determine, login, resolveReport, updateUser, createUser, deleteUser } from "./services";
+import { admin, getAllUsers, determine, login, resolveReport, updateUser, createUser, deleteUser, ignoreContact } from "./services";
 import { useEffect, useState } from "react";
 import flag from "./flag.png"
 import { useStore } from "./hooks/useStore";
@@ -396,6 +396,7 @@ function Admin() {
                         </div>
 
                         <div className="contact-list">
+                            { contacts && <h3>CONTACT COUNT: {contacts.filter(c => !c.json.contact.ignore_in_count).length} </h3> }
                             <h3>contacts <button 
                                 className="copy-to-clip"
                                 onClick={copyEmailsToClipboard}>copy emails to clipboard</button></h3>
@@ -417,6 +418,23 @@ function Admin() {
                                                 }
                                             >left {c.json.reviews.filter((r: any) => r).length} reviews</button>
                                         }
+                                        <label htmlFor={"ignore_" + c.json.contact.email}>Ignore In Count?</label>
+                                        <input
+                                                name = {"ignore_" + c.json.contact.email}
+                                                type="checkbox"
+                                                checked = {c.json.contact.ignore_in_count}
+                                                onChange={
+                                                    (ev) => {
+                                                        ignoreContact(authData.jwt.access_token,
+                                                                    c.json.contact.email,
+                                                                    ev.target.checked, 
+                                                                    )
+                                                        c.json.contact.ignore_in_count = !c.json.contact.ignore_in_count
+                                                        setContacts([...contacts])
+                                                                
+                                                    }
+                                                }
+                                            />
                                         {
                                             expanded[i] && c.json.reviews
                                                 .filter((r: any) => r)
