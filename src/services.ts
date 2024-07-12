@@ -102,7 +102,7 @@ export function admin(jwt: string) {
   }).then(response => response.json())
 }
 
-export function determine(jwt: string, id: number, approve: string) {
+export function determine(jwt: string, id: number, approve: string, comment: string | null = null) {
   return fetch(`${api_path}/determine?id=${id}&approve=${approve}`,
   {
     method: 'POST',
@@ -112,6 +112,7 @@ export function determine(jwt: string, id: number, approve: string) {
       "Authorization": `Bearer ${jwt}`
       // 'Content-Type': 'application/x-www-form-urlencoded',
     },
+    body: comment ? JSON.stringify({comment}) : null
   })
 }
 

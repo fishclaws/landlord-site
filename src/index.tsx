@@ -14,6 +14,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import ErrorBoundary from './ErrorBoundary';
 import Admin from './Admin';
+import Chat from './Chat';
 // import dotenv from 'dotenv'
 
 // dotenv.config()
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
     element: <App organize={true}/>,
     errorElement: <ErrorBoundary/>
   },
+  // {
+  //   path: "/chat",
+  //   element: <Chat/>
+  // },
   {
     path: "/admin",
     element: <Admin/>

@@ -2392,7 +2392,18 @@ button[disabled]{
 .praise {
   background-color: rgb(255, 149, 0);
 }
-
+.edit-comment {
+  color: white;
+  background-color: #007BFF;
+}
+.save-comment {
+  color: white;
+  background-color: black;
+}
+.cancel-comment {
+  color: black;
+  background-color: rgb(255, 149, 0);
+}
 
 @media (max-width: 800px) {
   .right-buttons button  {
@@ -3312,3 +3323,25 @@ small {
 }
 
 
+.show-users {
+  width: fit-content;
+  margin: auto;
+  text-align: center;
+  button {
+    font-size: 1.5em;
+  }
+}
+
+.edit-comment-buttons {
+  display: flex;
+}
+
+.group-contacts {
+  display: block;
+  margin:auto;
+  width: 80%;
+  background: rgb(208, 223, 129);
+  div {
+    padding: 5px;
+  }
+}
