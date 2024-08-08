@@ -20,22 +20,16 @@ function Banner() {
         <div className='banner-wrapper'>
             {
             !clicked && <button className="banner" 
-                onClick={() => {
-                    ReactGA.event({
-                        category: "navbar",
-                        action: "button_click",
-                        label: "tj for housing", // optional
-                      });
-                    //   setClicked(true)
-                    window.open('https://rentersactionnetwork.org/');
-                }}>
-            {/* <div className='lets'>Stand against Landlord Greed</div> */}
+            onClick={() => {
+                window.open('https://rentersactionnetwork.org/');
+            }}>
             <span className='vote'> Join Renters Action Network</span>
             {/* <br/>
                 <span className='for'> for Multonomah County Commissioner District 3</span> */}
 
             </button>
             }
+
         </div>
     )
 }

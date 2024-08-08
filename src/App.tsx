@@ -16,6 +16,7 @@ import Organize from './Organize';
 import Map from './Map';
 import { qs } from './SurveyQuestions';
 import Footer from './Footer';
+import LandlordGrid from './LandlordGrid';
 
 const MEASUREMENT_ID = "G-2B5P18PPBF"; // YOUR_OWN_TRACKING_ID
 
@@ -369,7 +370,7 @@ function App({ organize }: { organize?: boolean }) {
 
 
 
-
+        {/* <LandlordGrid/> */}
       </div>}
       {result &&
         <Result result={result} closeResult={closeResult} resultType={searchType}></Result>}

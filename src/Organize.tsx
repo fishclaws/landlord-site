@@ -71,17 +71,158 @@ const sections: Section[] = [
 
 ]
 
+class Tenant {
+    unitNum: string = '';
+    name: string = '';
+    email: string = '';
+    phone: string = '';
+    notes: string = '';
+    vacant: boolean = false;
+    spokenTo: boolean = false;
+    comingToMeeting: boolean = false;
+    signedLetter: boolean = false;
+}
+
+function TenantRow({ tenant, open, deleteTenant }: { tenant: Tenant, open: any, deleteTenant: any }) {
+    return (
+    <tr className="tenant">
+        <td className="open-button-wrapper" >
+            <button className="open-button" onClick={open}>→</button>
+        </td>
+        <td>
+            {tenant.unitNum}
+        </td>
+        <td>
+            {tenant.name}
+        </td>
+        {/* <td>
+            {tenant.email}
+        </td> */}
+        {/* <td>
+            {tenant.phone}
+        </td> */}
+        {/* <td className="tenant-row-notes"><div>{tenant.notes}</div></td> */}
+        <td>
+            {tenant.spokenTo ? '✔' : ''} 
+        </td>
+        {/* <td> 
+            {tenant.comingToMeeting ? '✔' : ''}
+        </td>
+        <td>
+            {tenant.signedLetter ? '✔' : ''}
+        </td> */}
+        <td>
+            <button className="delete-button" onClick={() => deleteTenant(tenant)}>Delete</button>
+        </td>
+
+    </tr>)
+}
+
+function TenantPopup({ tenant, save, close }: { tenant: Tenant, save: any, close: any }) {
+    const [tenantState, setTenantState] = useState<Tenant>(tenant);
+    const handleChange = (e:  any) => {
+        const { name, value, type, checked } = e.target;
+        setTenantState({
+          ...tenantState,
+          [name]: type === 'checkbox' ? checked : value,
+        });
+        
+    };
+    return (
+        <><div className="background"></div>
+        <div className="tenant-popup">
+            <div className="field">
+                <label htmlFor="vacant">Vacant</label>
+                <input
+                    id="vacant"
+                    type="checkbox"
+                    name="vacant"
+                    checked={tenantState.vacant}
+                    onChange={handleChange} />
+            </div>
+            <div className="field">
+                <label>Unit Number</label>
+                <input
+                    type="text"
+                    name="unitNum"
+                    value={tenantState.unitNum}
+                    onChange={handleChange} />
+            </div>
+            <div className="field">
+                <label>Name</label>
+                <input
+                    type="text"
+                    name="name"
+                    value={tenantState.name}
+                    onChange={handleChange} />
+            </div>
+            <div className="field">
+                <label>Email</label>
+                <input
+                    type="text"
+                    name="email"
+                    value={tenantState.email}
+                    onChange={handleChange} />
+            </div>
+            <div className="field">
+                <label>Phone</label>
+                <input
+                    type="text"
+                    name="phone"
+                    value={tenantState.phone}
+                    onChange={handleChange} />
+            </div>
+            <div className="field">
+                <label>Notes</label>
+                <textarea
+                    name="notes"
+                    value={tenantState.notes}
+                    onChange={handleChange} />
+            </div>
+            <div className="field">
+                <label htmlFor="spokenTo">Spoken to</label>
+                <input
+                    id="spokenTo"
+                    type="checkbox"
+                    name="spokenTo"
+                    checked={tenantState.spokenTo}
+                    onChange={handleChange} />
+            </div>
+            <div className="field">
+                <label htmlFor="comingToMeeting">Coming to Meeting</label>
+                <input
+                    id="comingToMeeting"
+                    type="checkbox"
+                    name="comingToMeeting"
+                    checked={tenantState.comingToMeeting}
+                    onChange={handleChange} />
+            </div>
+            <div className="field">
+                <label htmlFor="signedLetter">Signed Letter</label>
+                <input
+                    id="signedLetter"
+                    type="checkbox"
+                    name="signedLetter"
+                    checked={tenantState.signedLetter}
+                    onChange={handleChange} />
+            </div>
+            <div>
+                <button className="save-button" onClick={() => save(tenantState)}>Save</button>
+            </div> 
+            <button className="close-button" onClick={close}>✖</button>
+        </div></>)
+}
+
 function SectionComponent({ index, sect, addSection, scrollToBottom }: { index: number, sect: Section, addSection: (id: number) => void, scrollToBottom: any }) {
     const ref: any = useRef();
 
     const [answerStatuses, setStatuses] = useState(sect.answers?.map(a => 'unselected'))
 
-
     useEffect(() => {
         if (ref.current) {
             // setTimeout(() =>
-                //(ref.current as any).scrollIntoView({ behavior: "smooth", block: "nearest", inline: 'start' })//,
-                // 100);
+            //(ref.current as any).scrollIntoView({ behavior: "smooth", block: "nearest", inline: 'start' })//,
+            // 100);
             scrollToBottom()
         }
     }, []);
@@ -96,7 +237,7 @@ function SectionComponent({ index, sect, addSection, scrollToBottom }: { index: 
                     {sect.bullets.map(b => <div className="org-bullet">{b}</div>)}
                 </div>}
                 <p className="org-add">{sect.additional}</p>
-                {sect.question && <p className="org-question">{sect.question}</p> }
+                {sect.question && <p className="org-question">{sect.question}</p>}
                 {sect.answers &&
                     <div className="org-answers">
                         {sect.answers.map((a, i) => <button
@@ -113,7 +254,7 @@ function SectionComponent({ index, sect, addSection, scrollToBottom }: { index: 
                             }}>{a.reply}</button>)}
                     </div>}
                 {sect.join &&
-                    <Join text={sect.join}/>}
+                    <Join text={sect.join} />}
             </div></>
     );
 }
@@ -123,7 +264,21 @@ function Organize() {
 
     const [flow, setFlow] = useState([sections.find(s => s.id === 0)] as Section[])
     const wrapper = useRef(null)
+    const [tenants, setTenants] = useState<Tenant[]>([])
+    const [currentTenant, setCurrentTenant] = useState<Tenant | null>(null)
+    const [currentTenantIndex, setCurrentTenantIndex] = useState<number | null>(null)
 
+    useEffect(() => {
+        loadFromLocalStorage();
+        return () => {
+            saveToLocalStorage();
+        }
+    }, [])
+
+    useEffect(() => {
+        saveToLocalStorage();
+    }, [tenants])
+    
     function addSection(id: number) {
         const section = sections.find(s => s.id === id)!;
         if (!flow.find(f => f.id === section.id))
@@ -135,11 +290,43 @@ function Organize() {
     function scrollToBottom() {
         if (wrapper.current) {
             (wrapper.current as any).scrollTo({
-                left: 0, 
+                left: 0,
                 top: (wrapper.current as any).scrollHeight,
                 behavior: 'smooth'
             });
 
+        }
+    }
+
+    function save(tenant: Tenant) {
+        if (currentTenant == null) {
+            return;
+        }
+        if (currentTenantIndex === null) {
+            setTenants([...tenants, tenant]);
+        } else {
+            setTenants([...tenants.slice(0, currentTenantIndex), tenant, ...tenants.slice(currentTenantIndex + 1)]); 
+        }
+        setCurrentTenant(null);
+        setCurrentTenantIndex(null);
+    }
+
+    function close() {
+        setCurrentTenant(null);
+    }
+
+    function deleteTenant(index: number) {
+        setTenants([...tenants.slice(0, index), ...tenants.slice(index + 1)]);
+    }
+
+    function saveToLocalStorage() {
+        localStorage.setItem('tenant-table', JSON.stringify(tenants));
+    }
+
+    function loadFromLocalStorage() {
+        const data = localStorage.getItem('tenant-table');
+        if (data) {
+            setTenants(JSON.parse(data));
         }
     }
 
@@ -151,12 +338,12 @@ function Organize() {
 
             {
                 flow.map((sect, i) =>
-                    <SectionComponent index={i} sect={sect} addSection={addSection} scrollToBottom={scrollToBottom}/>
+                    <SectionComponent index={i} sect={sect} addSection={addSection} scrollToBottom={scrollToBottom} />
                 )
             }
-            <br/>
-            <br/>
-            <br/>
+            <br />
+            <br />
+            <br />
 
         </div>
     );

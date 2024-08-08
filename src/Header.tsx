@@ -27,6 +27,10 @@ function Header() {
 
             </button>
             <div className="right-buttons">
+                {
+                    location.pathname === '/' &&
+                    <button className="BOR" onClick={() => window.open('https://pdxrenterpower.com/')} >✍️ Sign the Renters Bill of Rights</button>
+                }
                 <button onClick={() => navigate('/organize')} >👫 connect with your neighbors</button>
                 <button onClick={() => {
                     ReactGA.event({
