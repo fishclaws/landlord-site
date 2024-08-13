@@ -17,7 +17,7 @@ import Map from './Map';
 import { qs } from './SurveyQuestions';
 import Footer from './Footer';
 import LandlordGrid from './LandlordGrid';
-
+import { Autocomplete, useLoadScript } from '@react-google-maps/api';
 const MEASUREMENT_ID = "G-2B5P18PPBF"; // YOUR_OWN_TRACKING_ID
 
 // requestAnim shim layer by Paul Irish
@@ -63,6 +63,7 @@ function App({ organize }: { organize?: boolean }) {
   const [nameNotFound, setNameNotFound] = React.useState(false)
   const [stopSearch, setStopSearch] = React.useState(false)
   const [showLandlordSearchError, setShowLandlordSearchError] = React.useState(false)
+  const [autocomplete, setAutocomplete] = useState<any>(null);
 
 
 
@@ -70,8 +71,10 @@ function App({ organize }: { organize?: boolean }) {
 
 
 
-
-  
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: 'AIzaSyD8smkF85FEL6zYis2D3sG9PVzzfuqO3LY', // Replace with your Google Maps API key
+    libraries: ['places'],
+  });
 
 
   useEffect(() => {
@@ -222,6 +225,25 @@ function App({ organize }: { organize?: boolean }) {
     }
   }
 
+  const onPlaceChanged = () => {
+    if (autocomplete) {
+      const place = autocomplete.getPlace();
+      if (place && place.formatted_address) {
+        
+        let address = null
+        let addresses = place.formatted_address.split(', Portland')
+        if (addresses.length > 0) {
+          address = addresses[0]
+        } else {
+          address = place.formatted_address.split(',')[0]
+        }
+
+        setAddress(address);
+        search('address', address);
+      }
+    }
+  };
+
   function closeResult() {
     navigate(`/`, { replace: true })
     setResult(null)
@@ -280,7 +302,9 @@ function App({ organize }: { organize?: boolean }) {
           <div className='inputs'>
 
             <div className="input-container">
-              <input
+              {isLoaded &&
+                <Autocomplete onLoad={(a) => setAutocomplete(a)} onPlaceChanged={onPlaceChanged}>
+                <input
                 key="address-input" 
                 autoFocus={true}
                 className={focus === 'address' ? 'grow' : undefined}
@@ -297,7 +321,9 @@ function App({ organize }: { organize?: boolean }) {
                   setFocus('address')
                   setLandlord('')
                 }}
-                onKeyDown={handleKeyPress}></input>{address && focus === 'address' && <div className='mobile-search'><button onClick={() => search(searchType, address)}>→</button></div>}
+                onKeyDown={handleKeyPress}></input>
+              </Autocomplete>}{address && focus === 'address' && <div className='mobile-search'><button onClick={() => search(searchType, address)}>→</button></div>}
+              
             </div>
             <div className='or'>or</div>
             <div  className="input-container">
