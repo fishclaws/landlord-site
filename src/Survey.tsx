@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import './App.scss';
 import { submitResponse } from './services'
 import { Landlord, QUESTION_SET, Question, qs, selectionQuestions } from './SurveyQuestions';
+import Join from './Join';
 
 
 function Survey(
@@ -23,6 +24,8 @@ function Survey(
     // const [selectedLandlords, setSelectedLandlords] = useState(landlordList.length === 1 ? landlordList : [])
     const [reviewText, setReviewText] = useState('')
     const [isLoading, setIsLoading] = useState(false)
+    const [showJoin, setShowJoin] = useState(false)
+    const [hideJoin, setHideJoin] = useState(false)
 
     const maxLength = 0
 
@@ -52,7 +55,7 @@ function Survey(
         }).then((result) => {
             console.log(result)
             setIsLoading(false)
-            hideSurvey(showJoin)
+            hideSurvey(hideJoin ? false : true)
         })
     }
 
@@ -65,14 +68,28 @@ function Survey(
                     !q.hidden && <div className='question'>
                         <p>{q.emoji} {q.text}</p>
                         <br/>
-                        {q.answers ? 
-                            (<div className={'answers'}>
+                        {q.answers &&
+                            (
+                            <div className={'answers'}>
                                 {
                                     q.answers?.map((a, answerIndex) => (
                                         <button 
                                         className={'answer' + (answersSelected[questionIndex] === answerIndex ? ' active' : '')} 
                                         onClick={() => {
                                             const ans = { ...answersSelected}
+                                            if (q.tenantUnion) {
+                                                if (answerIndex === 0 || answerIndex === 2) {
+                                                    if (answersSelected[questionIndex] === undefined || 
+                                                        answersSelected[questionIndex] !== answerIndex
+                                                    ) {
+                                                        setShowJoin(true)
+                                                    } else {
+                                                        setShowJoin(false)
+                                                    }
+                                                } else {
+                                                    setShowJoin(false)
+                                                }
+                                            }
                                             if (ans[questionIndex] === answerIndex) {
                                                 delete ans[questionIndex];
                                             } else {
@@ -82,8 +99,19 @@ function Survey(
                                         }}>{a}</button>
                                     ))
                                 }
-                            </div>) : undefined
+                            </div>
+                            )
                         }
+                        {q.tenantUnion && !hideJoin &&
+                            <div className={`tenant-union-join-answer ${showJoin ? 'grow-in' : 'grow-out'}`}>
+                                <Join
+                                    addSkills={['organise-tenant-unions']} 
+                                    onJoin={() => {
+                                        setHideJoin(true)
+                                    }}
+                                    title={'Join Renters Action Network!'} 
+                                    text={'We can help you start a tenant union in your building or connect you with someone who already has'} property_id={propertyId} />
+                            </div>}
                     </div>
                 ))
             }

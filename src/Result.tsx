@@ -610,8 +610,17 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             <h3 className='address-title-container'>
               {
                 result.property &&
-                <div className={'address-title' + (isOwnerAddress ? ' owner-title' : '')}>{result.property.address_full}</div>
+                <div className='address-container'>
+                <div className={'address-title' + (isOwnerAddress ? ' owner-title' : '')}>
+                  {result.property.address_full}
+                </div>
+                {/* <div className='organize-this-building'>
+                  <button>🚩ORGANIZE THIS BUILDING🚩</button>
+                </div> */}
+                
 
+                  </div>
+                
               }
               {/* {
                 result.property && isOwnerAddress && <p>(is likely to be their main address)</p>

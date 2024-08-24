@@ -1,20 +1,21 @@
 import { useState } from "react";
 import { submitContact } from "./services";
 
-function Join({text, property_id}: {text: string, property_id?: string}) {
+function Join({addSkills, text, property_id, title, onJoin}: {addSkills?: string[], text: string, property_id?: string, title?: string, onJoin?: () => void}) {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [joined, setJoined] = useState(false)
 
-    function submitMe(name: string, email: string) {
+    function submitMe(name: string, email: string, addSkills?: string[]) {
         submitContact({
-            name, email, property_id
+            name, email, property_id, skills: addSkills
         })
     }
 
     return (
         <div className="org-join">
             {!joined ? <>
+                {title && <h3>{title}</h3>}
                 <p>{text}</p>
                 <br />
                 <label className="small-text">(You don't have to use your real name)</label>
@@ -38,7 +39,10 @@ function Join({text, property_id}: {text: string, property_id?: string}) {
                     }}></input>
                 <button onClick={() => {
                     setJoined(true)
-                    submitMe(name, email)
+                    submitMe(name, email, addSkills)
+                    if (onJoin) {
+                        onJoin()
+                    }
                 }}>add me!</button>
             </> :
                 <>

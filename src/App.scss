@@ -686,7 +686,7 @@ button:focus {
 
 .address-title {
   color: rgb(228, 228, 228);
-  font-size: 1.5em;
+  font-size: 1.2em;
   text-align: center;
   width: fit-content;
   margin: auto;
@@ -2228,7 +2228,7 @@ button[disabled] {
   background-color: $light-orange;
   border-color: $orange;
   border-style: solid;
-  font-size: 1.2em;
+  font-size: 1.6em;
   padding-top: 5px;
   padding-bottom: 4px;
   border-top-left-radius: 20px;
@@ -2759,7 +2759,10 @@ small {
   padding: 10px;
 
   p {
-    font-weight: bold;
+    background-color: rgba(255, 226, 246, 0.664);
+    border-radius: 20px;
+    padding: 5px;
+    font-weight: normal;
   }
 
   input {
@@ -3636,4 +3639,88 @@ small {
   border-style: none !important;
   background-color: rgb(255 191 0) !important;
   color: black !important;
+}
+
+.address-container {
+  align-items: center;
+  text-align: center;
+}
+
+.organize-this-building {
+  width: 100%;
+  button {
+    border-style: none;
+    border-bottom-style: solid;
+    border-bottom-width: 3px;
+    border-radius: 100px;
+    font-weight: bold;
+    font-size: .45em;
+    letter-spacing: .2em;
+    padding: 5px;
+    background-color: #7600fdd0;
+    color: white;
+    font-style: italic;
+    border-color: rgb(0, 0, 0);
+    margin: auto;
+    text-align: center;
+  }
+  button::after {
+    .organize-this-building:before {
+      content: "";
+      position: absolute;
+      bottom: -20px; /* Adjust position for the tail */
+      left: 60%; /* Position the tail relative to the bubble */
+      border-width: 10px;
+      border-style: solid;
+      border-color: #6f1bdd transparent transparent transparent;
+    }
+  }
+}
+
+.tenant-union-join-answer {
+  color: black;
+  padding: 10px;
+  font-weight: bold;
+  border-radius: 10px;
+  transform-origin: left;
+  position: relative;
+}
+
+/* Slide in animation */
+@keyframes slideIn {
+  from {
+    height: 0px;
+    pointer-events: none;
+    opacity: 0;
+  }
+  to {
+    height: 400px;
+    pointer-events: auto;
+    opacity: 1;
+  }
+}
+
+/* Slide out animation */
+@keyframes slideOut {
+  from {
+    height: 400px;
+    pointer-events: auto;
+    opacity: 1;
+  }
+  to {
+    height: 0px;
+    pointer-events: none;
+    opacity: 0;
+
+  }
+}
+
+
+/* Apply animations */
+.grow-in {
+  animation: slideIn 0.5s forwards ease-in-out;
+}
+
+.grow-out {
+  animation: slideOut 0.5s forwards ease-in-out;
 }
