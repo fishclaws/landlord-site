@@ -149,7 +149,7 @@ function Reviews({ property_reviews, other_reviews, onOpen, scrollToReviews }: {
                         (selected === 'this' ? propertyItemized : otherItemized).map((q, i) => 
                                 <div 
                                     key={`${i}-sq`}
-                                    className="selection-question selection-selected">{selectionQuestions.questions[i].emoji} {selectionQuestions.questions[i].text} <span className="item-count">x{q}</span>
+                                    className="selection-question selection">{selectionQuestions.questions[i].emoji} {selectionQuestions.questions[i].text} <span className="item-count"><small>x</small><strong>{q}</strong></span>
                                 </div>
                         )
                     }
