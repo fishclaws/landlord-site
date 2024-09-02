@@ -3,7 +3,7 @@
 
 $bright: #c7e40a;
 $green: #aecc11;
-$lime: #98ae0f;
+$lime: #a8a80e;
 $orange: #ff5100;
 $light-orange: #fa6e1d;
 $gray: #232020;
@@ -819,15 +819,14 @@ label {
   padding: 4px;
   padding-left: 8px;
   padding-right: 8px;
-  color: $lime;
-  border-color: $lime;
-  background-color: #00000000;
+  color: black;
+  background-color: $lime;
   font-size: 1.3em;
 
   font-family: inherit;
   outline: inherit;
-  border-style: solid;
-  border-radius: 5px;
+  border-style: none;
+  border-radius: 10px;
 
   text-align: left;
 
@@ -948,7 +947,6 @@ table tr td:last-child {
   margin: auto;
   width: 100%;
   max-width: 600px;
-  padding-top: 10px;
 
 }
 
@@ -1445,6 +1443,7 @@ svg {
   color: #c9c9c9;
   // margin: auto;
   margin-left: 20px;
+  font-size: .9em;
 }
 
 .via-text {
@@ -1484,23 +1483,30 @@ svg {
 
 
 .properties {
-
+  h3 {
+    margin: auto;
+    width: fit-content;
+    color: orange;
+  }
   margin: auto;
   margin-top: 10px;
   margin-bottom: 10px;
-  padding: 5px;
+  padding: 15px;
   width: fit-content;
-  border-style: dotted;
+  border-style: dashed;
   border-width: 3px;
-  border-color: $light-blue;
+  border-color: $lime;
+  background-color: #000000;
 }
 
 .market-value-str {
   margin: auto;
   width: fit-content;
   color: rgb(197, 197, 197);
-  font-size: 1.5em;
+  font-size: 1.2em;
   text-align: center;
+  padding: 10px;
+  background-color: black;
 }
 
 .market-value {
@@ -1510,6 +1516,7 @@ svg {
   color: #ffa34cbc;
   font-weight: bold;
   display: flex;
+  padding: 10px;
 
 }
 
@@ -2060,7 +2067,7 @@ button[disabled] {
   border-color: $lime;
   border-top-style: none;
   padding: 20px;
-  background-color: #5a5c0ec3;
+  background-color: #a8a80e;
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
 
@@ -2139,7 +2146,8 @@ button[disabled] {
   border-color: $lime;
   border-width: 1px;
   margin-bottom: 10px;
-  background-color: #000000a7;
+  background-color: #1c1c1c;
+  border-radius: 10px;
 }
 
 .emoji {
@@ -2178,18 +2186,19 @@ button[disabled] {
 }
 
 .comment {
-  border-style: solid;
+  border-style: none;
   border-width: 1px;
   padding: 10px;
   font-size: 1.1em;
   color: $bright;
-  background-color: #000000a7;
+  background-color: #1c1c1c;
+  border-radius: 10px;
 }
 
 .comment-title {
   padding-top: 5px;
-  color: $bright;
-  text-shadow: 2px 2px #000000;
+  color: black;
+  font-weight: bold;
   letter-spacing: .4em;
   font-size: 1.2em;
   text-align: center;
@@ -2695,7 +2704,6 @@ small {
 
 .dashed {
   margin-top: 20px;
-  border-top: 3px dashed #bbb;
   border-radius: 5px;
 }
 
@@ -2963,10 +2971,11 @@ small {
 .report-button {
   position: absolute;
   right: -10px;
+  top: 10px;
 
   button {
     border-style: solid;
-    border-color: rgb(134, 134, 134);
+    border-color: rgb(255, 128, 0);
     padding: 3px;
     border-width: 1px;
     background-color: transparent;
@@ -2975,11 +2984,9 @@ small {
     div {
       background-image: url('flag.png');
       background-size: cover;
-      width: 15px;
-      height: 15px;
+      width: 30px;
+      height: 30px;
       border-radius: 30px;
-      filter: invert(80%);
-      background-color: white;
 
     }
   }
@@ -3022,9 +3029,28 @@ small {
     font-size: 1.5em;
   }
 
+  button {
+    padding: 5px;
+    margin: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 1.2em;
+    background-color: rgb(59, 216, 11);
+    border-style: none;
+    border-radius: 30px;
+  }
+
+  input {
+    border-style: solid;
+    border-width: 1px;
+  }
+
   button:disabled {
     color: rgba(255, 255, 255, 0.662);
+    background-color: rgb(93, 93, 93);
+
   }
+  
 }
 
 .reports-table {
@@ -3723,4 +3749,110 @@ small {
 
 .grow-out {
   animation: slideOut 0.5s forwards ease-in-out;
+}
+
+.suggestion-container {
+
+  .owned_by {
+    font-size: .9em;
+  }
+  margin: auto;
+  margin-top: 6px;
+  margin-bottom: 10px;
+  .or {
+    color: white;
+  }
+  .owned_by {
+    color: white;
+    span {
+      color: $bright;
+    }
+  }
+
+  background-color: rgb(70, 70, 70);
+}
+
+.suggestion {
+  margin-top: 10px;
+  margin: auto;
+  width: 100%;
+  padding-left: 10px;
+  p {
+    font-style: italic;
+    margin: auto;
+    text-align: center;
+    font-size: 1.2em;
+  }
+  background-color: rgb(160, 168, 13);
+  display: inline-flex;
+  position: relative;
+
+  .vote-box {
+    justify-content: center;
+    /* align-self: center;    <---- REMOVE */
+    align-items: center; 
+    right: 10px;
+    margin-right: 10px;
+    display: inline-flex;
+    .vote-button {
+      position: relative;
+      div {
+        position: absolute;
+        top: -7px;
+      }
+      border-radius: 20px;
+      border-style: none;
+      font-size: 2.0em;
+      width: 30px;
+      height: 30px;
+      margin: 3px;
+      color: rgb(248, 255, 150);
+      font-weight: bold;
+    }
+
+    .green {
+      background-color: rgb(58, 128, 0);
+      border-style: none;
+      box-shadow: none;
+    }
+    .red {
+      background-color: rgb(255, 89, 0);
+    }
+
+    .vote-count {
+      font-weight: bold;
+    }
+  }
+
+  border-radius: 20px;
+
+}
+
+.suggested-pms-container {
+  margin: auto;
+  padding-top: 10px;
+  button {
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(188, 95, 2);
+    color: rgb(244, 129, 13);
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 4px;
+    background-color: transparent;
+    border-radius: 20px;
+    font-size: 1.1em;
+  }
+}
+
+.determine-suggestions {
+  margin: auto;
+  width: fit-content;
+  padding: 10px;
+  p {
+    padding: 10px;
+  }
+  button {
+    margin: 10px;
+  }
 }

@@ -1,3 +1,4 @@
+import { NewEditSuggestion } from "./EditSuggestion"
 import { NameSearchResult, SearchResult } from "./ResultTypes"
 import { CreateUser, User } from "./UserType"
 
@@ -223,4 +224,67 @@ export function ignoreContact(jwt: string, email: string, ignore: boolean) {
       }
     }
   )
+}
+
+export function addEditSuggestion(edit: NewEditSuggestion) {
+  return fetch(`${api_path}/add-edit-suggestion`,
+    {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify(edit),
+      headers: {
+        "Content-Type": "application/json",
+      }
+    }
+  )
+}
+
+export function voteOnEdit(editId: string, vote: -1 | 1) {
+  return fetch(`${api_path}/vote-on-edit?edit-id=${editId}&vote=${vote}`,
+    {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        "Content-Type": "application/json",
+      }
+    }
+  )
+}
+
+export function approveSuggestion(jwt: string, id: number, approve: string) {
+  return fetch(`${api_path}/approve-suggestion?id=${id}&approve=${approve}`,
+    {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${jwt}`
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      }
+    })
+  }
+
+export function submitSuggestion(suggestion: any) {
+  return fetch(`${api_path}/submit-suggestion`,
+    {
+      method: 'POST',
+      mode: 'cors',
+      body: JSON.stringify(suggestion),
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+}
+
+export function voteOnSuggestionPost(suggestionId: string, vote: number) {
+  return fetch(`${api_path}/vote-on-suggestion?id=${suggestionId}&vote=${vote}`,
+    {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
 }

@@ -14,7 +14,8 @@ import ReactGA from "react-ga4";
 import { useNavigate } from 'react-router-dom';
 import Join from './Join';
 import ReportScreen from './Report';
-
+import PMSuggestion from './PMSuggestion';
+import { voteOnSuggestionPost } from './services';
 var mapboxgl = require('mapbox-gl/dist/mapbox-gl.js');
 mapboxgl.accessToken = 'pk.eyJ1IjoibXNnc2x1dCIsImEiOiJja2NvZmFpbjAwMW84MnJvY3F1d2hzcW5nIn0.xMAHVsdszfolXUOk9_XI4g';
 
@@ -272,10 +273,15 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
   const [showDisclaimer, setShowDisclaimer] = useState(false)
   const [showReportScreen, setShowReportScreen] = useState(false)
   const [hideReportButton, setHideReportButton] = useState(false)
+  const [showPMSuggestion, setShowPMSuggestion] = useState(false)
   const [openHandler] = useState(new OnOpen())
   const [isOwnerAddress] = useState(result.property ? matchAddresses(result.property.owner_address, result.property.address_full) : false)
   const [viewOwnerAddress, setViewOwnerAddress] = useState(false)
   const [foundOwnerLink, setFoundOwnerLink] = useState(null as (string | null))
+  const [landlordSuggestions, setLandlordSuggestions] = useState((result as any).suggestions?.filter((s: any) => s.type === 'landlord')) 
+  const [pmSuggestions, setPMSuggestions] = useState((result as any).suggestions?.filter((s: any) => s.type === 'pm')) 
+  const [votedDict, setVotedDict] = useState({} as { [key: string]: number })
+
   useEffect(() => {
     if (viewBusinessInfo) {
       ReactGA.event({
@@ -553,6 +559,26 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
     if (scrolled) hideAllMarkerMenus()
   }, [scrolled])
 
+  function voteOnSuggestion(id: string, vote: -1 | 1) {
+    if (votedDict[id] === vote) {
+      return
+    }
+
+    const suggestion = 
+      pmSuggestions.find((s: any) => s.id === id) ||
+      landlordSuggestions.find((s: any) => s.id === id)
+
+    suggestion.votesUp += vote
+
+
+    setPMSuggestions([...pmSuggestions])
+    setLandlordSuggestions([...landlordSuggestions])
+
+    votedDict[id] = vote
+
+    voteOnSuggestionPost(id, vote)
+  }
+
   return (
     <div className={'result ' + (extraPadding ? 'extra-padding' : '')} ref={resultRef}>
       <Disclaimer callback={null} />
@@ -564,6 +590,12 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             setHideReportButton(hide)
             setShowReportScreen(false)
           }}></ReportScreen>}
+      {showPMSuggestion &&
+        <PMSuggestion
+          property_id={result.property?.property_id}
+          callback={(hide) => {
+            setShowPMSuggestion(false)
+          }}></PMSuggestion>}
       {/* {
         (!scrolled && !alreadyScrolled) &&
         <div className='full-screen'>
@@ -611,16 +643,16 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
               {
                 result.property &&
                 <div className='address-container'>
-                <div className={'address-title' + (isOwnerAddress ? ' owner-title' : '')}>
-                  {result.property.address_full}
-                </div>
-                {/* <div className='organize-this-building'>
+                  <div className={'address-title' + (isOwnerAddress ? ' owner-title' : '')}>
+                    {result.property.address_full}
+                  </div>
+                  {/* <div className='organize-this-building'>
                   <button>🚩ORGANIZE THIS BUILDING🚩</button>
                 </div> */}
-                
 
-                  </div>
-                
+
+                </div>
+
               }
               {/* {
                 result.property && isOwnerAddress && <p>(is likely to be their main address)</p>
@@ -651,6 +683,8 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                     <div className='owner-name'>{result.data?.owned_addresses[0].owner}</div>
                   )
                 }
+
+                
                 {
                   result && result.property && result.property.owner && hierarchies && hierarchies.length > 0 ?
                     (
@@ -671,6 +705,30 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                     ) : undefined
                 }
                 {
+                      landlordSuggestions &&
+                      landlordSuggestions.length > 0 &&
+                      <div className='suggestion-container'>
+                        {
+                          landlordSuggestions.length > 1 ?
+                            <div className='owned_by'>users have suggested the actual <span>owner</span> is:</div>
+                            : <div className='owned_by'>users have suggested the actual <span>owner</span> is:</div>
+                        }
+                        {
+                        landlordSuggestions.map((edit: any, i: number) => 
+                          <div className='suggestion' key={edit.id}>
+                              <p className='suggested-owner-name'>{edit.data}</p>
+                              <div className="vote-box">
+                                <button className="vote-button green"
+                                  onClick={() =>voteOnSuggestion(edit.id, 1)}><div>🖒</div></button>
+                                <div className="vote-count">{edit.votesUp - edit.votesDown}</div>
+                                <button className="vote-button red"
+                                  onClick={() =>voteOnSuggestion(edit.id, -1)}><div>🖓</div></button>
+                              </div>
+                          </div>
+                        )}
+                      </div>
+                }
+                {
                   propertyManagers && propertyManagers.length > 0 &&
                   <div className='via-wrapper'>
                     <div className='via'><span className='via-text'>property management companies:</span> </div>
@@ -684,6 +742,33 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                     </div>
                   </div>
                 }
+                {
+                      pmSuggestions &&
+                      pmSuggestions.length > 0 &&
+                      <div className='suggestion-container'>
+                        {
+                          pmSuggestions.length > 1 ?
+                            <div className='owned_by'>users have suggested the <span>property manager</span> is one of the following:</div>
+                            : <div className='owned_by'>users have suggested the <span>property manager</span> is:</div>
+                        }
+                        {
+                        pmSuggestions.map((edit: any, i: number) => 
+                          <div className='suggestion' key={edit.id}>
+                              <p className='suggested-owner-name'>{edit.data}</p>
+                              <div className="vote-box">
+                                <button className="vote-button green"
+                                  onClick={() =>voteOnSuggestion(edit.id, 1)}><div>🖒</div></button>
+                                <div className="vote-count">{edit.votesUp - edit.votesDown}</div>
+                                <button className="vote-button red"
+                                  onClick={() =>voteOnSuggestion(edit.id, -1)}><div>🖓</div></button>
+                              </div>
+                          </div>
+                        )}
+                      </div>
+                }
+                <div className='suggested-pms-container'>
+                  <button onClick={() => setShowPMSuggestion(true)}>suggest a property management company</button>
+                </div>
 
               </div>
             }
@@ -745,14 +830,10 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
             {result.data &&
               <div className='properties'>
                 {
-                  result.data.market_value_sum === 0 || !result.data.market_value_sum ?
-                    undefined :
-                    <><div className='market-value-str'>total market-value of properties:</div><div className='market-value'>{convertToUSD(result.data.market_value_sum!)}<Info message="calculated using tax information collected from PortlandMaps.com" /></div></>
-                }
-                {
                   result.data.locations && result.data.locations.length > 0 ?
                     (
                       <div className='locations-container'>
+                        <div className='market-value-str'>this owner owns</div>
                         {
                           result.data?.owned_addresses && result.data?.owned_addresses.length > 0 && locations && locations.length > 0 ?
                             (
@@ -812,6 +893,11 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                         }
                       </div>
                     ) : undefined
+                }
+                                {
+                  result.data.market_value_sum === 0 || !result.data.market_value_sum ?
+                    undefined :
+                    <><div className='market-value-str'>total market-value of properties:</div><div className='market-value'>{convertToUSD(result.data.market_value_sum!)}<Info message="calculated using tax information collected from PortlandMaps.com" /></div></>
                 }
               </div>
             }

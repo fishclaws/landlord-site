@@ -1,7 +1,7 @@
 import axios from "axios";
 import "./App.scss";
 import { GoogleOAuthProvider, GoogleLogin, googleLogout } from "@react-oauth/google";
-import { admin, getAllUsers, determine, login, resolveReport, updateUser, createUser, deleteUser, ignoreContact } from "./services";
+import { admin, getAllUsers, determine, login, resolveReport, updateUser, createUser, deleteUser, ignoreContact, approveSuggestion } from "./services";
 import { useEffect, useState } from "react";
 import flag from "./flag.png"
 import { useStore } from "./hooks/useStore";
@@ -22,6 +22,7 @@ function Admin() {
 
     // const [password, setPassword] = useState('')
     const [content, setContent] = useState([])
+    const [suggestions, setSuggestions] = useState([] as any[])
     const [reports, setReports] = useState([])
     const [history, setHistory] = useState([] as any)
     const [contacts, setContacts] = useState([] as any[])
@@ -84,6 +85,7 @@ function Admin() {
             setReviewCount(data.reviewCount);
             setGroupBys(data.reviewGroupBys)
             setDataPulled(true)
+            setSuggestions(data.suggestions)
         })
     }
 
@@ -371,6 +373,27 @@ function Admin() {
                                     </tbody>
                                 </table></>
                             }
+                            <br />
+                            <h3 className="contact-list">suggestions</h3>
+                            <div className="determine-suggestions">
+                            {
+                                suggestions && suggestions.map((s: any, i: number) =>
+                                    <div className="suggestion" key={s.id}>
+                                        <p>{s.type}:</p>
+                                        <p>{s.data}</p>
+
+                                        <button onClick={() => {
+                                            setSuggestions([...suggestions.filter((s1: any) => s1.id !== s.id)]);
+                                            approveSuggestion(authData.jwt.access_token, s.id, 'yes')
+                                        }}>approve</button>
+                                        <button onClick={() => {
+                                            setSuggestions([...suggestions.filter((s1: any) => s1.id !== s.id)]);
+                                            approveSuggestion(authData.jwt.access_token, s.id, 'no')
+                                        }}>reject</button>
+                                    </div>
+                                )
+                            }
+                            </div>
                             <br />
                             <h3 className="contact-list">reports</h3>
                             <table className="reports-table">
