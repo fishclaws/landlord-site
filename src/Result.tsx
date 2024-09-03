@@ -756,11 +756,11 @@ function Result({ result, closeResult, resultType }: { result: SearchResultPicke
                           <div className='suggestion' key={edit.id}>
                               <p className='suggested-owner-name'>{edit.data}</p>
                               <div className="vote-box">
-                                <button className="vote-button green"
-                                  onClick={() =>voteOnSuggestion(edit.id, 1)}><div>🖒</div></button>
+                                <button className="vote-button green vote-up"
+                                  onClick={() =>voteOnSuggestion(edit.id, 1)}></button>
                                 <div className="vote-count">{edit.votesUp - edit.votesDown}</div>
-                                <button className="vote-button red"
-                                  onClick={() =>voteOnSuggestion(edit.id, -1)}><div>🖓</div></button>
+                                <button className="vote-button red vote-down"
+                                  onClick={() =>voteOnSuggestion(edit.id, -1)}></button>
                               </div>
                           </div>
                         )}
