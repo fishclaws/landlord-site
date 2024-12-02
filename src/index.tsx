@@ -46,7 +46,8 @@ const router = createBrowserRouter([
   },
   // {
   //   path: "/chat",
-  //   element: <Chat/>
+  //   element: <Chat/>,
+  //   errorElement: <ErrorBoundary/>
   // },
   {
     path: "/admin",

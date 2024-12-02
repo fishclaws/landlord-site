@@ -18,6 +18,7 @@ import { qs } from './SurveyQuestions';
 import Footer from './Footer';
 import LandlordGrid from './LandlordGrid';
 import { Autocomplete, useLoadScript } from '@react-google-maps/api';
+import Chat from './Chat';
 const MEASUREMENT_ID = "G-2B5P18PPBF"; // YOUR_OWN_TRACKING_ID
 
 // requestAnim shim layer by Paul Irish
@@ -256,7 +257,6 @@ function App({ organize }: { organize?: boolean }) {
   }
 
   function handleKeyPress(event: any) {
-    // This is perfectly safe in react, it correctly detect the keys
     if (event.key === 'Enter') {
       search(searchType, undefined)
     }
@@ -267,7 +267,7 @@ function App({ organize }: { organize?: boolean }) {
 
     <div>
       {
-        location.pathname === '/' ? <Banner></Banner> : undefined
+        location.pathname === '/' && <Banner></Banner>
       }
       <Header></Header>
       {<div className='body' style={{ display: !result && !organize ? 'block' : 'none' }}>
@@ -325,7 +325,7 @@ function App({ organize }: { organize?: boolean }) {
               </Autocomplete>}{address && focus === 'address' && <div className='mobile-search'><button onClick={() => search(searchType, address)}>→</button></div>}
               
             </div>
-            <div className='or'>or</div>
+            {/* <div className='or'>or</div>
             <div  className="input-container">
               <input
                 key="landlord-input"
@@ -344,7 +344,7 @@ function App({ organize }: { organize?: boolean }) {
                 }}
                 placeholder="Landlord Name"
                 onKeyDown={handleKeyPress}></input>{landlord && focus === 'landlord' && <div className='mobile-search'><button onClick={() => search(searchType, landlord)}>→</button></div>}
-            </div>
+            </div> */}
           </div>
           {landlord || address ?
             <div className='search-container'>
@@ -391,11 +391,16 @@ function App({ organize }: { organize?: boolean }) {
               </div>
             </div>
           }
+          
+          {/* <div className='chat-home-button'>
+            <button><span>chat</span><div>new!</div></button>
+            <h3>with the people in your building</h3>
+          </div> */}
+
           <div className='app-buffer'></div>
         </div>
 
-
-
+      
         {/* <LandlordGrid/> */}
       </div>}
       {result &&

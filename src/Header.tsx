@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import './App.scss';
 import logo2 from './logo3.png';
-import image_logo from './image_logo.png';
 import { useLocation, useNavigate } from "react-router-dom";
 import { Donate } from 'react-kofi-overlay'
 import ReactGA from "react-ga4";
@@ -27,10 +26,6 @@ function Header() {
 
             </button>
             <div className="right-buttons">
-                {
-                    location.pathname === '/' &&
-                    <button className="BOR" onClick={() => window.open('https://pdxrenterpower.com/')} >✍️ Sign the Renters Bill of Rights</button>
-                }
                 <button onClick={() => navigate('/organize')} >👫 connect with your neighbors</button>
                 <button onClick={() => {
                     ReactGA.event({
